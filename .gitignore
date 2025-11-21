@@ -1,0 +1,44 @@
+# Root gitignore consolidates shared ignores across backend & frontend
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Python / backend artifacts
+backend/.venv/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/.coverage
+backend/htmlcov/
+backend/*.pyc
+backend/*.pyo
+backend/.env
+backend/.env.*
+.env
+
+# Node / frontend artifacts
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+frontend/.env.local
+frontend/.env.*.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Docker & build outputs
+*.log
+dist/
+build/
+
+# Supabase / misc
+.supabase/
+storage/
+

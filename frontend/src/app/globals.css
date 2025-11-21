@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sidebar-width: 280px;
+}
+
+html {
+  min-height: 100%;
+  background-color: #05060c;
+}
+
+body {
+  @apply bg-[#05060c] text-slate-100 antialiased;
+  min-height: 100vh;
+}
+
+* {
+  @apply selection:bg-indigo-500/40 selection:text-white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-700/70 rounded-full transition-colors hover:bg-zinc-500/70;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
