@@ -10,6 +10,8 @@ create table if not exists profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   email text,
   full_name text,
+  company_name text,
+  referral_source text,
   role text default 'client',
   accepted_tos_at timestamptz,
   created_at timestamptz default now()
@@ -56,7 +58,7 @@ create index if not exists idx_messages_conversation_id_created_at
 create table if not exists files (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references profiles(id) on delete cascade,
-  conversation_id uuid not null references conversations(id) on delete cascade,
+  conversation_id uuid references conversations(id) on delete cascade,  -- nullable for temp files
   supabase_path text not null,
   mime_type text,
   original_name text,

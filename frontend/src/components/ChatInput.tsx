@@ -7,7 +7,6 @@ import { Listbox, Transition } from "@headlessui/react";
 import {
   ChevronUpDownIcon,
   CheckIcon,
-  MicrophoneIcon,
   PaperClipIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
@@ -60,7 +59,7 @@ export default function ChatInput({
   };
 
   const disabledSend = disabled || isStreaming || !message.trim();
-  const disabledUpload = !conversationId || isUploading;
+  const disabledUpload = isUploading;
 
   const modeOptions: { label: string; value: ChatMode }[] = useMemo(
     () => [
@@ -81,10 +80,6 @@ export default function ChatInput({
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!conversationId) {
-      setUploadError("Start a conversation to attach files.");
-      return;
-    }
     const files = event.target.files;
     if (!files?.length) return;
 
@@ -101,9 +96,12 @@ export default function ChatInput({
       }
 
       const uploads: RegisterFileInput[] = [];
+      // Use temporary folder if no conversation yet
+      const folder = conversationId ?? "temp";
+      
       for (const file of Array.from(files)) {
         const sanitizedName = file.name.replace(/\s+/g, "-");
-        const path = `${authUserId}/${conversationId}/${Date.now()}-${sanitizedName}`;
+        const path = `${authUserId}/${folder}/${Date.now()}-${sanitizedName}`;
         const { error } = await supabase.storage.from("uploads").upload(path, file, {
           upsert: true,
           cacheControl: "3600",
@@ -115,6 +113,8 @@ export default function ChatInput({
           original_name: file.name,
         });
       }
+      
+      // Register files (with or without conversation_id)
       const registered = await registerFiles(conversationId, uploads);
       onFilesRegistered(registered);
       event.target.value = "";
@@ -175,9 +175,7 @@ export default function ChatInput({
             onClick={handleUploadClick}
             disabled={disabledUpload}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#0d0f16] text-white transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-40"
-            title={
-              conversationId ? "Attach documents from Supabase Storage" : "Start a chat to attach files"
-            }
+            title="Attach documents"
           >
             {isUploading ? (
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -197,13 +195,6 @@ export default function ChatInput({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white"
-              disabled
-            >
-              <MicrophoneIcon className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
               onClick={handleSubmit}
               disabled={disabledSend}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#111] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
@@ -216,15 +207,16 @@ export default function ChatInput({
         {uploadError ? <p className="mt-2 text-xs text-red-400">{uploadError}</p> : null}
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-          <span>This is not legal advice.</span>
-          <div className="flex items-center gap-2 text-white">
-            <span className="text-white/60">Mode</span>
-            <Listbox value={selectedMode} onChange={(option) => onModeChange(option.value)}>
-              <div className="relative">
-                <Listbox.Button className="flex min-w-[140px] items-center justify-between rounded-2xl border border-white/15 bg-[#0d0f16] px-3 py-1.5 text-sm text-white">
-                  {selectedMode.label}
-                  <ChevronUpDownIcon className="ml-2 h-4 w-4 text-white/70" />
-                </Listbox.Button>
+          <span>A reminder that this is not legal advice, and that the Program is designed for Scopic to observe your self-serve legal behaviour.</span>
+          {modeOptions.length > 1 && (
+            <div className="flex items-center gap-2 text-white">
+              <span className="text-white/60">Mode</span>
+              <Listbox value={selectedMode} onChange={(option) => onModeChange(option.value)}>
+                <div className="relative">
+                  <Listbox.Button className="flex min-w-[140px] items-center justify-between rounded-2xl border border-white/15 bg-[#0d0f16] px-3 py-1.5 text-sm text-white">
+                    {selectedMode.label}
+                    <ChevronUpDownIcon className="ml-2 h-4 w-4 text-white/70" />
+                  </Listbox.Button>
                 <Transition
                   as={Fragment}
                   leave="transition ease-in duration-100"
@@ -254,7 +246,8 @@ export default function ChatInput({
                 </Transition>
               </div>
             </Listbox>
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

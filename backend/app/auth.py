@@ -135,17 +135,38 @@ async def _create_profile(
     db: AsyncSession,
     user_id: UUID,
     email: Optional[str],
+    user_metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
+    """Create or update a profile, extracting metadata from JWT claims."""
+    full_name = None
+    company_name = None
+    referral_source = None
+    
+    if user_metadata:
+        full_name = user_metadata.get("full_name")
+        company_name = user_metadata.get("company_name")
+        referral_source = user_metadata.get("referral_source")
+    
     result = await db.execute(
         text(
             """
-            insert into profiles (id, email, role)
-            values (:id, :email, 'client')
-            on conflict (id) do update set email = excluded.email
+            insert into profiles (id, email, full_name, company_name, referral_source, role)
+            values (:id, :email, :full_name, :company_name, :referral_source, 'client')
+            on conflict (id) do update set 
+                email = excluded.email,
+                full_name = coalesce(excluded.full_name, profiles.full_name),
+                company_name = coalesce(excluded.company_name, profiles.company_name),
+                referral_source = coalesce(excluded.referral_source, profiles.referral_source)
             returning id, email, role, accepted_tos_at
             """
         ),
-        {"id": user_id, "email": email},
+        {
+            "id": user_id,
+            "email": email,
+            "full_name": full_name,
+            "company_name": company_name,
+            "referral_source": referral_source,
+        },
     )
     await db.commit()
     return result.mappings().one()
@@ -155,11 +176,12 @@ async def _get_or_create_profile(
     db: AsyncSession,
     user_id: UUID,
     email: Optional[str],
+    user_metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     profile = await _get_profile(db, user_id)
     if profile:
         return profile
-    return await _create_profile(db, user_id, email)
+    return await _create_profile(db, user_id, email, user_metadata)
 
 
 def _extract_bearer_token(authorization: str) -> str:
@@ -201,7 +223,8 @@ async def get_current_user(
         ) from exc
 
     email = claims.get("email")
-    profile = await _get_or_create_profile(db, user_id, email)
+    user_metadata = claims.get("user_metadata", {})
+    profile = await _get_or_create_profile(db, user_id, email, user_metadata)
     return CurrentUser(
         id=user_id,
         email=profile.get("email"),

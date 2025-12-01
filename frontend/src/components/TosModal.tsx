@@ -10,16 +10,36 @@ export default function TosModal({ open, onAccept }: TosModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
       <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#0b0e17] p-8 text-slate-200 shadow-2xl">
-        <h2 className="text-2xl font-semibold text-white">Accept the Scopic Legal Terms</h2>
+        <h2 className="text-2xl font-semibold text-white">Acceptance of Terms and Privacy Policy</h2>
         <p className="mt-4 text-sm leading-relaxed text-slate-300">
-          Before chatting with Scopic Legal, please acknowledge that this tool provides AI-generated insights
-          for informational purposes only and does not replace professional legal counsel.
+          Thank you for participating in the Legal Tech Private Beta Program of Scopic Legal Inc. (together with our affiliates, "R6" or "our") which was established to explore the application of generative artificial intelligence and other technologies in various legal use cases (the "Program").
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-slate-300">
+          By clicking "Accept & Continue", you acknowledge that you have read, understood, and agree to be bound by our{" "}
+          <a
+            href="/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 underline hover:text-indigo-300"
+          >
+            Terms of Use
+          </a>{" "}
+          and{" "}
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 underline hover:text-indigo-300"
+          >
+            Privacy Policy
+          </a>
+          , which summarize the terms and conditions of your participation in our Program. Please note that our Privacy Policy also includes confidentiality provisions that govern the use and disclosure of any information shared during the Program.
         </p>
         <button
           onClick={onAccept}
           className="mt-6 w-full rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 py-3 text-sm font-semibold text-white transition hover:opacity-90"
         >
-          Accept & continue
+          Accept & Continue
         </button>
       </div>
     </div>

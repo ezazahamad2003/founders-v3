@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ChatMode,
-  ConversationDetail,
   ConversationSummary,
   FileMeta,
   Message,
@@ -29,7 +28,6 @@ export function useChat(accessToken: string | null) {
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
-  const [activeConversation, setActiveConversation] = useState<ConversationDetail | null>(null);
   const [messages, setMessages] = useState<Message[]>(emptyMessages);
   const [conversationFiles, setConversationFiles] = useState<FileMeta[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -37,12 +35,10 @@ export function useChat(accessToken: string | null) {
   const [mode, setMode] = useState<ChatMode>("auto");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pendingAttachmentIds, setPendingAttachmentIds] = useState<string[]>([]);
-  const [isConversationLoading, setIsConversationLoading] = useState(false);
 
   const tokenReady = Boolean(accessToken);
 
   const resetConversationState = useCallback(() => {
-    setActiveConversation(null);
     setActiveConversationId(null);
     setMessages(emptyMessages);
     setConversationFiles([]);
@@ -90,18 +86,15 @@ export function useChat(accessToken: string | null) {
   const loadConversation = useCallback(
     (conversationId: string) => {
       if (!tokenReady || !conversationId) return;
-      setIsConversationLoading(true);
       getConversation(accessToken!, conversationId)
         .then((data) => {
           setActiveConversationId(conversationId);
-          setActiveConversation(data.conversation);
           setMessages(data.messages);
           setConversationFiles(data.files);
           setPendingAttachmentIds([]);
           setStreamedAssistantText("");
         })
-        .catch((error) => setErrorMessage(error.message || "Unable to load conversation."))
-        .finally(() => setIsConversationLoading(false));
+        .catch((error) => setErrorMessage(error.message || "Unable to load conversation."));
     },
     [accessToken, tokenReady],
   );
@@ -123,7 +116,7 @@ export function useChat(accessToken: string | null) {
   }, [accessToken, tokenReady, refreshConversations]);
 
   const registerFilesForConversation = useCallback(
-    async (conversationId: string, files: RegisterFileInput[]) => {
+    async (conversationId: string | null, files: RegisterFileInput[]) => {
       if (!tokenReady) throw new Error("Missing auth token");
       const response = await registerConversationFiles(accessToken!, conversationId, files);
       setConversationFiles((prev) => [...response.files, ...prev]);
@@ -173,7 +166,9 @@ export function useChat(accessToken: string | null) {
               setIsStreaming(false);
               setStreamedAssistantText("");
               setPendingAttachmentIds([]);
+              // Reload conversation detail to get the new message
               await loadConversation(payload.conversation_id);
+              // Refresh conversation list in background (don't await)
               refreshConversations();
             },
             onError: (error) => {
@@ -229,7 +224,6 @@ export function useChat(accessToken: string | null) {
     conversations,
     conversationsLoading,
     activeConversationId,
-    activeConversation,
     messages,
     conversationFiles,
     filesById,
@@ -240,7 +234,6 @@ export function useChat(accessToken: string | null) {
     mode,
     setMode,
     errorMessage,
-    isConversationLoading,
     refreshConversations,
     loadConversation,
     startNewConversation,

@@ -14,6 +14,9 @@ export default function AuthGate() {
   const [authMode, setAuthMode] = useState<AuthMode>("sign_in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [referralSource, setReferralSource] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,7 +48,17 @@ export default function AuthGate() {
         setErrorMessage(error.message);
       }
     } else {
-      const { error } = await supabase.auth.signUp({ email, password });
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            company_name: companyName,
+            referral_source: referralSource,
+          },
+        },
+      });
       if (error) {
         setErrorMessage(error.message);
       } else {
@@ -87,11 +100,48 @@ export default function AuthGate() {
           onSubmit={handleSubmit}
           className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur"
         >
-          <h1 className="text-2xl font-semibold text-white">Sign {authMode === "sign_in" ? "in" : "up"} to Scopic Legal</h1>
-          <p className="mt-2 text-sm text-slate-300">
-            {authMode === "sign_in" ? "Use your Supabase credentials to continue." : "Create an account to start chatting."}
-          </p>
+          <h1 className="text-2xl font-semibold text-white">{authMode === "sign_in" ? "Scopic Legal" : "Scopic Legal Beta Program"}</h1>
+          {authMode === "sign_up" && (
+            <p className="mt-2 text-sm text-slate-300">
+              Provide your details to submit an application
+            </p>
+          )}
           <div className="mt-6 space-y-4">
+            {authMode === "sign_up" && (
+              <>
+                <label className="block text-sm text-slate-200">
+                  Full Name
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
+                    className="mt-1 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white outline-none focus:border-indigo-400"
+                    required
+                  />
+                </label>
+                <label className="block text-sm text-slate-200">
+                  Company Name
+                  <input
+                    type="text"
+                    value={companyName}
+                    onChange={(event) => setCompanyName(event.target.value)}
+                    className="mt-1 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white outline-none focus:border-indigo-400"
+                    required
+                  />
+                </label>
+                <label className="block text-sm text-slate-200">
+                  Referral Source
+                  <input
+                    type="text"
+                    value={referralSource}
+                    onChange={(event) => setReferralSource(event.target.value)}
+                    className="mt-1 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white outline-none focus:border-indigo-400"
+                    placeholder="How did you hear about us?"
+                    required
+                  />
+                </label>
+              </>
+            )}
             <label className="block text-sm text-slate-200">
               Email
               <input
@@ -122,7 +172,7 @@ export default function AuthGate() {
             type="submit"
             className="mt-6 w-full rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 py-3 font-semibold text-white transition hover:opacity-90"
           >
-            {authMode === "sign_in" ? "Sign in" : "Create account"}
+            {authMode === "sign_in" ? "Sign in" : "Apply to Join"}
           </button>
           <button
             type="button"
@@ -130,8 +180,8 @@ export default function AuthGate() {
             className="mt-4 w-full text-sm text-slate-300 hover:text-white"
           >
             {authMode === "sign_in"
-              ? "Need an account? Create one"
-              : "Already have an account? Sign in"}
+              ? "Want to join our private beta? Apply here"
+              : "Already in the Private Beta? Sign in"}
           </button>
         </form>
       </div>

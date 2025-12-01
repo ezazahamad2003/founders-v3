@@ -20,7 +20,11 @@ backend/*.pyc
 backend/*.pyo
 backend/.env
 backend/.env.*
+
+# Environment / secret dumps
 .env
+.env.*
+env-run.*
 
 # Node / frontend artifacts
 frontend/node_modules/

@@ -103,17 +103,16 @@ curl -N -H "Authorization: Bearer TOKEN" \
 
 To include files, upload them via Supabase Storage on the frontend, call `/api/files/register` with the metadata, then reference the returned `file_ids` when hitting `/api/chat`.
 
-## Optional Smoke Tests
+## Tests
 
-A throwaway `tests/` folder contains `smoke_tests.py`, a script that hits the main endpoints (health, me, accept-tos, chat, conversation detail). Run it with:
+`backend/tests/test_document_text.py` verifies the document-ingestion helpers (PDF + DOCX extraction) using pytest + pytest-asyncio. Run with:
 
 ```
 cd backend
-.\.venv\Scripts\Activate.ps1
-python -m tests.smoke_tests
+PYTHONPATH=backend pytest tests/test_document_text.py
 ```
 
-Configure either `SCOPIC_ACCESS_TOKEN` or the Supabase credentials (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_TEST_EMAIL`, `SUPABASE_TEST_PASSWORD`). Feel free to delete the entire `tests/` directory if you don’t need these helpers.
+Smoke-test coverage for the public APIs is planned but not yet implemented.
 
 ## Docker
 

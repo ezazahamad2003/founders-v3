@@ -16,7 +16,7 @@ class UserProfile(BaseModel):
 
 class FileMeta(BaseModel):
     id: UUID
-    conversation_id: UUID
+    conversation_id: Optional[UUID]  # Null for temp files before first message
     supabase_path: str
     mime_type: Optional[str] = None
     original_name: Optional[str] = None
@@ -30,7 +30,7 @@ class RegisterFileInput(BaseModel):
 
 
 class RegisterFilesRequest(BaseModel):
-    conversation_id: UUID
+    conversation_id: Optional[UUID]  # Null for temp files
     files: List[RegisterFileInput]
 
 
@@ -81,12 +81,6 @@ class ChatRequest(BaseModel):
     message: str
     file_ids: Optional[List[UUID]] = None
     mode: Literal["auto", "chat", "vision", "files", "deep_research"] = "auto"
-
-
-class ChatResponse(BaseModel):
-    conversation_id: UUID
-    message_id: UUID
-    content: str
 
 
 class MeResponse(UserProfile):

@@ -25,8 +25,7 @@ from app.services import conversations, files as files_service, messages as mess
 STREAM_MEDIA_TYPE = "text/event-stream"
 DOC_MIME_TYPES = {
     "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",  # .docx
     "text/plain",
 }
 
@@ -43,11 +42,7 @@ async def chat_endpoint(
     """Main chat endpoint with streaming responses."""
     ensure_tos_accepted(current_user)
 
-    if payload.file_ids and payload.conversation_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="FILES_REQUIRE_CONVERSATION",
-        )
+    # Allow files even without a conversation - they'll be associated when conversation is created
 
     conversation_row = await conversations.get_or_create_conversation_for_message(
         db=db,

@@ -32,7 +32,7 @@ export default function ConversationList({
   }
 
   if (!conversations.length) {
-    return <p className="text-sm text-slate-400">No conversations yet. Start a new chat to begin.</p>;
+    return <p className="text-sm text-slate-400">No Legal Queries yet. Start a new Legal Query to begin.</p>;
   }
 
   return (
@@ -40,7 +40,7 @@ export default function ConversationList({
       {conversations.map((conversation) => {
         const isActive = conversation.id === activeId;
         return (
-          <li key={conversation.id}>
+          <li key={conversation.id} className="relative">
             <button
               onClick={() => onSelectConversation(conversation.id)}
               className={clsx(
@@ -50,7 +50,7 @@ export default function ConversationList({
                   : "border-white/5 bg-white/0 text-slate-200 hover:border-white/20 hover:bg-white/5",
               )}
             >
-              <div className="flex-1">
+              <div className="flex-1 pr-8">
                 <p className="line-clamp-1 text-sm font-medium">
                   {conversation.title ?? "New chat"}
                 </p>
@@ -58,20 +58,20 @@ export default function ConversationList({
                   {new Date(conversation.updated_at).toLocaleString()}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  const confirmed = window.confirm("Delete this conversation?");
-                  if (confirmed) {
-                    onDeleteConversation(conversation.id);
-                  }
-                }}
-                className="rounded-xl border border-white/10 px-2 py-1 text-xs text-slate-300 transition hover:border-red-400 hover:text-red-300"
-                aria-label="Delete conversation"
-              >
-                ×
-              </button>
+            </button>
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                const confirmed = window.confirm("Delete this conversation?");
+                if (confirmed) {
+                  onDeleteConversation(conversation.id);
+                }
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl border border-white/10 px-2 py-1 text-xs text-slate-300 transition hover:border-red-400 hover:text-red-300"
+              aria-label="Delete conversation"
+            >
+              ×
             </button>
           </li>
         );

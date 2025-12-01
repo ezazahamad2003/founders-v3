@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 from app.config import Settings, get_settings
 from app.models import FileMeta
+from app.services.document_text import build_documents_contexts
 
 _client: AsyncOpenAI | None = None
 
@@ -33,25 +34,6 @@ class OpenAIChatResult(BaseModel):
     prompt_tokens: int = 0
     completion_tokens: int = 0
     total_tokens: int = 0
-
-
-async def chat(
-    messages: Sequence[Dict[str, Any]],
-    *,
-    settings: Settings | None = None,
-    model_name: Optional[str] = None,
-    max_output_tokens: Optional[int] = None,
-) -> OpenAIChatResult:
-    """Standard chat completion."""
-    settings = settings or get_settings()
-    client = _get_client(settings)
-    response: ChatCompletion = await client.chat.completions.create(
-        model=model_name or settings.openai_model_chat,
-        messages=list(messages),
-        max_completion_tokens=max_output_tokens or settings.max_output_tokens,
-        temperature=0.2,
-    )
-    return _completion_to_result(response, fallback_model=model_name or settings.openai_model_chat)
 
 
 async def chat_with_vision(
@@ -95,20 +77,19 @@ async def chat_with_files(
     settings: Settings | None = None,
     max_output_tokens: Optional[int] = None,
 ) -> OpenAIChatResult:
-    """Invoke a model with additional context about uploaded documents."""
+    """Invoke a model with actual excerpts from uploaded documents."""
     settings = settings or get_settings()
-    file_notes = []
-    for file_meta in files_meta:
-        file_notes.append(
-            f"- File `{file_meta.original_name or file_meta.id}` stored at `{file_meta.supabase_path}` "
-            "should be used as supporting context."
-        )
     augmented_messages = list(messages)
-    if file_notes:
+
+    doc_contexts = await build_documents_contexts(files_meta, settings)
+    if doc_contexts:
         augmented_messages.append(
             {
                 "role": "system",
-                "content": "User provided the following documents:\n" + "\n".join(file_notes),
+                "content": (
+                    "User provided these document excerpts. Ground your response in them when relevant:\n\n"
+                    + "\n\n".join(doc_contexts)
+                ),
             }
         )
 

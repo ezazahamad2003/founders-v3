@@ -20,8 +20,9 @@ async def register_files(
     current_user: CurrentUser,
     req: RegisterFilesRequest,
 ) -> List[FileMeta]:
-    """Register uploaded files for a conversation."""
-    await assert_conversation_access(db, current_user, req.conversation_id)
+    """Register uploaded files for a conversation (or as temp files if conversation_id is None)."""
+    if req.conversation_id:
+        await assert_conversation_access(db, current_user, req.conversation_id)
 
     created_files: List[FileMeta] = []
     for file_input in req.files:
@@ -62,7 +63,10 @@ async def validate_files_belong_to_conversation(
     conversation_id: UUID,
     user_id: UUID,
 ) -> List[FileMeta]:
-    """Ensure the referenced files belong to the given conversation & user."""
+    """Ensure the referenced files belong to the given conversation & user.
+    
+    If files don't have a conversation_id yet (temp files), associate them with this conversation.
+    """
     if not file_ids:
         return []
 
@@ -84,22 +88,43 @@ async def validate_files_belong_to_conversation(
         )
 
     files: List[FileMeta] = []
+    files_to_update: List[UUID] = []
+    
     for row in rows:
-        if row["conversation_id"] != conversation_id:
+        # If file doesn't have a conversation yet, mark it for update
+        if row["conversation_id"] is None:
+            files_to_update.append(row["id"])
+        elif row["conversation_id"] != conversation_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="FILES_NOT_IN_CONVERSATION",
             )
+        
         files.append(
             FileMeta(
                 id=row["id"],
-                conversation_id=row["conversation_id"],
+                conversation_id=conversation_id,  # Use the target conversation_id
                 supabase_path=row["supabase_path"],
                 mime_type=row["mime_type"],
                 original_name=row["original_name"],
                 created_at=row["created_at"],
             )
         )
+    
+    # Update temp files to belong to this conversation
+    if files_to_update:
+        await db.execute(
+            text(
+                """
+                update files
+                set conversation_id = :conversation_id
+                where id = any(:file_ids)
+                """
+            ),
+            {"conversation_id": conversation_id, "file_ids": files_to_update},
+        )
+        await db.commit()
+    
     return files
 
 

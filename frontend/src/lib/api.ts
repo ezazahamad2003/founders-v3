@@ -17,19 +17,30 @@ async function apiFetch<T>(path: string, token: string, options?: RequestInit): 
     throw new Error("API base URL is not configured.");
   }
 
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+    ...(options?.headers as Record<string, string> ?? {}),
+  };
+
+  // Only set Content-Type for requests with JSON bodies
+  if (options?.body && typeof options.body === "string") {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...(options?.headers ?? {}),
-    },
+    headers,
   });
 
   if (!response.ok) {
     const detail = await safeParse(response);
     const errorMessage = detail?.detail ?? response.statusText;
     throw new Error(errorMessage || "Request failed");
+  }
+
+  // 204 No Content responses have no body to parse
+  if (response.status === 204) {
+    return null as T;
   }
 
   return (await response.json()) as T;
@@ -65,7 +76,7 @@ export function deleteConversation(token: string, conversationId: string) {
   });
 }
 
-export function registerConversationFiles(token: string, conversationId: string, files: RegisterFileInput[]) {
+export function registerConversationFiles(token: string, conversationId: string | null, files: RegisterFileInput[]) {
   return apiFetch<{ files: FileMeta[] }>("/api/files/register", token, {
     method: "POST",
     body: JSON.stringify({

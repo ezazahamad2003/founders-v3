@@ -24,7 +24,10 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
+  // Supabase bucket for user profile documents (separate from chat attachments)
+  // Set NEXT_PUBLIC_SUPABASE_PROFILE_BUCKET in .env or defaults to "profiledrawer"
   const profileBucket =
     process.env.NEXT_PUBLIC_SUPABASE_PROFILE_BUCKET?.trim() || "profiledrawer";
 
@@ -64,10 +67,9 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
     }
   }, [open, fetchDocuments]);
 
-  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadFiles = async (files: FileList | File[]) => {
     if (!folderPrefix || !profile?.id) return;
-    const files = event.target.files;
-    if (!files?.length) return;
+    if (!files || files.length === 0) return;
     setUploading(true);
     setError(null);
     try {
@@ -83,7 +85,6 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
         }
       }
       await fetchDocuments();
-      event.target.value = "";
     } catch (uploadErr) {
       setError((uploadErr as Error).message ?? "Upload failed.");
     } finally {
@@ -91,10 +92,58 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
     }
   };
 
+  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      await uploadFiles(files);
+      event.target.value = "";
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(false);
+    const files = event.dataTransfer.files;
+    if (files) {
+      await uploadFiles(files);
+    }
+  };
+
   const handleDownload = async (doc: ProfileDoc) => {
-    const { data } = await supabase.storage.from(profileBucket).createSignedUrl(doc.path, 60);
-    if (data?.signedUrl) {
-      window.open(data.signedUrl, "_blank", "noopener");
+    try {
+      const { data, error: urlError } = await supabase.storage.from(profileBucket).createSignedUrl(doc.path, 60);
+      if (urlError) throw urlError;
+      if (data?.signedUrl) {
+        window.open(data.signedUrl, "_blank", "noopener");
+      } else {
+        throw new Error("Failed to generate download URL.");
+      }
+    } catch (downloadErr) {
+      setError((downloadErr as Error).message ?? "Download failed.");
+    }
+  };
+
+  const handleDelete = async (doc: ProfileDoc) => {
+    if (!confirm(`Delete "${doc.name}"?`)) return;
+    try {
+      const { error: deleteError } = await supabase.storage.from(profileBucket).remove([doc.path]);
+      if (deleteError) throw deleteError;
+      await fetchDocuments();
+    } catch (deleteErr) {
+      setError((deleteErr as Error).message ?? "Delete failed.");
     }
   };
 
@@ -124,12 +173,21 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-2xl rounded-3xl border border-white/10 bg-[#0b0e16] p-6 text-white shadow-2xl">
-                <Dialog.Title className="text-xl font-semibold">Profile Library</Dialog.Title>
+                <Dialog.Title className="text-xl font-semibold">Legal Documents for Private Beta</Dialog.Title>
                 <p className="mt-1 text-sm text-slate-400">
-                  Store contracts, IDs, or personal references here. These stay separate from chat attachments.
+                  Upload any legal documents, emails, etc. that you wish to be analyzed as part of our Private Beta program. These are separate from the Legal Query attachments.
                 </p>
 
-                <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-white/5 p-4">
+                <div
+                  className={`mt-5 rounded-2xl border border-dashed p-4 transition ${
+                    isDragging
+                      ? "border-indigo-400 bg-indigo-500/20"
+                      : "border-white/15 bg-white/5"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
                   <label className="flex cursor-pointer flex-col items-center justify-center gap-2 text-center text-sm text-slate-300">
                     <span className="text-lg font-medium">{uploading ? "Uploading…" : "Drop files or browse"}</span>
                     <span className="text-xs text-slate-500">PDF, DOCX, images. Up to 25 MB each.</span>
@@ -159,19 +217,35 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
                               {doc.updatedAt ? new Date(doc.updatedAt).toLocaleString() : "recently added"}
                             </p>
                           </div>
-                          <button
-                            onClick={() => handleDownload(doc)}
-                            className="rounded-full border border-white/10 px-3 py-1 text-xs text-white transition hover:border-white/40"
-                          >
-                            View
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleDownload(doc)}
+                              className="rounded-full border border-white/10 px-3 py-1 text-xs text-white transition hover:border-white/40"
+                            >
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleDelete(doc)}
+                              className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs text-red-400 transition hover:border-red-500/50 hover:bg-red-500/20"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       ))
                     )}
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-between">
+                  <a
+                    href="https://runway6.vc/meetings/abhanot/dpcheckin?uuid=d4556964-cc24-4a30-8c61-b0d456a87f30"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-indigo-500/40 bg-indigo-500/10 px-5 py-2 text-sm text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"
+                  >
+                    Book Check-In Meeting
+                  </a>
                   <button
                     onClick={onClose}
                     className="rounded-full border border-white/10 px-5 py-2 text-sm text-white transition hover:border-white/40"

@@ -23,7 +23,6 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     acceptTos,
     conversations,
     conversationsLoading,
-    activeConversation,
     activeConversationId,
     messages,
     loadConversation,
@@ -33,7 +32,6 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     setMode,
     isStreaming,
     streamedAssistantText,
-    conversationFiles,
     filesById,
     registerFilesForConversation,
     pendingAttachmentIds,
@@ -62,6 +60,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     const fileIds = pendingAttachmentIds;
     await sendMessage({ text, fileIds });
     setPendingAttachmentIds([]);
+    setPendingAttachments([]);
   };
 
   if (isProfileLoading && !profile) {
