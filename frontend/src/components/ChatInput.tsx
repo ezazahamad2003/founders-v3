@@ -64,10 +64,11 @@ export default function ChatInput({
   const modeOptions: { label: string; value: ChatMode }[] = useMemo(
     () => [
       { label: "Auto", value: "auto" },
-      { label: "Chat", value: "chat" },
-      { label: "Vision", value: "vision" },
-      { label: "Files", value: "files" },
-      { label: "Deep research", value: "deep_research" },
+      // Other modes hidden for Private Beta - only Auto is available
+      // { label: "Chat", value: "chat" },
+      // { label: "Vision", value: "vision" },
+      // { label: "Files", value: "files" },
+      // { label: "Deep research", value: "deep_research" },
     ],
     [],
   );
