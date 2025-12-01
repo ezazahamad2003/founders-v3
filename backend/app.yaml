@@ -1,0 +1,39 @@
+runtime: python311
+entrypoint: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+instance_class: F2
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 10
+
+env_variables:
+  APP_ENV: "production"
+  PYTHONUNBUFFERED: "1"
+  
+  # OpenAI Configuration
+  # OPENAI_API_KEY: Set via GCP Console or Secret Manager
+  OPENAI_BASE_URL: ""
+  OPENAI_MODEL_CHAT: "gpt-5.1"
+  OPENAI_MODEL_VISION: "gpt-4.1-mini"
+  OPENAI_MODEL_DEEP_RESEARCH: "gpt-4.1"
+  
+  # Supabase Configuration
+  # SUPABASE_DB_URL: Set via GCP Console or Secret Manager
+  SUPABASE_JWKS_URL: "https://vkwinzxslacteeqjpmne.supabase.co/auth/v1/certs"
+  # SUPABASE_JWT_SECRET: Set via GCP Console or Secret Manager
+  # SUPABASE_ANON_KEY: Set via GCP Console or Secret Manager
+  SUPABASE_STORAGE_PUBLIC_BASE_URL: "https://vkwinzxslacteeqjpmne.supabase.co/storage/v1/object/public"
+  SUPABASE_STORAGE_BUCKET_NAME: "uploads"
+  
+  # Application Configuration
+  ALLOWED_ORIGINS: "https://founders-v3.vercel.app/,http://localhost:3000"
+  MAX_HISTORY_MESSAGES: "30"
+  MAX_OUTPUT_TOKENS: "4096"
+  NEXT_PUBLIC_SUPABASE_PROFILE_BUCKET: "ProfileDrawer"
+
+# IMPORTANT: Sensitive environment variables (API keys, secrets, database URLs) 
+# should be set via GCP Console or Secret Manager, not in this file.
+# This file is for non-sensitive configuration only.
+

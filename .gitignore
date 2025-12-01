@@ -23,7 +23,11 @@ backend/.env.*
 
 # Environment / secret dumps
 .env
-.env.*
+.env.local
+.env.*.local
+.env.yaml
+!.env.example
+!.env.yaml.example
 env-run.*
 
 # Node / frontend artifacts
