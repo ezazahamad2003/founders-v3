@@ -26,12 +26,11 @@ export default function MessageBubble({
   const [copied, setCopied] = useState(false);
 
   const bubbleClass = clsx(
-    "w-full max-w-[760px] rounded-3xl px-5 py-4 shadow-lg relative",
+    "rounded-3xl px-5 py-4 shadow-lg relative max-w-[760px]",
     isOwn
       ? "bg-indigo-600/80 text-white"
-      : role === "assistant"
-        ? "bg-[#16181f] text-slate-100"
-        : "bg-white/10 text-slate-100",
+      : "w-full",
+    !isOwn && (role === "assistant" ? "bg-[#16181f] text-slate-100" : "bg-white/10 text-slate-100"),
   );
 
   const rowClass = clsx(
