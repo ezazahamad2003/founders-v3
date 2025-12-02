@@ -20,12 +20,7 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
     )
 
-    application.include_router(health.router)
-    application.include_router(user.router)
-    application.include_router(conversations.router)
-    application.include_router(files.router)
-    application.include_router(chat.router)
-
+    # Configure CORS BEFORE adding routers
     origins = settings.allowed_origins_list()
     if not origins:
         origins = DEFAULT_LOCAL_ORIGINS
@@ -42,6 +37,13 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Add routers AFTER middleware
+    application.include_router(health.router)
+    application.include_router(user.router)
+    application.include_router(conversations.router)
+    application.include_router(files.router)
+    application.include_router(chat.router)
 
     # Placeholder attribute to show settings were loaded (use later for logging)
     application.state.app_env = settings.app_env
