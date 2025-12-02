@@ -59,6 +59,14 @@ export default function Sidebar({
         >
           + Upload Legal Docs
         </button>
+        <a
+          href="https://runway6.vc/meetings/abhanot/dpcheckin?uuid=d4556964-cc24-4a30-8c61-b0d456a87f30"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 flex w-full items-center justify-center rounded-xl border border-indigo-500/40 bg-indigo-500/10 px-3 py-2 text-xs font-medium uppercase tracking-wide text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"
+        >
+          Book Check-In Meeting
+        </a>
       </div>
       <ProfileDrawer
         open={profileDrawerOpen}
