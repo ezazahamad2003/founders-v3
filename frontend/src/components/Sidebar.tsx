@@ -61,7 +61,6 @@ export default function Sidebar({
         >
           + Upload Legal Docs
         </button>
-        <p className="mt-2 text-center text-xs text-slate-400">for Private Beta Analysis</p>
         <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
           <p className="truncate text-xs font-semibold text-white">{profile?.email ?? "Anonymous"}</p>
         </div>
