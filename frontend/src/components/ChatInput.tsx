@@ -116,7 +116,7 @@ export default function ChatInput({
       }
       
       // Register files (with or without conversation_id)
-      const registered = await registerFiles(conversationId, uploads);
+      const registered = await registerFiles(conversationId || "", uploads);
       onFilesRegistered(registered);
       event.target.value = "";
     } catch (error) {
