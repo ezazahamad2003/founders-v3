@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 from app.config import Settings, get_settings
 from app.models import FileMeta
+from app.prompts import get_system_prompt
 from app.services.document_text import build_documents_contexts
 
 _client: AsyncOpenAI | None = None
@@ -110,15 +111,20 @@ async def deep_research(
     settings: Settings | None = None,
     max_output_tokens: Optional[int] = None,
 ) -> OpenAIChatResult:
-    """Perform a deep-research style response."""
+    """Perform a deep-research style response using the adaptive Scopic Legal prompt."""
     settings = settings or get_settings()
+    
+    # Use the adaptive system prompt with deep research context
+    system_prompt = get_system_prompt(mode="default")
+    deep_research_addendum = (
+        "\n\nFor this deep research query, provide grounded, well-structured analysis "
+        "referencing the user's context. Use detailed explanations as appropriate."
+    )
+    
     messages = [
         {
             "role": "system",
-            "content": (
-                "You are Scopic Legal, a meticulous legal research assistant. "
-                "Provide grounded, well-structured analysis referencing the user's context."
-            ),
+            "content": system_prompt + deep_research_addendum,
         },
         *conversation_context,
         {"role": "user", "content": query},

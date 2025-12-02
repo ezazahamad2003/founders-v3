@@ -20,6 +20,7 @@ from app.openai_client import (
     deep_research,
     stream_chat,
 )
+from app.prompts import get_system_prompt
 from app.services import conversations, files as files_service, messages as messages_service
 
 STREAM_MEDIA_TYPE = "text/event-stream"
@@ -74,12 +75,8 @@ async def chat_endpoint(
         limit=settings.max_history_messages,
     )
 
-    base_system_prompt = (
-        "You are Scopic Legal, a thoughtful legal research assistant. "
-        "Provide structured, numbered, or bulleted responses when it improves clarity. "
-        "You may sprinkle in an occasional emoji for warmth, but do so sparingly and only "
-        "when it reinforces the message. Keep answers concise, well-spaced, and easy to scan."
-    )
+    # Use the adaptive Scopic Legal system prompt
+    base_system_prompt = get_system_prompt(mode="default")
 
     openai_messages = [{"role": "system", "content": base_system_prompt}] + [
         {"role": msg.role, "content": msg.content} for msg in history

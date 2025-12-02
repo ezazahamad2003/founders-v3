@@ -11,6 +11,7 @@ Thumbs.db
 # Python / backend artifacts
 backend/.venv/
 backend/__pycache__/
+backend/**/__pycache__/
 backend/.pytest_cache/
 backend/.mypy_cache/
 backend/.ruff_cache/
@@ -20,6 +21,9 @@ backend/*.pyc
 backend/*.pyo
 backend/.env
 backend/.env.*
+**/__pycache__/
+*.pyc
+*.pyo
 
 # Environment / secret dumps
 .env
