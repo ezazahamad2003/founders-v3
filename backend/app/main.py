@@ -30,9 +30,13 @@ def create_app() -> FastAPI:
     if not origins:
         origins = DEFAULT_LOCAL_ORIGINS
 
+    # Add regex pattern for Vercel preview URLs
+    origin_regex = r"https://founders-v3(-[a-z0-9]+)?\.vercel\.app"
+    
     application.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
+        allow_origin_regex=origin_regex,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
