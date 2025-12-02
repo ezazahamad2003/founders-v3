@@ -25,7 +25,7 @@ export default function TermsOfUsePage() {
               <h2 className="text-xl font-semibold text-white">Quick Summary</h2>
               <p className="mt-4 leading-relaxed">
                 These Terms of Use govern your participation in the Legal Tech Private Beta Program 
-                of Scopic Legal Inc. (together with our affiliates, "R6" or "our"). The Program was 
+                of Scopic Legal Inc. (together with our affiliates, &quot;R6&quot; or &quot;our&quot;). The Program was 
                 established to explore the application of generative artificial intelligence and other 
                 technologies in various legal use cases.
               </p>

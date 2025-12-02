@@ -12,10 +12,10 @@ export default function TosModal({ open, onAccept }: TosModalProps) {
       <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#0b0e17] p-8 text-slate-200 shadow-2xl">
         <h2 className="text-2xl font-semibold text-white">Acceptance of Terms and Privacy Policy</h2>
         <p className="mt-4 text-sm leading-relaxed text-slate-300">
-          Thank you for participating in the Legal Tech Private Beta Program of Scopic Legal Inc. (together with our affiliates, "R6" or "our") which was established to explore the application of generative artificial intelligence and other technologies in various legal use cases (the "Program").
+          Thank you for participating in the Legal Tech Private Beta Program of Scopic Legal Inc. (together with our affiliates, &quot;R6&quot; or &quot;our&quot;) which was established to explore the application of generative artificial intelligence and other technologies in various legal use cases (the &quot;Program&quot;).
         </p>
         <p className="mt-3 text-sm leading-relaxed text-slate-300">
-          By clicking "Accept & Continue", you acknowledge that you have read, understood, and agree to be bound by our{" "}
+          By clicking &quot;Accept &amp; Continue&quot;, you acknowledge that you have read, understood, and agree to be bound by our{" "}
           <a
             href="/terms"
             target="_blank"
