@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
 import TosModal from "./TosModal";
+import ProfileMenu from "./ProfileMenu";
 import type { FileMeta } from "@/lib/types";
 
 interface ChatLayoutProps {
@@ -81,10 +82,12 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
         onNewConversation={startNewConversation}
         onDeleteConversation={deleteConversation}
         profile={profile}
-        onSignOut={onSignOut}
         supabase={supabase}
       />
       <div className="flex h-full flex-1 flex-col overflow-hidden">
+        <div className="flex items-center justify-end border-b border-white/5 bg-[#05060c] px-6 py-4">
+          <ProfileMenu profile={profile} onSignOut={onSignOut} />
+        </div>
         <MessageList
           messages={messages}
           streamingMessage={streamedAssistantText}
