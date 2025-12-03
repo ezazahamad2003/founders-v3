@@ -17,6 +17,7 @@ import {
   listConversations,
   registerConversationFiles,
   streamChat,
+  uploadFile as uploadFileApi,
 } from "@/lib/api";
 
 const emptyMessages: Message[] = [];
@@ -121,6 +122,15 @@ export function useChat(accessToken: string | null) {
       const response = await registerConversationFiles(accessToken!, conversationId, files);
       setConversationFiles((prev) => [...response.files, ...prev]);
       return response.files;
+    },
+    [accessToken, tokenReady],
+  );
+
+  const uploadFile = useCallback(
+    async (file: File, conversationId: string | null) => {
+      if (!tokenReady) throw new Error("Missing auth token");
+      const fileMeta = await uploadFileApi(accessToken!, file, conversationId);
+      return fileMeta;
     },
     [accessToken, tokenReady],
   );
@@ -239,6 +249,7 @@ export function useChat(accessToken: string | null) {
     startNewConversation,
     acceptTos: handleAcceptTos,
     registerFilesForConversation,
+    uploadFile,
     sendMessage,
     deleteConversation,
   };

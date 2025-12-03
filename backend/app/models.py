@@ -18,6 +18,7 @@ class FileMeta(BaseModel):
     id: UUID
     conversation_id: Optional[UUID]  # Null for temp files before first message
     supabase_path: str
+    openai_file_id: Optional[str] = None  # OpenAI Files API file ID
     mime_type: Optional[str] = None
     original_name: Optional[str] = None
     created_at: datetime
@@ -25,6 +26,7 @@ class FileMeta(BaseModel):
 
 class RegisterFileInput(BaseModel):
     supabase_path: str
+    openai_file_id: Optional[str] = None  # OpenAI Files API file ID
     mime_type: Optional[str] = None
     original_name: Optional[str] = None
 

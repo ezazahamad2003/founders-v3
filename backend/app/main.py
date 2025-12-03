@@ -4,10 +4,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import chat, conversations, files, health, user
+from app.routers import chat, conversations, files, health, user, profile_documents
 
 
-DEFAULT_LOCAL_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+DEFAULT_LOCAL_ORIGINS = [
+    "http://localhost:3000", 
+    "http://127.0.0.1:3000",
+    "http://localhost:3002",
+    "http://127.0.0.1:3002",
+]
 
 
 def create_app() -> FastAPI:
@@ -43,6 +48,7 @@ def create_app() -> FastAPI:
     application.include_router(user.router)
     application.include_router(conversations.router)
     application.include_router(files.router)
+    application.include_router(profile_documents.router)
     application.include_router(chat.router)
 
     # Placeholder attribute to show settings were loaded (use later for logging)

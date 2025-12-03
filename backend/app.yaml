@@ -1,3 +1,11 @@
+# ==================================================================
+# GCP APP ENGINE CONFIGURATION (LEGACY)
+# ==================================================================
+# NOTE: This file is for App Engine deployments.
+# For Cloud Run (RECOMMENDED), use the Dockerfile and gcloud run deploy.
+# See CLOUDRUN-DEPLOYMENT.md for Cloud Run deployment instructions.
+# ==================================================================
+
 runtime: python311
 entrypoint: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
@@ -8,32 +16,33 @@ automatic_scaling:
   min_instances: 1
   max_instances: 10
 
+# WARNING: DO NOT commit secrets to this file!
+# Use GCP Secret Manager or set via gcloud CLI for production deployments.
+# Example: gcloud app deploy --set-env-vars OPENAI_API_KEY=$OPENAI_API_KEY
+
 env_variables:
   APP_ENV: "production"
   PYTHONUNBUFFERED: "1"
   
   # OpenAI Configuration
-  # OPENAI_API_KEY: Set via GCP Console or Secret Manager
+  # OPENAI_API_KEY: "SET_VIA_SECRET_MANAGER"
   OPENAI_BASE_URL: ""
   OPENAI_MODEL_CHAT: "gpt-5.1"
-  OPENAI_MODEL_VISION: "gpt-4.1-mini"
-  OPENAI_MODEL_DEEP_RESEARCH: "gpt-4.1"
+  OPENAI_MODEL_VISION: "gpt-5.1"
+  OPENAI_MODEL_DEEP_RESEARCH: "gpt-5.1"
   
   # Supabase Configuration
-  # SUPABASE_DB_URL: Set via GCP Console or Secret Manager
-  SUPABASE_JWKS_URL: "https://vkwinzxslacteeqjpmne.supabase.co/auth/v1/certs"
-  # SUPABASE_JWT_SECRET: Set via GCP Console or Secret Manager
-  # SUPABASE_ANON_KEY: Set via GCP Console or Secret Manager
-  SUPABASE_STORAGE_PUBLIC_BASE_URL: "https://vkwinzxslacteeqjpmne.supabase.co/storage/v1/object/public"
+  # SUPABASE_DB_URL: "SET_VIA_SECRET_MANAGER"
+  # SUPABASE_PROJECT_URL: "SET_VIA_SECRET_MANAGER"
+  # SUPABASE_JWKS_URL: "SET_VIA_SECRET_MANAGER"
+  # SUPABASE_JWT_SECRET: "SET_VIA_SECRET_MANAGER"
+  # SUPABASE_ANON_KEY: "SET_VIA_SECRET_MANAGER"
+  # SUPABASE_SERVICE_ROLE_KEY: "SET_VIA_SECRET_MANAGER"
+  SUPABASE_STORAGE_PUBLIC_BASE_URL: "https://YOUR_PROJECT.supabase.co/storage/v1/object/public"
   SUPABASE_STORAGE_BUCKET_NAME: "uploads"
   
   # Application Configuration
-  ALLOWED_ORIGINS: "https://founders-v3.vercel.app/,http://localhost:3000"
+  ALLOWED_ORIGINS: "https://founders-v3.vercel.app"
   MAX_HISTORY_MESSAGES: "30"
   MAX_OUTPUT_TOKENS: "4096"
-  NEXT_PUBLIC_SUPABASE_PROFILE_BUCKET: "ProfileDrawer"
-
-# IMPORTANT: Sensitive environment variables (API keys, secrets, database URLs) 
-# should be set via GCP Console or Secret Manager, not in this file.
-# This file is for non-sensitive configuration only.
 

@@ -25,7 +25,7 @@ def _build_async_url(database_url: str) -> str:
 
 
 engine = create_async_engine(
-    _build_async_url(settings.supabase_db_url),
+    _build_async_url(settings.supabase_db_url_clean),
     echo=False,
     future=True,
 )

@@ -86,6 +86,39 @@ export function registerConversationFiles(token: string, conversationId: string 
   });
 }
 
+/**
+ * NEW: Upload file using OpenAI Files API first, then Supabase
+ * This replaces the old flow of uploading to Supabase first
+ */
+export async function uploadFile(token: string, file: File, conversationId: string | null): Promise<FileMeta> {
+  if (!API_BASE_URL) {
+    throw new Error("API base URL is not configured.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  if (conversationId) {
+    formData.append("conversation_id", conversationId);
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/files/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      // Don't set Content-Type - browser will set it with boundary for multipart/form-data
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const detail = await safeParse(response);
+    const errorMessage = detail?.detail ?? response.statusText;
+    throw new Error(errorMessage || "File upload failed");
+  }
+
+  return (await response.json()) as FileMeta;
+}
+
 export async function streamChat(
   token: string,
   payload: ChatRequestPayload,

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import logging
+import traceback
 from typing import AsyncIterator, Sequence
 from uuid import UUID
 
@@ -23,6 +25,8 @@ from app.openai_client import (
 from app.prompts import get_system_prompt
 from app.services import conversations, files as files_service, messages as messages_service
 
+logger = logging.getLogger(__name__)
+
 STREAM_MEDIA_TYPE = "text/event-stream"
 DOC_MIME_TYPES = {
     "application/pdf",
@@ -40,7 +44,13 @@ async def chat_endpoint(
     db: AsyncSession = Depends(get_db_session),
     settings: Settings = Depends(get_settings),
 ):
-    """Main chat endpoint with streaming responses."""
+    """
+    Main chat endpoint with streaming responses.
+    
+    Cloud Run Compatible: This endpoint uses Server-Sent Events (SSE) for streaming.
+    All external calls (OpenAI, Supabase) have timeouts to prevent blocking.
+    The async generator pattern ensures the event loop is not blocked.
+    """
     ensure_tos_accepted(current_user)
 
     # Allow files even without a conversation - they'll be associated when conversation is created
@@ -83,7 +93,7 @@ async def chat_endpoint(
     ]
 
     effective_mode = _determine_mode(payload.mode, validated_files)
-    file_urls = _extract_file_urls(validated_files, settings)
+    file_urls = await _extract_file_urls(validated_files, settings)
     doc_files = [f for f in validated_files if f.mime_type in DOC_MIME_TYPES]
 
     response_generator: AsyncIterator[str]
@@ -131,18 +141,25 @@ async def chat_endpoint(
             settings=settings,
         )
     else:
-        stream_session = await stream_chat(
-            messages=openai_messages,
-            settings=settings,
-        )
-        response_generator = _streaming_generator(
-            stream_session=stream_session,
-            db=db,
-            conversation_id=conversation_id,
-            file_ids=payload.file_ids,
-            mode=effective_mode,
-            settings=settings,
-        )
+        try:
+            stream_session = await stream_chat(
+                messages=openai_messages,
+                settings=settings,
+            )
+            response_generator = _streaming_generator(
+                stream_session=stream_session,
+                db=db,
+                conversation_id=conversation_id,
+                file_ids=payload.file_ids,
+                mode=effective_mode,
+                settings=settings,
+            )
+        except Exception as e:
+            logger.exception("Failed to create streaming session")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to start chat: {str(e)}"
+            )
 
     return StreamingResponse(response_generator, media_type=STREAM_MEDIA_TYPE)
 
@@ -167,11 +184,13 @@ def _determine_mode(requested_mode: str, files_meta) -> str:
     return "chat"
 
 
-def _extract_file_urls(files_meta, settings: Settings) -> list[str]:
+async def _extract_file_urls(files_meta, settings: Settings) -> list[str]:
+    """Extract signed URLs for image files."""
     urls: list[str] = []
     for file_meta in files_meta:
         if file_meta.mime_type and file_meta.mime_type.startswith("image/"):
-            url = files_service.file_to_public_url(file_meta, settings)
+            # Generate signed URL with 1 hour expiry
+            url = await files_service.file_to_signed_url(file_meta, settings, expiry_seconds=3600)
             if url:
                 urls.append(url)
     return urls
@@ -257,23 +276,29 @@ async def _streaming_generator(
     mode: str,
     settings: Settings,
 ) -> AsyncIterator[str]:
-    async for chunk in stream_session:
-        yield _json_line({"event": "token", "delta": chunk})
+    try:
+        async for chunk in stream_session:
+            # chunk is a string from StreamingChatSession
+            yield _json_line({"event": "token", "delta": chunk})
 
-    result = stream_session.final_result()
-    assistant_message = await _persist_assistant_message(
-        db=db,
-        conversation_id=conversation_id,
-        result=result,
-        mode=mode,
-        file_ids=file_ids,
-        settings=settings,
-    )
-    yield _json_line(
-        {
-            "event": "done",
-            "conversation_id": str(conversation_id),
-            "message_id": str(assistant_message.id),
-        }
-    )
+        result = stream_session.final_result()
+        assistant_message = await _persist_assistant_message(
+            db=db,
+            conversation_id=conversation_id,
+            result=result,
+            mode=mode,
+            file_ids=file_ids,
+            settings=settings,
+        )
+        yield _json_line(
+            {
+                "event": "done",
+                "conversation_id": str(conversation_id),
+                "message_id": str(assistant_message.id),
+            }
+        )
+    except Exception as e:
+        logger.error("Error in streaming generator: %s", e)
+        traceback.print_exc()
+        yield _json_line({"event": "error", "message": str(e)})
 

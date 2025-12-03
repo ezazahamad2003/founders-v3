@@ -35,6 +35,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     streamedAssistantText,
     filesById,
     registerFilesForConversation,
+    uploadFile,
     pendingAttachmentIds,
     setPendingAttachmentIds,
     errorMessage,
@@ -106,7 +107,8 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           conversationId={activeConversationId}
           supabase={supabase}
           profileId={profile?.id ?? null}
-          registerFiles={registerFilesForConversation}
+          accessToken={accessToken}
+          uploadFile={uploadFile}
           onFilesRegistered={handleFilesRegistered}
           pendingAttachments={pendingAttachmentFiles}
           onRemoveAttachment={handleRemoveAttachment}

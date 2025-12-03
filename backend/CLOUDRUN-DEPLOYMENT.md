@@ -1,348 +1,304 @@
-# Cloud Run Deployment Guide
+# Cloud Run Deployment Guide - Scopic Legal Backend
 
-This guide covers deploying the FastAPI backend to Google Cloud Run using Docker containers.
+**RECOMMENDED DEPLOYMENT METHOD** for production.
+
+This guide covers deploying the FastAPI backend to Google Cloud Run - a fully managed serverless platform for containerized applications.
 
 ## Why Cloud Run?
 
-Cloud Run offers several advantages over App Engine:
-- **Containerized**: Full control over your runtime environment
-- **Cost-effective**: Pay only for actual usage, scales to zero
-- **Fast deployments**: Typically faster than App Engine
-- **Portable**: Same Docker image can run anywhere
-- **Better scaling**: More granular control over scaling parameters
+Cloud Run is the recommended deployment platform for this backend:
+- ✅ **Serverless**: Auto-scales from 0 to N instances based on traffic
+- ✅ **Cost-effective**: Pay only for actual usage (CPU/memory/requests)
+- ✅ **Fast**: Cold starts ~1-2 seconds, streaming support built-in
+- ✅ **Portable**: Standard Docker containers, runs anywhere
+- ✅ **Simple**: No server management, automatic HTTPS, built-in logging
+
+**Perfect for**: ~100 concurrent users, GPT wrapper traffic, streaming chat endpoints.
+
+---
 
 ## Prerequisites
 
 1. **Google Cloud Account** with billing enabled
-2. **gcloud CLI** installed from https://cloud.google.com/sdk/docs/install
-3. **Docker** (optional - Cloud Run can build from source)
-4. **GCP Project** created
+2. **gcloud CLI** installed: https://cloud.google.com/sdk/docs/install
+3. **GCP Project** created (get your PROJECT_ID ready)
+4. **Secrets ready**:
+   - OpenAI API key
+   - Supabase credentials (DB URL, JWT secret, service role key, etc.)
 
-## Quick Start
+---
 
-### 1. Authenticate and Set Project
+## Quick Deployment (Recommended)
 
-```powershell
+### 1. Authenticate and Configure
+
+```bash
 # Login to GCP
 gcloud auth login
 
-# Set your project
-gcloud config set project founders-v3
+# Set your project (replace with your actual PROJECT_ID)
+gcloud config set project YOUR_PROJECT_ID
+
+# Enable required APIs
+gcloud services enable run.googleapis.com
+gcloud services enable cloudbuild.googleapis.com
+gcloud services enable secretmanager.googleapis.com
 ```
 
-### 2. Deploy Using the Script
+### 2. Set Up Secrets in Secret Manager (IMPORTANT)
+
+**Do NOT hardcode secrets in your deployment command.** Use Secret Manager:
+
+```bash
+# Create secrets (run these once)
+echo -n "your-openai-api-key" | gcloud secrets create openai-api-key --data-file=-
+echo -n "postgresql+asyncpg://..." | gcloud secrets create supabase-db-url --data-file=-
+echo -n "your-jwt-secret" | gcloud secrets create supabase-jwt-secret --data-file=-
+echo -n "your-service-role-key" | gcloud secrets create supabase-service-role-key --data-file=-
+echo -n "your-anon-key" | gcloud secrets create supabase-anon-key --data-file=-
+
+# Verify secrets were created
+gcloud secrets list
+```
+
+### 3. Build and Deploy
+
+```bash
+cd backend
+
+# Build the container image using Cloud Build
+gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/scopic-legal-api
+
+# Deploy to Cloud Run with secrets
+gcloud run deploy scopic-legal-api \
+  --image gcr.io/YOUR_PROJECT_ID/scopic-legal-api \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --min-instances 0 \
+  --max-instances 5 \
+  --cpu 1 \
+  --memory 1Gi \
+  --timeout 300 \
+  --concurrency 80 \
+  --set-env-vars APP_ENV=production,SUPABASE_PROJECT_URL=https://YOUR_PROJECT.supabase.co,SUPABASE_JWKS_URL=https://YOUR_PROJECT.supabase.co/auth/v1/certs,SUPABASE_STORAGE_BUCKET_NAME=uploads,SUPABASE_STORAGE_PUBLIC_BASE_URL=https://YOUR_PROJECT.supabase.co/storage/v1/object/public,ALLOWED_ORIGINS=https://your-frontend.vercel.app,MAX_HISTORY_MESSAGES=30,MAX_OUTPUT_TOKENS=4096,OPENAI_MODEL_CHAT=gpt-4o-mini,OPENAI_MODEL_VISION=gpt-4o-mini,OPENAI_MODEL_DEEP_RESEARCH=gpt-4o \
+  --set-secrets OPENAI_API_KEY=openai-api-key:latest,SUPABASE_DB_URL=supabase-db-url:latest,SUPABASE_JWT_SECRET=supabase-jwt-secret:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key:latest,SUPABASE_ANON_KEY=supabase-anon-key:latest
+```
+
+**Note**: Replace `YOUR_PROJECT_ID` and `YOUR_PROJECT` with your actual values.
+
+### 4. Get Your Service URL
+
+```bash
+gcloud run services describe scopic-legal-api --region us-central1 --format 'value(status.url)'
+```
+
+Your backend will be live at: `https://scopic-legal-api-XXXXXX-uc.a.run.app`
+
+---
+
+## Configuration Explained
+
+### Scaling Parameters
+
+```bash
+--min-instances 0      # Scale to zero when idle (saves costs)
+--max-instances 5      # Max 5 instances for ~100 concurrent users
+--cpu 1                # 1 vCPU per instance
+--memory 1Gi           # 1GB RAM per instance
+--timeout 300          # 5 minutes (for long streaming responses)
+--concurrency 80       # 80 requests per instance
+```
+
+**For higher traffic**, adjust:
+- `--max-instances 10` (or more)
+- `--cpu 2` and `--memory 2Gi` (for faster responses)
+
+### Environment Variables
+
+**Non-sensitive** (set via `--set-env-vars`):
+- `APP_ENV=production`
+- `SUPABASE_PROJECT_URL`
+- `SUPABASE_JWKS_URL`
+- `SUPABASE_STORAGE_BUCKET_NAME`
+- `SUPABASE_STORAGE_PUBLIC_BASE_URL`
+- `ALLOWED_ORIGINS` (your frontend URL)
+- `MAX_HISTORY_MESSAGES`, `MAX_OUTPUT_TOKENS`
+- `OPENAI_MODEL_*` (model names)
+
+**Sensitive** (set via `--set-secrets`):
+- `OPENAI_API_KEY`
+- `SUPABASE_DB_URL`
+- `SUPABASE_JWT_SECRET`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_ANON_KEY`
+
+---
+
+## Alternative: Using PowerShell Script
+
+If you prefer automation, use the included script:
 
 ```powershell
 cd backend
 .\deploy-cloudrun.ps1
 ```
 
-That's it! The script will:
-- Build your Docker image
-- Push it to Google Container Registry
-- Deploy to Cloud Run
-- Configure environment variables
-- Set up scaling parameters
+**Note**: You'll still need to manually configure secrets in Secret Manager first.
 
-## Manual Deployment
+---
 
-If you prefer manual control:
+## Post-Deployment
 
-### 1. Enable Required APIs
+### 1. Test the Health Endpoint
 
-```powershell
-gcloud services enable run.googleapis.com
-gcloud services enable artifactregistry.googleapis.com
-gcloud services enable cloudbuild.googleapis.com
+```bash
+curl https://YOUR_SERVICE_URL/health
+# Should return: {"status":"ok"}
 ```
 
-### 2. Deploy from Source
+### 2. View Logs
 
-```powershell
-gcloud run deploy founders-backend \
-  --source . \
+```bash
+# Stream live logs
+gcloud run services logs tail scopic-legal-api --region us-central1
+
+# View recent logs
+gcloud run services logs read scopic-legal-api --region us-central1 --limit 50
+```
+
+### 3. Update Frontend CORS
+
+Add your Cloud Run URL to `ALLOWED_ORIGINS`:
+
+```bash
+gcloud run services update scopic-legal-api \
   --region us-central1 \
-  --allow-unauthenticated \
-  --env-vars-file .env.yaml \
-  --memory 1Gi \
-  --cpu 1 \
-  --min-instances 0 \
-  --max-instances 10 \
-  --quiet
+  --update-env-vars ALLOWED_ORIGINS=https://your-frontend.vercel.app,https://scopic-legal-api-XXXXXX-uc.a.run.app
 ```
 
-### 3. Deploy from Pre-built Image (Alternative)
+### 4. Monitor Performance
 
-If you want to build the image separately:
+Visit Cloud Run console:
+```
+https://console.cloud.google.com/run/detail/us-central1/scopic-legal-api
+```
 
-```powershell
-# Build and push to Artifact Registry
-gcloud builds submit --tag gcr.io/founders-v3/founders-backend
+---
 
-# Deploy the image
-gcloud run deploy founders-backend \
-  --image gcr.io/founders-v3/founders-backend \
+## Updating the Service
+
+### Update Code
+
+```bash
+cd backend
+
+# Rebuild and redeploy
+gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/scopic-legal-api
+gcloud run deploy scopic-legal-api \
+  --image gcr.io/YOUR_PROJECT_ID/scopic-legal-api \
+  --region us-central1
+```
+
+### Update Environment Variables
+
+```bash
+gcloud run services update scopic-legal-api \
   --region us-central1 \
-  --allow-unauthenticated \
-  --env-vars-file .env.yaml \
-  --memory 1Gi \
-  --cpu 1 \
-  --min-instances 0 \
-  --max-instances 10
+  --update-env-vars MAX_OUTPUT_TOKENS=8192
 ```
 
-## Configuration
+### Update Secrets
 
-### Environment Variables
+```bash
+# Update a secret value
+echo -n "new-api-key" | gcloud secrets versions add openai-api-key --data-file=-
 
-Environment variables are stored in `.env.yaml`:
-
-```yaml
-APP_ENV: "production"
-OPENAI_API_KEY: "your-key"
-SUPABASE_DB_URL: "your-db-url"
-# ... etc
+# Cloud Run will automatically use the latest version
 ```
 
-To update environment variables:
-
-```powershell
-# Update the .env.yaml file, then redeploy
-gcloud run services update founders-backend \
-  --region us-central1 \
-  --env-vars-file .env.yaml
-```
-
-### Scaling Configuration
-
-Current configuration:
-- **Memory**: 1Gi (can be adjusted: 128Mi, 256Mi, 512Mi, 1Gi, 2Gi, 4Gi, 8Gi)
-- **CPU**: 1 (can be: 1, 2, 4, 8)
-- **Min Instances**: 0 (scales to zero when not in use)
-- **Max Instances**: 10 (maximum concurrent instances)
-
-To update scaling:
-
-```powershell
-gcloud run services update founders-backend \
-  --region us-central1 \
-  --memory 2Gi \
-  --cpu 2 \
-  --min-instances 1 \
-  --max-instances 20
-```
-
-### Concurrency
-
-Cloud Run defaults to 80 concurrent requests per instance. To adjust:
-
-```powershell
-gcloud run services update founders-backend \
-  --region us-central1 \
-  --concurrency 100
-```
-
-## Monitoring & Debugging
-
-### View Logs
-
-```powershell
-# Stream logs in real-time
-gcloud run logs tail --service=founders-backend --region=us-central1
-
-# Read recent logs
-gcloud run logs read --service=founders-backend --region=us-central1 --limit=50
-```
-
-### View Service Details
-
-```powershell
-gcloud run services describe founders-backend --region=us-central1
-```
-
-### List Revisions
-
-```powershell
-gcloud run revisions list --service=founders-backend --region=us-central1
-```
-
-### Check Service URL
-
-```powershell
-gcloud run services describe founders-backend \
-  --region=us-central1 \
-  --format="value(status.url)"
-```
-
-## Traffic Management
-
-### Gradual Rollout
-
-Deploy a new revision without sending traffic:
-
-```powershell
-gcloud run deploy founders-backend \
-  --source . \
-  --region us-central1 \
-  --no-traffic \
-  --tag=canary
-```
-
-Then split traffic:
-
-```powershell
-gcloud run services update-traffic founders-backend \
-  --region=us-central1 \
-  --to-revisions=LATEST=50,PREVIOUS=50
-```
-
-### Rollback
-
-```powershell
-# List revisions
-gcloud run revisions list --service=founders-backend --region=us-central1
-
-# Rollback to a specific revision
-gcloud run services update-traffic founders-backend \
-  --region=us-central1 \
-  --to-revisions=founders-backend-00001-abc=100
-```
-
-## Custom Domains
-
-### Add a Custom Domain
-
-```powershell
-# Map a domain
-gcloud run domain-mappings create \
-  --service=founders-backend \
-  --domain=api.yourdomain.com \
-  --region=us-central1
-```
-
-Then update your DNS with the provided records.
-
-## Security
-
-### Use Secret Manager (Recommended)
-
-Instead of `.env.yaml`, use Secret Manager for sensitive data:
-
-1. **Create secrets**:
-```powershell
-echo -n "your-openai-key" | gcloud secrets create openai-api-key --data-file=-
-```
-
-2. **Grant access**:
-```powershell
-gcloud secrets add-iam-policy-binding openai-api-key \
-  --member="serviceAccount:566998539930-compute@developer.gserviceaccount.com" \
-  --role="roles/secretmanager.secretAccessor"
-```
-
-3. **Deploy with secrets**:
-```powershell
-gcloud run deploy founders-backend \
-  --source . \
-  --region us-central1 \
-  --set-secrets="OPENAI_API_KEY=openai-api-key:latest"
-```
-
-### Restrict Access
-
-To require authentication:
-
-```powershell
-gcloud run services update founders-backend \
-  --region=us-central1 \
-  --no-allow-unauthenticated
-```
-
-Then use IAM to grant access to specific users/services.
+---
 
 ## Cost Optimization
 
-### Current Pricing (as of 2024)
+### Estimated Costs (~100 concurrent users)
 
-Cloud Run charges for:
-- **CPU**: $0.00002400 per vCPU-second
-- **Memory**: $0.00000250 per GiB-second
-- **Requests**: $0.40 per million requests
-- **Free tier**: 2 million requests/month, 360,000 GiB-seconds, 180,000 vCPU-seconds
+With the recommended configuration:
+- **CPU**: ~$0.024/vCPU-hour
+- **Memory**: ~$0.0025/GB-hour  
+- **Requests**: $0.40/million requests
+- **Networking**: $0.12/GB egress
+
+**Typical monthly cost**: $20-50 for moderate usage (scales to zero when idle).
 
 ### Tips to Reduce Costs
 
-1. **Scale to zero**: Set `min-instances=0` (already configured)
-2. **Right-size resources**: Start with smaller memory/CPU and scale up if needed
-3. **Optimize cold starts**: Keep Docker image small
-4. **Use caching**: Implement response caching where appropriate
-5. **Monitor usage**: Use Cloud Monitoring to track costs
+1. **Use `--min-instances 0`** (already set) - scales to zero when idle
+2. **Optimize `--concurrency`** - higher = fewer instances needed
+3. **Use connection pooling** for database (already configured)
+4. **Monitor and adjust** `--max-instances` based on actual traffic
 
-### Estimate Costs
-
-Use the [Cloud Run Pricing Calculator](https://cloud.google.com/products/calculator)
-
-Example: 100,000 requests/month with 1Gi memory, 1 CPU, 500ms avg response time:
-- ~$5-10/month
+---
 
 ## Troubleshooting
 
+### Build Fails
+
+```bash
+# Check Cloud Build logs
+gcloud builds list --limit 5
+gcloud builds log BUILD_ID
+```
+
 ### Deployment Fails
 
-1. **Check build logs**:
-   - Visit the Cloud Build URL shown during deployment
-   - Or: `gcloud builds list --limit=5`
+```bash
+# Check service status
+gcloud run services describe scopic-legal-api --region us-central1
 
-2. **Verify Dockerfile**:
-   - Test locally: `docker build -t test .`
-   - Run locally: `docker run -p 8080:8080 test`
+# View deployment logs
+gcloud run revisions list --service scopic-legal-api --region us-central1
+```
 
-3. **Check quotas**:
-   - Visit: https://console.cloud.google.com/iam-admin/quotas
+### Runtime Errors
 
-### Service Not Responding
+```bash
+# Stream logs
+gcloud run services logs tail scopic-legal-api --region us-central1
 
-1. **Check logs**:
-   ```powershell
-   gcloud run logs tail --service=founders-backend --region=us-central1
-   ```
+# Check for common issues:
+# - Missing environment variables
+# - Database connection errors
+# - OpenAI API key issues
+```
 
-2. **Verify environment variables**:
-   ```powershell
-   gcloud run services describe founders-backend --region=us-central1 --format=yaml
-   ```
+### Health Check Fails
 
-3. **Test health endpoint**:
-   ```powershell
-   curl https://your-service-url/health
-   ```
+```bash
+# Test locally first
+docker build -t scopic-legal-api .
+docker run -p 8080:8080 --env-file .env scopic-legal-api
 
-### Cold Start Issues
+# Then test health endpoint
+curl http://localhost:8080/health
+```
 
-If cold starts are slow:
+---
 
-1. **Keep warm with min-instances**:
-   ```powershell
-   gcloud run services update founders-backend \
-     --region=us-central1 \
-     --min-instances=1
-   ```
+## Security Best Practices
 
-2. **Optimize Docker image**:
-   - Use multi-stage builds
-   - Minimize layers
-   - Use smaller base images
+1. ✅ **Use Secret Manager** for all sensitive values (already configured above)
+2. ✅ **Enable VPC Connector** (optional, for private Supabase instances)
+3. ✅ **Restrict CORS** to your frontend domain only
+4. ✅ **Use HTTPS** (automatic with Cloud Run)
+5. ✅ **Rotate secrets regularly** (OpenAI keys, JWT secrets)
+6. ✅ **Monitor logs** for suspicious activity
 
-3. **Use startup CPU boost**:
-   ```powershell
-   gcloud run services update founders-backend \
-     --region=us-central1 \
-     --cpu-boost
-   ```
+---
 
-## CI/CD Integration
+## Advanced: CI/CD with GitHub Actions
 
-### GitHub Actions Example
+Create `.github/workflows/deploy-cloudrun.yml`:
 
 ```yaml
 name: Deploy to Cloud Run
@@ -350,6 +306,7 @@ name: Deploy to Cloud Run
 on:
   push:
     branches: [main]
+    paths: ['backend/**']
 
 jobs:
   deploy:
@@ -361,38 +318,40 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
       
-      - uses: google-github-actions/deploy-cloudrun@v1
-        with:
-          service: founders-backend
-          region: us-central1
-          source: ./backend
-          env_vars: |
-            APP_ENV=production
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/scopic-legal-api backend/
+          gcloud run deploy scopic-legal-api \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/scopic-legal-api \
+            --region us-central1 \
+            --platform managed
 ```
 
-## Comparison: Cloud Run vs App Engine
+---
 
-| Feature | Cloud Run | App Engine |
-|---------|-----------|------------|
-| **Container** | ✅ Full control | ❌ Limited |
-| **Scale to Zero** | ✅ Yes | ❌ No (Standard) |
-| **Cold Start** | ~1-2s | ~3-5s |
-| **Max Request Time** | 60 min | 60 min |
-| **Pricing** | Pay per use | Instance hours |
-| **Deployment Speed** | Fast | Slower |
-| **Portability** | High | Low |
+## Support
 
-## Support & Resources
+- **Cloud Run Docs**: https://cloud.google.com/run/docs
+- **FastAPI Docs**: https://fastapi.tiangolo.com
+- **Supabase Docs**: https://supabase.com/docs
 
-- **Cloud Run Documentation**: https://cloud.google.com/run/docs
-- **Pricing**: https://cloud.google.com/run/pricing
-- **Quotas**: https://cloud.google.com/run/quotas
-- **Best Practices**: https://cloud.google.com/run/docs/tips
+---
 
-## Current Deployment
+## Summary
 
-- **Service Name**: `founders-backend`
-- **Project**: `founders-v3` (566998539930)
-- **Region**: `us-central1`
-- **URL**: https://founders-backend-566998539930.us-central1.run.app
-- **API Docs**: https://founders-backend-566998539930.us-central1.run.app/docs
+**You're ready to deploy!** Just run:
+
+```bash
+# 1. Set up secrets (once)
+gcloud secrets create openai-api-key --data-file=-
+# ... (other secrets)
+
+# 2. Build and deploy
+gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/scopic-legal-api
+gcloud run deploy scopic-legal-api --image gcr.io/YOUR_PROJECT_ID/scopic-legal-api ...
+
+# 3. Test
+curl https://YOUR_SERVICE_URL/health
+```
+
+**Your backend is now live on Cloud Run!** 🚀

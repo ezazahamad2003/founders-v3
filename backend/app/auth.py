@@ -52,8 +52,8 @@ async def _fetch_jwks(settings: Settings) -> Dict[str, Any]:
         )
 
     headers = {}
-    if settings.supabase_anon_key:
-        headers["apikey"] = settings.supabase_anon_key
+    if settings.supabase_anon_key_clean:
+        headers["apikey"] = settings.supabase_anon_key_clean
 
     async with httpx.AsyncClient(timeout=10) as client:
         response = await client.get(jwks_url, headers=headers or None)
@@ -65,11 +65,11 @@ async def _fetch_jwks(settings: Settings) -> Dict[str, Any]:
 
 async def verify_jwt(token: str, settings: Settings) -> Dict[str, Any]:
     """Validate the Supabase JWT and return decoded claims."""
-    if settings.supabase_jwt_secret:
+    if settings.supabase_jwt_secret_clean:
         try:
             return jwt.decode(
                 token,
-                settings.supabase_jwt_secret,
+                settings.supabase_jwt_secret_clean,
                 algorithms=["HS256"],
                 audience="authenticated",
                 options={"verify_aud": True},

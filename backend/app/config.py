@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     supabase_jwks_url: Optional[str] = Field(default=None, alias="SUPABASE_JWKS_URL")
     supabase_jwt_secret: Optional[str] = Field(default=None, alias="SUPABASE_JWT_SECRET")
     supabase_anon_key: Optional[str] = Field(default=None, alias="SUPABASE_ANON_KEY")
+    supabase_service_role_key: Optional[str] = Field(default=None, alias="SUPABASE_SERVICE_ROLE_KEY")
     supabase_project_url: Optional[str] = Field(
         default=None, alias="SUPABASE_PROJECT_URL"
     )
@@ -35,10 +36,10 @@ class Settings(BaseSettings):
 
     openai_model_chat: str = Field(default="gpt-5.1", alias="OPENAI_MODEL_CHAT")
     openai_model_vision: str = Field(
-        default="gpt-4.1-mini", alias="OPENAI_MODEL_VISION"
+        default="gpt-5.1", alias="OPENAI_MODEL_VISION"
     )
     openai_model_deep_research: str = Field(
-        default="gpt-4.1", alias="OPENAI_MODEL_DEEP_RESEARCH"
+        default="gpt-5.1", alias="OPENAI_MODEL_DEEP_RESEARCH"
     )
 
     supabase_storage_public_base_url: Optional[str] = Field(
@@ -53,6 +54,37 @@ class Settings(BaseSettings):
         if not self.allowed_origins:
             return []
         return [origin.strip() for origin in self.allowed_origins.split(",") if origin.strip()]
+
+    @property
+    def supabase_anon_key_clean(self) -> Optional[str]:
+        """Return SUPABASE_ANON_KEY with whitespace/newlines stripped."""
+        if not self.supabase_anon_key:
+            return None
+        return self.supabase_anon_key.strip(" \t\r\n")
+
+    @property
+    def supabase_jwt_secret_clean(self) -> Optional[str]:
+        """Return SUPABASE_JWT_SECRET with whitespace/newlines stripped."""
+        if not self.supabase_jwt_secret:
+            return None
+        return self.supabase_jwt_secret.strip(" \t\r\n")
+
+    @property
+    def supabase_db_url_clean(self) -> str:
+        """Return SUPABASE_DB_URL with whitespace/newlines stripped."""
+        return self.supabase_db_url.strip(" \t\r\n")
+
+    @property
+    def openai_api_key_clean(self) -> str:
+        """Return OPENAI_API_KEY with whitespace/newlines stripped."""
+        return self.openai_api_key.strip(" \t\r\n")
+
+    @property
+    def supabase_service_role_key_clean(self) -> Optional[str]:
+        """Return SUPABASE_SERVICE_ROLE_KEY with whitespace/newlines stripped."""
+        if not self.supabase_service_role_key:
+            return None
+        return self.supabase_service_role_key.strip(" \t\r\n")
 
 
 @lru_cache()

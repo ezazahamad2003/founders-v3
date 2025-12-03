@@ -2,7 +2,7 @@
 
 import { Fragment, useMemo, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { ChatMode, FileMeta, RegisterFileInput } from "@/lib/types";
+import { ChatMode, FileMeta } from "@/lib/types";
 import { Listbox, Transition } from "@headlessui/react";
 import {
   ChevronUpDownIcon,
@@ -20,7 +20,8 @@ interface ChatInputProps {
   conversationId: string | null;
   supabase: SupabaseClient;
   profileId: string | null;
-  registerFiles: (conversationId: string, files: RegisterFileInput[]) => Promise<FileMeta[]>;
+  accessToken: string | null; // NEW: Need token for direct upload
+  uploadFile: (file: File, conversationId: string | null) => Promise<FileMeta>; // NEW: Direct upload function
   onFilesRegistered: (files: FileMeta[]) => void;
   pendingAttachments: FileMeta[];
   onRemoveAttachment: (fileId: string) => void;
@@ -35,7 +36,8 @@ export default function ChatInput({
   conversationId,
   supabase,
   profileId,
-  registerFiles,
+  accessToken,
+  uploadFile,
   onFilesRegistered,
   pendingAttachments,
   onRemoveAttachment,
@@ -82,42 +84,23 @@ export default function ChatInput({
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (!files?.length) return;
-
+    if (!files || files.length === 0) return;
     setIsUploading(true);
     setUploadError(null);
     try {
-      const { data, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) {
-        throw sessionError;
-      }
-      const authUserId = data.session?.user.id ?? profileId ?? undefined;
-      if (!authUserId) {
+      if (!accessToken) {
         throw new Error("Sign in again to attach files.");
       }
 
-      const uploads: RegisterFileInput[] = [];
-      // Use temporary folder if no conversation yet
-      const folder = conversationId ?? "temp";
-      
+      const uploadedFiles: FileMeta[] = [];
+
+      // NEW: Upload each file using OpenAI Files API first
       for (const file of Array.from(files)) {
-        const sanitizedName = file.name.replace(/\s+/g, "-");
-        const path = `${authUserId}/${folder}/${Date.now()}-${sanitizedName}`;
-        const { error } = await supabase.storage.from("uploads").upload(path, file, {
-          upsert: true,
-          cacheControl: "3600",
-        });
-        if (error) throw error;
-        uploads.push({
-          supabase_path: path,
-          mime_type: file.type,
-          original_name: file.name,
-        });
+        const fileMeta = await uploadFile(file, conversationId);
+        uploadedFiles.push(fileMeta);
       }
-      
-      // Register files (with or without conversation_id)
-      const registered = await registerFiles(conversationId || "", uploads);
-      onFilesRegistered(registered);
+
+      onFilesRegistered(uploadedFiles);
       event.target.value = "";
     } catch (error) {
       setUploadError((error as Error).message ?? "Upload failed.");

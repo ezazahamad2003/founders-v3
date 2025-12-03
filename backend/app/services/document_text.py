@@ -62,8 +62,11 @@ async def _download_file_from_storage(file_meta: FileMeta, settings: Settings) -
     if not settings.supabase_project_url:
         logger.error("SUPABASE_PROJECT_URL is not configured.")
         raise RuntimeError("Document storage is not configured.")
-    if not settings.supabase_anon_key:
-        logger.error("SUPABASE_ANON_KEY is required to download files.")
+    
+    # Use service role key for backend operations (bypasses RLS)
+    auth_key = settings.supabase_service_role_key_clean or settings.supabase_anon_key_clean
+    if not auth_key:
+        logger.error("SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY is required to download files.")
         raise RuntimeError("Document storage authentication is missing.")
 
     base = settings.supabase_project_url.rstrip("/")
@@ -77,8 +80,8 @@ async def _download_file_from_storage(file_meta: FileMeta, settings: Settings) -
             response = await client.get(
                 url,
                 headers={
-                    "apikey": settings.supabase_anon_key,
-                    "Authorization": f"Bearer {settings.supabase_anon_key}",
+                    "apikey": auth_key,
+                    "Authorization": f"Bearer {auth_key}",
                 },
             )
             if response.status_code >= 400:
