@@ -50,6 +50,28 @@ export default function MessageBubble({
 
   return (
     <div className="space-y-2">
+      {/* Show attachments ABOVE the message like ChatGPT */}
+      {attachments.length > 0 && (
+        <div className={clsx("flex flex-wrap gap-2", isOwn ? "justify-end" : "justify-start")}>
+          {attachments.map((file) => (
+            <div
+              key={file.id}
+              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-lg backdrop-blur"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-white">{file.original_name ?? "Document"}</span>
+                <span className="text-xs text-slate-400">Document</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      
       <div className={rowClass}>
         <div className={bubbleClass}>
         {role === "assistant" ? (
@@ -82,18 +104,6 @@ export default function MessageBubble({
           </ReactMarkdown>
         </div>
       </div>
-      {attachments.length ? (
-        <div className={clsx("flex flex-wrap gap-2 text-xs text-slate-200", isOwn ? "justify-end" : "justify-start")}>
-          {attachments.map((file) => (
-            <span
-              key={file.id}
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-3 py-1"
-            >
-              📎 {file.original_name ?? "attachment"}
-            </span>
-          ))}
-        </div>
-      ) : null}
       </div>
       {timestamp ? (
         <p className={clsx("text-xs text-slate-500", isOwn ? "text-right" : "text-left")}>
