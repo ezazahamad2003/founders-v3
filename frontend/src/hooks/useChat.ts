@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ChatMode,
   ConversationSummary,
@@ -33,6 +33,7 @@ export function useChat(accessToken: string | null) {
   const [conversationFiles, setConversationFiles] = useState<FileMeta[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamedAssistantText, setStreamedAssistantText] = useState("");
+  const streamedTextRef = useRef(""); // Track streamed text for onDone callback
   const [mode, setMode] = useState<ChatMode>("auto");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pendingAttachmentIds, setPendingAttachmentIds] = useState<string[]>([]);
@@ -156,6 +157,7 @@ export function useChat(accessToken: string | null) {
 
       setMessages((prev) => [...prev, tempMessage]);
       setStreamedAssistantText("");
+      streamedTextRef.current = ""; // Reset ref
       setIsStreaming(true);
       setErrorMessage(null);
 
@@ -170,16 +172,71 @@ export function useChat(accessToken: string | null) {
           },
           {
             onToken: (delta) => {
-              setStreamedAssistantText((prev) => prev + (delta ?? ""));
+              const newText = delta ?? "";
+              streamedTextRef.current += newText; // Update ref
+              setStreamedAssistantText((prev) => prev + newText);
             },
             onDone: async (payload) => {
               setIsStreaming(false);
+              
+              // Add the completed assistant message to the messages list
+              const assistantMessage: Message = {
+                id: payload.message_id ?? crypto.randomUUID(),
+                conversation_id: payload.conversation_id,
+                user_id: null,
+                role: "assistant",
+                content: streamedTextRef.current, // Use ref to get complete text
+                model: payload.model ?? null,
+                metadata: null,
+                created_at: new Date().toISOString(),
+              };
+              
+              setMessages((prev) => [...prev, assistantMessage]);
               setStreamedAssistantText("");
+              streamedTextRef.current = ""; // Reset ref
               setPendingAttachmentIds([]);
-              // Reload conversation detail to get the new message
-              await loadConversation(payload.conversation_id);
-              // Refresh conversation list in background (don't await)
-              refreshConversations();
+              
+              // Update active conversation ID if it was a new conversation
+              const isNewConversation = !activeConversationId && payload.conversation_id;
+              if (isNewConversation) {
+                setActiveConversationId(payload.conversation_id);
+              }
+              
+              // Update conversation list optimistically without full refresh
+              setConversations((prev) => {
+                const now = new Date().toISOString();
+                const conversationId = payload.conversation_id;
+                
+                // Find existing conversation
+                const existingIndex = prev.findIndex((c) => c.id === conversationId);
+                
+                if (existingIndex >= 0) {
+                  // Update existing conversation - move to top with new timestamp
+                  const updated = [...prev];
+                  const existing = updated[existingIndex];
+                  updated.splice(existingIndex, 1); // Remove from current position
+                  updated.unshift({
+                    ...existing,
+                    updated_at: now,
+                    title: existing.title || trimmed.slice(0, 50), // Use first message as title if empty
+                  });
+                  return updated;
+                } else if (isNewConversation) {
+                  // Add new conversation at the top
+                  return [
+                    {
+                      id: conversationId,
+                      title: trimmed.slice(0, 50),
+                      created_at: now,
+                      updated_at: now,
+                      assigned_lawyer_id: null,
+                    },
+                    ...prev,
+                  ];
+                }
+                
+                return prev;
+              });
             },
             onError: (error) => {
               setIsStreaming(false);
@@ -195,10 +252,8 @@ export function useChat(accessToken: string | null) {
     [
       accessToken,
       activeConversationId,
-      loadConversation,
       mode,
       profile,
-      refreshConversations,
       tokenReady,
     ],
   );

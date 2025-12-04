@@ -47,10 +47,23 @@ export default function ChatInput({
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleSubmit = async () => {
-    if (!message.trim()) return;
-    await onSend(message);
+  const handleSubmit = async (event?: React.FormEvent) => {
+    // Prevent form submission/page refresh
+    event?.preventDefault();
+    
+    if (!message.trim() || isStreaming) return;
+    
+    // Store message and clear input immediately (optimistic UI)
+    const messageToSend = message.trim();
     setMessage("");
+    
+    try {
+      await onSend(messageToSend);
+    } catch (error) {
+      // If send fails, restore the message
+      console.error("Failed to send message:", error);
+      setMessage(messageToSend);
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -138,7 +151,7 @@ export default function ChatInput({
   };
 
   return (
-    <div className="border-t border-white/5 bg-[#05060c]/90 px-4 py-5 sm:px-6">
+    <div className="shrink-0 border-t border-white/5 bg-[#05060c]/90 px-4 py-5 sm:px-6 z-10">
       <div className="mx-auto max-w-4xl rounded-[32px] border border-white/10 bg-[#16181f] px-5 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.55)]">
         {pendingAttachments.length ? (
           <div className="mb-3 flex flex-col gap-2">
@@ -146,7 +159,7 @@ export default function ChatInput({
           </div>
         ) : null}
 
-        <div className="flex items-end gap-3">
+        <form onSubmit={handleSubmit} className="flex items-end gap-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -178,15 +191,14 @@ export default function ChatInput({
           />
           <div className="flex items-center gap-2">
             <button
-              type="button"
-              onClick={handleSubmit}
+              type="submit"
               disabled={disabledSend}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#111] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <PaperAirplaneIcon className="h-5 w-5" />
             </button>
           </div>
-        </div>
+        </form>
 
         {uploadError ? <p className="mt-2 text-xs text-red-400">{uploadError}</p> : null}
 

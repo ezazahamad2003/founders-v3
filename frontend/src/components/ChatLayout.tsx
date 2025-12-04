@@ -85,10 +85,14 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
         profile={profile}
         supabase={supabase}
       />
-      <div className="flex h-full flex-1 flex-col overflow-hidden">
-        <div className="flex items-center justify-end border-b border-white/5 bg-[#05060c] px-6 py-4">
+      {/* Main chat area with proper flex structure */}
+      <div className="flex h-screen w-full flex-1 flex-col">
+        {/* Header - fixed height */}
+        <div className="flex h-16 shrink-0 items-center justify-end border-b border-white/5 bg-[#05060c] px-6">
           <ProfileMenu profile={profile} onSignOut={onSignOut} />
         </div>
+        
+        {/* Message area - flex-1 to fill available space, overflow-y-auto for scrolling */}
         <MessageList
           messages={messages}
           streamingMessage={streamedAssistantText}
@@ -98,6 +102,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           errorMessage={errorMessage}
         />
 
+        {/* Input area - fixed at bottom, shrink-0 prevents squishing */}
         <ChatInput
           disabled={isProfileLoading || requiresTos}
           mode={mode}

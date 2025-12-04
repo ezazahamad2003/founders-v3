@@ -3,9 +3,9 @@ export default function PrivacyPolicyPage() {
     <div className="min-h-screen bg-[#05060c] px-4 py-12">
       <div className="mx-auto max-w-4xl">
         <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
-          <h1 className="text-3xl font-bold text-white">Privacy Policy</h1>
+          <h1 className="text-3xl font-bold text-white">Privacy Policy for Design Partner Program</h1>
           <p className="mt-4 text-slate-300">
-            Design Partner Program - Scopic Legal Inc.
+            Scopic Legal Inc.
           </p>
           
           <div className="mt-8 space-y-6 text-slate-300">
@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
             </p>
             
             <a
-              href="/legal/Privacy Policy for Design Partner Program (1).docx"
+              href="/legal/Privacy Policy for Design Partner Program - Dec 2.docx"
               download
               className="inline-block rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-6 py-3 font-semibold text-white transition hover:opacity-90"
             >
@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl font-semibold text-white">Quick Summary</h2>
               <p className="mt-4 leading-relaxed">
                 This Privacy Policy describes how Scopic Legal Inc. collects, uses, and protects your 
-                personal information during your participation in the Legal Tech Private Beta Program.
+                personal information during your participation in the Design Partner Program.
               </p>
               <p className="mt-4 leading-relaxed">
                 We collect information you provide (such as your name, email, company name, and referral source), 
