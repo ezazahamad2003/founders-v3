@@ -186,7 +186,7 @@ export function useChat(accessToken: string | null) {
                 user_id: null,
                 role: "assistant",
                 content: streamedTextRef.current, // Use ref to get complete text
-                model: payload.model ?? null,
+                model: null,
                 metadata: null,
                 created_at: new Date().toISOString(),
               };
