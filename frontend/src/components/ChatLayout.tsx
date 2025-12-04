@@ -49,6 +49,15 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     [pendingAttachments, pendingAttachmentIds],
   );
 
+  // Merge filesById with pending attachments so they show in messages
+  const allFilesById = useMemo(() => {
+    const merged = { ...filesById };
+    pendingAttachments.forEach((file) => {
+      merged[file.id] = file;
+    });
+    return merged;
+  }, [filesById, pendingAttachments]);
+
   const handleFilesRegistered = (files: FileMeta[]) => {
     setPendingAttachments((prev) => [...prev, ...files]);
     setPendingAttachmentIds((prev) => [...prev, ...files.map((file) => file.id)]);
@@ -62,7 +71,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     const fileIds = pendingAttachmentIds;
     await sendMessage({ text, fileIds });
     setPendingAttachmentIds([]);
-    setPendingAttachments([]);
+    // Don't clear pendingAttachments immediately - keep them for display
   };
 
   if (isProfileLoading && !profile) {
@@ -98,7 +107,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           streamingMessage={streamedAssistantText}
           isStreaming={isStreaming}
           profileId={profile?.id}
-          filesById={filesById}
+          filesById={allFilesById}
           errorMessage={errorMessage}
         />
 
