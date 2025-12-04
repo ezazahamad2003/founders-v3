@@ -51,7 +51,8 @@ export default function ChatInput({
     // Prevent form submission/page refresh
     event?.preventDefault();
     
-    if (!message.trim() || isStreaming) return;
+    // Wait for uploads to complete before sending
+    if (!message.trim() || isStreaming || isUploading) return;
     
     // Store message and clear input immediately (optimistic UI)
     const messageToSend = message.trim();
@@ -73,7 +74,7 @@ export default function ChatInput({
     }
   };
 
-  const disabledSend = disabled || isStreaming || !message.trim();
+  const disabledSend = disabled || isStreaming || isUploading || !message.trim();
   const disabledUpload = isUploading;
 
   const modeOptions: { label: string; value: ChatMode }[] = useMemo(
@@ -201,6 +202,11 @@ export default function ChatInput({
         </form>
 
         {uploadError ? <p className="mt-2 text-xs text-red-400">{uploadError}</p> : null}
+        {isUploading ? (
+          <p className="mt-2 text-xs text-blue-400">
+            <span className="inline-block animate-pulse">●</span> Processing document...
+          </p>
+        ) : null}
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
           <span>A reminder that this is not legal advice, and that the Program is designed for Scopic to observe your self-serve legal behaviour.</span>
