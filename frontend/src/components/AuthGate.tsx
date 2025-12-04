@@ -211,6 +211,15 @@ export default function AuthGate() {
                 {authMode === "sign_in" ? "Sign in" : "Apply to Join"}
               </button>
               
+              {authMode === "sign_in" && (
+                <a
+                  href="/forgot-password"
+                  className="mt-3 block text-center text-xs text-gray-400 hover:text-white"
+                >
+                  Forgot your password?
+                </a>
+              )}
+              
               <button
                 type="button"
                 onClick={() => setAuthMode(authMode === "sign_in" ? "sign_up" : "sign_in")}
