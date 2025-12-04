@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { supabaseBrowserClient } from "@/lib/supabaseClient";
 import Link from "next/link";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -16,29 +15,24 @@ export default function ForgotPasswordPage() {
     setMessage(null);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
-      const response = await fetch(`${apiUrl}/api/v1/password-reset/request-code`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
+      if (!supabaseBrowserClient) {
+        setMessage({ type: "error", text: "Authentication service unavailable." });
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabaseBrowserClient.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setMessage({ type: "error", text: data.detail || "Failed to send verification code." });
+      if (error) {
+        setMessage({ type: "error", text: error.message });
       } else {
         setMessage({
           type: "success",
-          text: "Verification code sent! Check your email and enter the code on the next page.",
+          text: "Password reset link sent! Check your email inbox.",
         });
-        
-        // Redirect to reset password page after 2 seconds
-        setTimeout(() => {
-          router.push(`/reset-password?email=${encodeURIComponent(email)}`);
-        }, 2000);
+        setEmail("");
       }
     } catch (err) {
       setMessage({ type: "error", text: "An unexpected error occurred." });
