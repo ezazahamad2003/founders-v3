@@ -7,6 +7,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Scopic Legal",
   description: "ChatGPT-style legal research assistant for Scopic Legal.",
+  icons: {
+    icon: [
+      { url: '/logo.svg', type: 'image/svg+xml' },
+    ],
+  },
 };
 
 export default function RootLayout({
