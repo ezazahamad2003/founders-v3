@@ -7,7 +7,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Configuration
-$SERVICE_NAME = "founders-backend"
+$SERVICE_NAME = "scopic-legal-api"
 $REGION = "us-central1"
 $PROJECT_ID = "founders-v3"
 
