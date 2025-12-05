@@ -78,7 +78,7 @@ gcloud run deploy $SERVICE_NAME `
     --source . `
     --region $REGION `
     --allow-unauthenticated `
-    --env-vars-file .env.yaml `
+    --env-vars-file env.yaml `
     --memory $MEMORY `
     --cpu $CPU `
     --min-instances $MIN_INSTANCES `

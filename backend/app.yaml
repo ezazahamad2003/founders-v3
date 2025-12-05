@@ -42,7 +42,7 @@ env_variables:
   SUPABASE_STORAGE_BUCKET_NAME: "uploads"
   
   # Application Configuration
-  ALLOWED_ORIGINS: "https://founders-v3.vercel.app"
+  ALLOWED_ORIGINS: "https://founders-v3.vercel.app,https://www.founders-v3.vercel.app"
   MAX_HISTORY_MESSAGES: "30"
   MAX_OUTPUT_TOKENS: "4096"
 
