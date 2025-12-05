@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: "Scopic Legal",
   description: "ChatGPT-style legal research assistant for Scopic Legal.",
   icons: {
-    icon: [
-      { url: '/logo.svg', type: 'image/svg+xml' },
-    ],
+    icon: '/logo.svg',
+    shortcut: '/logo.svg',
+    apple: '/logo.svg',
   },
 };
 
@@ -21,6 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/logo.svg" />
+      </head>
       <body className={`${inter.className} bg-[#05060c]`} suppressHydrationWarning>
         {children}
       </body>
