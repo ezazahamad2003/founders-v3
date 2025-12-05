@@ -68,8 +68,11 @@ export default function ResetPasswordPage() {
       } else {
         setMessage({
           type: "success",
-          text: "Password updated successfully! Redirecting to home...",
+          text: "Password updated successfully! Please sign in with your new password.",
         });
+        
+        // Sign out the user so they can log in with new password
+        await supabase.auth.signOut();
         
         // Redirect to home after 2 seconds
         setTimeout(() => {
