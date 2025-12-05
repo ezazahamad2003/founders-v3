@@ -17,6 +17,8 @@ interface ChatLayoutProps {
 }
 
 export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLayoutProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   const {
     profile,
     isProfileLoading,
@@ -84,20 +86,54 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#05060c] text-slate-100">
-      <Sidebar
-        conversations={conversations}
-        activeId={activeConversationId}
-        loading={conversationsLoading || isProfileLoading}
-        onSelectConversation={loadConversation}
-        onNewConversation={startNewConversation}
-        onDeleteConversation={deleteConversation}
-        profile={profile}
-        supabase={supabase}
-      />
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Hidden on mobile by default, slides in when open */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:relative lg:translate-x-0 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <Sidebar
+          conversations={conversations}
+          activeId={activeConversationId}
+          loading={conversationsLoading || isProfileLoading}
+          onSelectConversation={(id) => {
+            loadConversation(id);
+            setIsSidebarOpen(false); // Close sidebar on mobile after selection
+          }}
+          onNewConversation={() => {
+            startNewConversation();
+            setIsSidebarOpen(false);
+          }}
+          onDeleteConversation={deleteConversation}
+          profile={profile}
+          supabase={supabase}
+        />
+      </div>
+
       {/* Main chat area with proper flex structure */}
       <div className="flex h-screen w-full flex-1 flex-col">
         {/* Header - fixed height */}
-        <div className="flex h-16 shrink-0 items-center justify-end border-b border-white/5 bg-[#05060c] px-6">
+        <div className="flex h-16 shrink-0 items-center justify-end border-b border-white/5 bg-[#05060c] px-4 sm:px-6">
+          {/* Hamburger Menu Button - Only visible on mobile, positioned absolutely on left */}
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="absolute left-4 flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/5 transition lg:hidden"
+            aria-label="Toggle sidebar"
+          >
+            <svg className="w-6 h-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          {/* Profile Menu - always in right corner */}
           <ProfileMenu profile={profile} onSignOut={onSignOut} />
         </div>
         

@@ -1,9 +1,41 @@
 import { ChatRequestPayload, ConversationDetailResponse, ConversationSummary, FileMeta, RegisterFileInput, UserProfile } from "./types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// Centralized API base URL configuration
+// Set NEXT_PUBLIC_API_BASE_URL in Vercel environment variables for production
+const DEFAULT_LOCAL_API_URL = 'http://localhost:8000';
+const PROD_API_URL = 'https://scopic-legal-api-566998539930.us-central1.run.app';
+
+/**
+ * Get the API base URL based on environment
+ * Priority:
+ * 1. NEXT_PUBLIC_API_BASE_URL env var (if set)
+ * 2. Production URL if not on localhost
+ * 3. Local dev URL (localhost:8000)
+ */
+export const getApiBaseUrl = (): string => {
+  // Prefer explicit env var if set
+  const fromEnv = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (fromEnv && fromEnv.trim().length > 0) {
+    return fromEnv.trim();
+  }
+
+  // In browser, detect if we're in production
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    // If NOT localhost/127.0.0.1, assume production
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      return PROD_API_URL;
+    }
+  }
+
+  // Default to local development
+  return DEFAULT_LOCAL_API_URL;
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 
 if (!API_BASE_URL) {
-  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined. Backend requests will fail.");
+  console.warn("API_BASE_URL could not be determined. Backend requests will fail.");
 }
 
 interface StreamHandlers {
