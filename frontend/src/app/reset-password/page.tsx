@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabaseBrowserClient } from "@/lib/supabaseClient";
+import { supabaseBrowserClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -15,12 +15,13 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     // Check if user came from password reset email
-    if (!supabaseBrowserClient) {
+    const supabase = supabaseBrowserClient();
+    if (!supabase) {
       setMessage({ type: "error", text: "Authentication service unavailable." });
       return;
     }
     
-    supabaseBrowserClient.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setIsValidSession(true);
       } else {
@@ -51,13 +52,14 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      if (!supabaseBrowserClient) {
+      const supabase = supabaseBrowserClient();
+      if (!supabase) {
         setMessage({ type: "error", text: "Authentication service unavailable." });
         setLoading(false);
         return;
       }
 
-      const { error } = await supabaseBrowserClient.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         password: password,
       });
 

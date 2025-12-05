@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabaseBrowserClient } from "@/lib/supabaseClient";
+import { supabaseBrowserClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
 export default function ForgotPasswordPage() {
@@ -15,7 +15,8 @@ export default function ForgotPasswordPage() {
     setMessage(null);
 
     try {
-      if (!supabaseBrowserClient) {
+      const supabase = supabaseBrowserClient();
+      if (!supabase) {
         setMessage({ type: "error", text: "Authentication service unavailable." });
         setLoading(false);
         return;
@@ -25,7 +26,7 @@ export default function ForgotPasswordPage() {
       const redirectUrl = `${window.location.origin}/reset-password`;
       console.log('Password reset redirect URL:', redirectUrl);
       
-      const { error } = await supabaseBrowserClient.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,
       });
 

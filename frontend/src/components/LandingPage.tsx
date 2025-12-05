@@ -65,9 +65,13 @@ export default function LandingPage() {
       }
 
       setSuccess(true);
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
+      
+      // Only redirect for sign-in, not sign-up (user needs to verify email first)
+      if (!isSignUp) {
+        setTimeout(() => {
+          router.push("/");
+        }, 2000);
+      }
     } catch (err) {
       setError("An unexpected error occurred");
       setLoading(false);
@@ -157,8 +161,14 @@ export default function LandingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Welcome to Scopic Legal!</h3>
-              <p className="text-slate-300">Redirecting you to the platform...</p>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {isSignUp ? "Check Your Email!" : "Welcome to Scopic Legal!"}
+              </h3>
+              <p className="text-slate-300">
+                {isSignUp 
+                  ? "We've sent you a confirmation email. Please check your inbox and click the link to verify your account."
+                  : "Redirecting you to the platform..."}
+              </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
