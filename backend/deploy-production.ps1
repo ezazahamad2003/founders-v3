@@ -63,7 +63,7 @@ gcloud run deploy $SERVICE_NAME `
     --cpu 1 `
     --memory 1Gi `
     --timeout 300 `
-    --set-env-vars "APP_ENV=production,SUPABASE_PROJECT_URL=https://vkwinzxslacteeqjpmne.supabase.co,SUPABASE_JWKS_URL=https://vkwinzxslacteeqjpmne.supabase.co/auth/v1/certs,SUPABASE_STORAGE_BUCKET_NAME=uploads,SUPABASE_STORAGE_PUBLIC_BASE_URL=https://vkwinzxslacteeqjpmne.supabase.co/storage/v1/object/public,ALLOWED_ORIGINS=https://founders-v3.vercel.app,MAX_HISTORY_MESSAGES=30,MAX_OUTPUT_TOKENS=4096,OPENAI_MODEL_CHAT=gpt-5.1,OPENAI_MODEL_VISION=gpt-5.1,OPENAI_MODEL_DEEP_RESEARCH=gpt-5.1" `
+    --env-vars-file env.yaml `
     --set-secrets "OPENAI_API_KEY=openai-api-key:latest,SUPABASE_DB_URL=supabase-db-url:latest,SUPABASE_JWT_SECRET=supabase-jwt-secret:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key:latest,SUPABASE_ANON_KEY=supabase-anon-key:latest"
 
 if ($LASTEXITCODE -eq 0) {
