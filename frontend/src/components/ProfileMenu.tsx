@@ -22,7 +22,7 @@ export default function ProfileMenu({ profile, onSignOut }: ProfileMenuProps) {
   const initials = getInitials(profile?.email);
 
   return (
-    <Menu as="div" className="relative">
+    <Menu as="div" className="relative z-50">
       <Menu.Button className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-sm font-semibold text-indigo-300 ring-2 ring-indigo-500/30 transition hover:bg-indigo-500/30 hover:ring-indigo-400/50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-[#05060c]">
         {initials}
       </Menu.Button>
@@ -35,7 +35,7 @@ export default function ProfileMenu({ profile, onSignOut }: ProfileMenuProps) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-white/10 rounded-2xl border border-white/10 bg-[#0b0e16] shadow-lg ring-1 ring-black/5 focus:outline-none">
+        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-white/10 rounded-2xl border border-white/10 bg-[#0b0e16] shadow-lg ring-1 ring-black/5 focus:outline-none z-50">
           <div className="px-4 py-3">
             <p className="text-sm font-medium text-white">{profile?.email ?? "Anonymous"}</p>
             <p className="mt-1 truncate text-xs text-slate-400">Signed in</p>

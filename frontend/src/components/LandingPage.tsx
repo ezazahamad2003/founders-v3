@@ -128,7 +128,7 @@ export default function LandingPage() {
                   <span className="text-sm sm:text-base text-slate-300">Early access to GPT 5.1-powered AI platform</span>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-400 rounded-full flex-shrink-0" />
                   <span className="text-sm sm:text-base text-slate-300">Legal strategy consultations with expert lawyers</span>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -138,7 +138,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="pt-4 sm:pt-6 flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-slate-400">
+            <div className="pt-8 sm:pt-10 lg:pt-12 flex flex-wrap items-center gap-3 sm:gap-6 text-[10px] sm:text-xs text-slate-400">
               <a href="/legal/terms-of-use.html" target="_blank" className="hover:text-indigo-400 transition">
                 Terms of Use
               </a>

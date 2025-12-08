@@ -237,15 +237,7 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-between">
-                  <a
-                    href="https://runway6.vc/meetings/abhanot/dpcheckin?uuid=d4556964-cc24-4a30-8c61-b0d456a87f30"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-full border border-indigo-500/40 bg-indigo-500/10 px-5 py-2 text-sm text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"
-                  >
-                    Book Check-In Meeting
-                  </a>
+                <div className="mt-6 flex justify-end">
                   <button
                     onClick={onClose}
                     className="rounded-full border border-white/10 px-5 py-2 text-sm text-white transition hover:border-white/40"
