@@ -54,6 +54,3 @@ build/
 .supabase/
 storage/
 
-# Lawyer CRM MVP (only on lawyer-crm-mvp branch)
-lawyermvp/
-
