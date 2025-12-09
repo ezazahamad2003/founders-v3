@@ -33,6 +33,10 @@ def create_app() -> FastAPI:
     origins = settings.allowed_origins_list()
     if not origins:
         origins = DEFAULT_LOCAL_ORIGINS
+    else:
+        # Always include localhost origins for local development, even in production
+        # Merge configured origins with default localhost origins (avoid duplicates)
+        origins = list(set(origins + DEFAULT_LOCAL_ORIGINS))
 
     # Add regex pattern for all Vercel URLs (more permissive)
     # Matches any vercel.app subdomain for founders-v3

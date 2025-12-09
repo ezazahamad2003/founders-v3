@@ -34,6 +34,7 @@
 - [x] prod-redirect-fix
 - [x] file-extraction-audit
 - [x] file-extraction-tests
+- [ ] lawyermvp-admin-login
 
 # Current Status / Progress Tracking
 - 2025-11-21: Executor mode engaged, preparing to start **bootstrap-structure**.
@@ -52,6 +53,7 @@
 - 2025-11-24: Pytest now covers document extraction flow via `backend/tests/test_document_text.py`; run with `PYTHONPATH=backend pytest backend/tests/test_document_text.py`.
 - 2025-11-24: Executor awaiting guidance on next priority now that file extraction + tests are in place; ready to pick up the next task once user identifies it.
 - 2025-11-24: Executor expanded document parsing to cover DOCX uploads (using `python-docx`) plus new regression tests that synthesize DOCX fixtures; PDF coverage retained to ensure chat integrity with real excerpts.
+- 2025-12-08: Executor picked up **lawyermvp-admin-login** to gate the lawyer dashboard behind env-configured admin email/password before pushing live.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.

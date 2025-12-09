@@ -9,6 +9,7 @@ A simple CRM dashboard for lawyers to view and manage client interactions.
   - All conversations with message counts
   - All uploaded documents
   - Activity timeline
+- **Document Viewer**: Generates time-limited Supabase signed URLs via a secure Next.js API route
 - **Conversation Viewer**: View full conversation history with all messages
 
 ## Tech Stack
@@ -36,6 +37,7 @@ npm install
 # Get these from your Supabase project settings
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key # server-side only, do NOT expose publicly
 ```
 
 3. Run the development server:

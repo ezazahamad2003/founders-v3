@@ -1,21 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { getUserDetail, UserDetail } from "@/lib/api";
+import { useParams } from "next/navigation";
+import { getUserDetail, UserDetail, getFileViewUrl } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
-import { ArrowLeft, MessageSquare, FileText, User, Loader2 } from "lucide-react";
+import { ArrowLeft, MessageSquare, FileText, User, Loader2, Eye } from "lucide-react";
 import Link from "next/link";
 
 export default function UserDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const userId = params.userId as string;
   
   const [user, setUser] = useState<UserDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const [viewingFileId, setViewingFileId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchUser() {
@@ -33,6 +32,23 @@ export default function UserDetailPage() {
       fetchUser();
     }
   }, [userId]);
+
+  const handleViewFile = async (docId: string, supabasePath: string) => {
+    setViewingFileId(docId);
+    try {
+      const url = await getFileViewUrl(supabasePath);
+      if (url) {
+        window.open(url, "_blank", "noopener");
+      } else {
+        alert("Failed to generate file view URL. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error viewing file:", err);
+      alert("Failed to view file. Please try again.");
+    } finally {
+      setViewingFileId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -148,19 +164,38 @@ export default function UserDetailPage() {
                     key={doc.id}
                     className="bg-white border border-gray-200 rounded-lg p-4"
                   >
-                    <div className="flex items-start gap-3">
-                      <FileText className="w-5 h-5 text-gray-600 mt-1" />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 truncate">
-                          {doc.original_name || "Unnamed Document"}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          {doc.mime_type || "Unknown type"}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-1">
-                          Uploaded: {formatDate(doc.created_at)}
-                        </p>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <FileText className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-gray-900 truncate">
+                            {doc.original_name || "Unnamed Document"}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {doc.mime_type || "Unknown type"}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            Uploaded: {formatDate(doc.created_at)}
+                          </p>
+                        </div>
                       </div>
+                      <button
+                        onClick={() => handleViewFile(doc.id, doc.supabase_path)}
+                        disabled={viewingFileId === doc.id}
+                        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                      >
+                        {viewingFileId === doc.id ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Opening...
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="w-4 h-4" />
+                            View
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
                 ))}

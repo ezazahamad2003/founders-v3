@@ -22,6 +22,7 @@ export interface DocumentPreview {
   id: string;
   original_name: string | null;
   mime_type: string | null;
+  supabase_path: string;
   created_at: string;
 }
 
@@ -185,7 +186,7 @@ export async function getUserDetail(userId: string): Promise<UserDetail> {
   // Get documents
   const { data: documents } = await supabase
     .from('files')
-    .select('id, original_name, mime_type, created_at')
+    .select('id, original_name, mime_type, supabase_path, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 
@@ -193,6 +194,7 @@ export async function getUserDetail(userId: string): Promise<UserDetail> {
     id: d.id,
     original_name: d.original_name,
     mime_type: d.mime_type,
+    supabase_path: d.supabase_path,
     created_at: d.created_at,
   }));
 
@@ -250,4 +252,27 @@ export async function getConversationDetail(conversationId: string): Promise<Con
     updated_at: conversation.updated_at,
     messages: messageList,
   };
+}
+
+export async function getFileViewUrl(supabasePath: string): Promise<string | null> {
+  try {
+    const response = await fetch("/api/files/view", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ path: supabasePath }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to request signed URL:", response.statusText);
+      return null;
+    }
+
+    const payload = await response.json();
+    return payload?.url ?? null;
+  } catch (error) {
+    console.error("Error requesting signed URL:", error);
+    return null;
+  }
 }
