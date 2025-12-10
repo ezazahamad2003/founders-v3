@@ -4,13 +4,40 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const siteTitle = "Scopic Legal | Agentic frameworks for self-serve legal ops";
+const siteDescription =
+  "Agentic frameworks for self-serve legal operations—automated research, drafting, and workflows for modern legal teams.";
+const siteUrl = "https://scopiclegal.com";
+const ogImage = "/images/image.png";
+
 export const metadata: Metadata = {
-  title: "Scopic Legal",
-  description: "ChatGPT-style legal research assistant for Scopic Legal.",
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
+  description: siteDescription,
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: siteUrl,
+    siteName: "Scopic Legal",
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Scopic Legal",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: [ogImage],
+  },
   icons: {
-    icon: '/logo.svg',
-    shortcut: '/logo.svg',
-    apple: '/logo.svg',
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
   },
 };
 

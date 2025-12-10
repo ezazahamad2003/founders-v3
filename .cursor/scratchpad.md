@@ -30,6 +30,8 @@
 9. **file-extraction-tests** — Add regression tests (unit or integration) with a real sample file ensuring extraction uses actual content and not hallucinated text; include fixtures and instructions for running tests locally. *Success:* Tests fail under current behavior and pass once the fix lands, preventing regressions.
 10. **meeting-redirect-plan** — Decide redirect approach for `scopiclegal.com/meeting` to the Google booking page, including hosting constraints, analytics, and rollback. *Success:* Approved plan with chosen mechanism and deployment steps.
 11. **meeting-redirect-implementation** — Implement the redirect (config or page), remove legacy HubSpot links, and validate in production. *Success:* Visiting `scopiclegal.com/meeting` forwards to the Google booking link; no residual HubSpot CTAs.
+12. **og-preview-plan** — Plan updates to Open Graph/LinkedIn preview (title, description, image) so shares show the site tagline instead of the current “ChatGPT-style legal research assistant...” text. *Success:* Approved target OG title/description/tagline and image source; decide files to edit and validation steps.
+13. **og-preview-implementation** — Implement OG/meta changes (likely in `frontend/src/app/layout.tsx` or route metadata), ensure image asset exists, deploy and verify via LinkedIn post inspector. *Success:* LinkedIn preview shows requested tagline/title after cache refresh.
 
 # Project Status Board
 - [x] bootstrap-structure
@@ -44,6 +46,8 @@
 - [x] update-book-meeting-link
 - [ ] meeting-redirect-plan
 - [ ] meeting-redirect-implementation
+- [x] og-preview-plan
+- [x] og-preview-implementation
 
 # Current Status / Progress Tracking
 - 2025-11-21: Executor mode engaged, preparing to start **bootstrap-structure**.
@@ -66,6 +70,8 @@
 - 2025-12-10: Planner engaged to design a clean `scopiclegal.com/meeting` redirect to the new Google booking link after retiring HubSpot; no code changes yet.
 - 2025-12-10: Planner reviewing project `.md` docs for freshness; spotted outdated meeting links (Runway6/Calendly), older backend URLs, and legacy route references needing alignment with current code.
 - 2025-12-10: Executor updated sidebar CTA again to the latest Google booking URL `https://calendar.google.com/calendar/u/0/appointments/AcZssZ0Kntrw_2jzyJwypoDvkeY1nCAaNdy6XUsKB4A=`.
+- 2025-12-10: Planner engaged to update LinkedIn/OG preview (title/description/tagline) for `scopiclegal.com`; need plan before implementation.
+- 2025-12-10: Executor updated OG metadata (title/description/twitter/openGraph) in `frontend/src/app/layout.tsx` to use the new “agentic frameworks” messaging and existing `/images/image.png` asset.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
