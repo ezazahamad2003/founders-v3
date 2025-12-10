@@ -3,6 +3,7 @@
 - Deliver production-ready artifacts (app code, schema, Dockerfile, README, env template) per detailed spec.
 - 2025-11-24: Production signup flow still redirects to `http://localhost:3000` after Supabase magic-link confirmation; need to trace why deployed frontend/backend continue to emit local host-based redirect URLs.
 - 2025-11-24: File-content extraction via OpenAI API appears to return hallucinated summaries rather than actual text from uploaded files; need to determine whether frontend upload, backend parsing, or OpenAI call is misconfigured.
+- 2025-12-10: User wants all “Book a Meeting” CTAs to use the new Google booking page and ideally have `scopiclegal.com/meeting` redirect there after retiring HubSpot.
 
 # Key Challenges and Analysis
 - Enforce conversation/file ownership while keeping the DB/API fast enough for ChatGPT-like latency.
@@ -12,6 +13,10 @@
 - Determine whether Supabase auth settings (`SITE_URL`, `redirectTo`, deep link config) or frontend environment variables still reference localhost, and confirm how production/frontend derives the email confirmation redirect target.
 - Trace end-to-end file ingestion path (client upload -> Supabase storage -> backend fetch -> OpenAI request) to confirm exact payload sent to OpenAI and whether we ever extract actual file bytes/metadata before prompting.
 - Need deterministic tests around file extraction to avoid subjective "hallucination" reports; devise sample input file and expected extracted text to assert behavior.
+- Meeting redirect considerations:
+  - Confirm domain control/hosting for `scopiclegal.com` (Next.js on Vercel?) to add a redirect/rewrites rule.
+  - Decide between server-side redirect (Next.js `next.config` redirects) vs. lightweight landing page path that forwards to Google Calendar (helps analytics/utm).
+  - Ensure legacy HubSpot links are removed to avoid conflicting CTAs; check any email templates or docs referencing old links.
 
 # High-level Task Breakdown
 1. **bootstrap-structure** — Create backend skeleton (`app/`, routers/ services folders, infra files, db schema stub, Dockerfile, requirements, README, .env.example). *Success:* repo tree matches spec; FastAPI imports resolve.
@@ -23,6 +28,8 @@
 7. **prod-redirect-fix** — Update the offending config (code or Supabase settings) to use the production domain, add any missing env plumbing/tests, and outline verification steps (e.g., Supabase dashboard setting screenshots or automated test). *Success:* After deploying, magic-link redirects land on the correct production URL; instructions exist for future envs.
 8. **file-extraction-audit** — Locate every module/function handling uploaded files, especially those invoking OpenAI file APIs, and capture the exact prompts/payloads being sent. *Success:* Documented flowchart plus identification of potential breakpoints where actual file contents are dropped or ignored.
 9. **file-extraction-tests** — Add regression tests (unit or integration) with a real sample file ensuring extraction uses actual content and not hallucinated text; include fixtures and instructions for running tests locally. *Success:* Tests fail under current behavior and pass once the fix lands, preventing regressions.
+10. **meeting-redirect-plan** — Decide redirect approach for `scopiclegal.com/meeting` to the Google booking page, including hosting constraints, analytics, and rollback. *Success:* Approved plan with chosen mechanism and deployment steps.
+11. **meeting-redirect-implementation** — Implement the redirect (config or page), remove legacy HubSpot links, and validate in production. *Success:* Visiting `scopiclegal.com/meeting` forwards to the Google booking link; no residual HubSpot CTAs.
 
 # Project Status Board
 - [x] bootstrap-structure
@@ -34,7 +41,9 @@
 - [x] prod-redirect-fix
 - [x] file-extraction-audit
 - [x] file-extraction-tests
-- [ ] lawyermvp-admin-login
+- [x] update-book-meeting-link
+- [ ] meeting-redirect-plan
+- [ ] meeting-redirect-implementation
 
 # Current Status / Progress Tracking
 - 2025-11-21: Executor mode engaged, preparing to start **bootstrap-structure**.
@@ -53,7 +62,10 @@
 - 2025-11-24: Pytest now covers document extraction flow via `backend/tests/test_document_text.py`; run with `PYTHONPATH=backend pytest backend/tests/test_document_text.py`.
 - 2025-11-24: Executor awaiting guidance on next priority now that file extraction + tests are in place; ready to pick up the next task once user identifies it.
 - 2025-11-24: Executor expanded document parsing to cover DOCX uploads (using `python-docx`) plus new regression tests that synthesize DOCX fixtures; PDF coverage retained to ensure chat integrity with real excerpts.
-- 2025-12-08: Executor picked up **lawyermvp-admin-login** to gate the lawyer dashboard behind env-configured admin email/password before pushing live.
+- 2025-12-10: Executor updated frontend sidebar CTA to point "Book a Meeting" to `https://calendar.app.google/kwcmoD8roNmkBqdT9`.
+- 2025-12-10: Planner engaged to design a clean `scopiclegal.com/meeting` redirect to the new Google booking link after retiring HubSpot; no code changes yet.
+- 2025-12-10: Planner reviewing project `.md` docs for freshness; spotted outdated meeting links (Runway6/Calendly), older backend URLs, and legacy route references needing alignment with current code.
+- 2025-12-10: Executor updated sidebar CTA again to the latest Google booking URL `https://calendar.google.com/calendar/u/0/appointments/AcZssZ0Kntrw_2jzyJwypoDvkeY1nCAaNdy6XUsKB4A=`.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
