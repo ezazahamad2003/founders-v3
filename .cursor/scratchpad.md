@@ -72,6 +72,7 @@
 - 2025-12-10: Executor updated sidebar CTA again to the latest Google booking URL `https://calendar.google.com/calendar/u/0/appointments/AcZssZ0Kntrw_2jzyJwypoDvkeY1nCAaNdy6XUsKB4A=`.
 - 2025-12-10: Planner engaged to update LinkedIn/OG preview (title/description/tagline) for `scopiclegal.com`; need plan before implementation.
 - 2025-12-10: Executor updated OG metadata (title/description/twitter/openGraph) in `frontend/src/app/layout.tsx` to use the new “agentic frameworks” messaging and existing `/images/image.png` asset.
+- 2025-12-10: Executor added cache-busting query param to OG image (`/images/image.png?v=2`) to force LinkedIn to fetch the new preview.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.

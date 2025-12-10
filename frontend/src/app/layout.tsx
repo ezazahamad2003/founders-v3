@@ -8,7 +8,7 @@ const siteTitle = "Scopic Legal | Agentic frameworks for self-serve legal ops";
 const siteDescription =
   "Agentic frameworks for self-serve legal operations—automated research, drafting, and workflows for modern legal teams.";
 const siteUrl = "https://scopiclegal.com";
-const ogImage = "/images/image.png";
+const ogImage = "/images/image.png?v=2";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
