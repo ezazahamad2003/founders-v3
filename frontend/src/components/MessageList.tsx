@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FileMeta, Message } from "@/lib/types";
 import MessageBubble from "./MessageBubble";
 
@@ -11,6 +11,8 @@ interface MessageListProps {
   profileId?: string | null;
   filesById: Record<string, FileMeta>;
   errorMessage: string | null;
+  showIntro?: boolean;
+  introMarkdown?: string;
 }
 
 export default function MessageList({
@@ -20,18 +22,72 @@ export default function MessageList({
   profileId,
   filesById,
   errorMessage,
+  showIntro,
+  introMarkdown,
 }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const lastMessageCountRef = useRef(0);
 
-  // Auto-scroll to bottom when messages change or while streaming
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Check if user is near the bottom of the scroll container
+  const isNearBottom = useCallback(() => {
+    if (!scrollRef.current) return true;
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    const threshold = 100; // pixels from bottom
+    return scrollHeight - scrollTop - clientHeight < threshold;
+  }, []);
 
+  // Auto-scroll to bottom only if user is near bottom
+  const scrollToBottom = useCallback((force = false) => {
+    if (force || shouldAutoScroll) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [shouldAutoScroll]);
+
+  // Track scroll position to detect user-initiated scrolls
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, streamingMessage, isStreaming]);
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setShouldAutoScroll(isNearBottom());
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [isNearBottom]);
+
+  // Auto-scroll when new messages are added (user sends a message)
+  useEffect(() => {
+    const currentMessageCount = messages.length;
+    const previousMessageCount = lastMessageCountRef.current;
+    
+    // If a new message was added (not just streaming update), always scroll
+    if (currentMessageCount > previousMessageCount) {
+      lastMessageCountRef.current = currentMessageCount;
+      setShouldAutoScroll(true);
+      scrollToBottom(true);
+    }
+  }, [messages.length, scrollToBottom]);
+
+  // When streaming starts, check if we should auto-scroll
+  useEffect(() => {
+    if (isStreaming) {
+      const nearBottom = isNearBottom();
+      setShouldAutoScroll(nearBottom);
+      if (nearBottom) {
+        scrollToBottom();
+      }
+    }
+  }, [isStreaming, isNearBottom, scrollToBottom]);
+
+  // Auto-scroll during streaming only if user is near bottom
+  useEffect(() => {
+    if (isStreaming && shouldAutoScroll && streamingMessage) {
+      scrollToBottom();
+    }
+  }, [streamingMessage, isStreaming, shouldAutoScroll, scrollToBottom]);
 
   const renderAttachments = (message: Message) => {
     const ids = Array.isArray(message.metadata?.input_files) ? (message.metadata!.input_files as string[]) : [];
@@ -46,6 +102,16 @@ export default function MessageList({
       className="flex-1 overflow-y-auto scroll-smooth bg-gradient-to-b from-[#05060c] via-[#070812] to-[#05060c] px-8 py-6"
     >
       <div className="mx-auto flex max-w-3xl flex-col space-y-4">
+        {showIntro && introMarkdown ? (
+          <MessageBubble
+            role="system"
+            content={introMarkdown}
+            isStreaming={false}
+            isOwn={false}
+            attachments={[]}
+          />
+        ) : null}
+
         {messages.map((message) => (
           <MessageBubble
             key={message.id}

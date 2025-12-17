@@ -42,6 +42,8 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     setPendingAttachmentIds,
     errorMessage,
     deleteConversation,
+    showScopicIntro,
+    scopicIntroMarkdown,
   } = useChat(accessToken);
 
   const [pendingAttachments, setPendingAttachments] = useState<FileMeta[]>([]);
@@ -145,6 +147,8 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           profileId={profile?.id}
           filesById={allFilesById}
           errorMessage={errorMessage}
+          showIntro={showScopicIntro && !activeConversationId && messages.length === 0}
+          introMarkdown={scopicIntroMarkdown}
         />
 
         {/* Input area - fixed at bottom, shrink-0 prevents squishing */}

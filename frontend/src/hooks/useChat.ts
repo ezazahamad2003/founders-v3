@@ -22,6 +22,25 @@ import {
 
 const emptyMessages: Message[] = [];
 
+const getIntroSeenKey = (userId: string) => `scopic_intro_seen:${userId}`;
+
+const SCOPIC_INTRO_MARKDOWN = `## Scopic Intro
+
+Welcome to Scopic Legal! Thanks for joining our private beta program. We designed this tool to explore your experience with "self-serving" legal work and to identify where you need the most help.
+
+### How to get started:
+
+- **Ask Away:** Type any legal question in a "+New Legal Query" or use the \\[prompts\\] in the sidebar for common use cases.
+- **Meet Us:** Book a free legal/fundraising strategy consultation with our CEO, Amit Bhanot (10+ years Corporate Lawyer & VC Partner) by clicking "+Book a Meeting".
+- **Provide Context:** To get the most out of that meeting, click "+Upload Legal Docs" to upload past or future agreements, so we'll be ready to help you.
+
+We're thrilled to have you onboard and your feedback is crucial to shaping Scopic Legal. Let's get to work!
+
+\\[Watch a quick welcome video from Amit\\]\\[Note: to be embedded once video is created\\]
+
+**Important Note:** Scopic Legal is an AI assistant, not a law firm. The responses are for informational purposes only and do not constitute legal advice. Please ensure critical documents are reviewed by a qualified professional, whom we can connect you with if needed.
+`;
+
 export function useChat(accessToken: string | null) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
@@ -37,6 +56,7 @@ export function useChat(accessToken: string | null) {
   const [mode, setMode] = useState<ChatMode>("auto");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pendingAttachmentIds, setPendingAttachmentIds] = useState<string[]>([]);
+  const [showScopicIntro, setShowScopicIntro] = useState(false);
 
   const tokenReady = Boolean(accessToken);
 
@@ -71,6 +91,7 @@ export function useChat(accessToken: string | null) {
         setProfile(me);
         const needsTos = !me.accepted_tos_at;
         setRequiresTos(needsTos);
+        setShowScopicIntro(false);
         if (!needsTos) {
           refreshConversations();
         } else {
@@ -88,6 +109,7 @@ export function useChat(accessToken: string | null) {
   const loadConversation = useCallback(
     (conversationId: string) => {
       if (!tokenReady || !conversationId) return;
+      setShowScopicIntro(false);
       getConversation(accessToken!, conversationId)
         .then((data) => {
           setActiveConversationId(conversationId);
@@ -102,6 +124,7 @@ export function useChat(accessToken: string | null) {
   );
 
   const startNewConversation = useCallback(() => {
+    setShowScopicIntro(false);
     resetConversationState();
   }, [resetConversationState]);
 
@@ -112,6 +135,18 @@ export function useChat(accessToken: string | null) {
       setProfile(updated);
       setRequiresTos(false);
       refreshConversations();
+
+      // Frontend-only one-time intro: show immediately after first Terms acceptance in this browser
+      // (We key by user id so multi-user testing doesn't conflict.)
+      const userId = updated.id;
+      const key = getIntroSeenKey(userId);
+      const alreadySeen = typeof window !== "undefined" && window.localStorage.getItem(key) === "true";
+      if (!alreadySeen) {
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(key, "true");
+        }
+        setShowScopicIntro(true);
+      }
     } catch (error) {
       setErrorMessage((error as Error).message || "Failed to accept terms.");
     }
@@ -141,6 +176,9 @@ export function useChat(accessToken: string | null) {
       if (!tokenReady || !profile) return;
       const trimmed = options.text.trim();
       if (!trimmed) return;
+
+      // Once a user starts a real query, hide the intro (if it was shown).
+      setShowScopicIntro(false);
 
       const fileIds = options.fileIds ?? [];
       const conversationId = activeConversationId;
@@ -299,6 +337,8 @@ export function useChat(accessToken: string | null) {
     mode,
     setMode,
     errorMessage,
+    showScopicIntro,
+    scopicIntroMarkdown: SCOPIC_INTRO_MARKDOWN,
     refreshConversations,
     loadConversation,
     startNewConversation,
