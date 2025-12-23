@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { getUserDetail, UserDetail, getFileViewUrl } from "@/lib/api";
+import { getUserDetail, UserDetail, getFileViewUrl, getProfileDocViewUrl } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, MessageSquare, FileText, User, Loader2, Eye } from "lucide-react";
 import Link from "next/link";
@@ -45,6 +45,71 @@ export default function UserDetailPage() {
     } catch (err) {
       console.error("Error viewing file:", err);
       alert("Failed to view file. Please try again.");
+    } finally {
+      setViewingFileId(null);
+    }
+  };
+
+  const handleDownloadFile = async (docId: string, supabasePath: string, filename: string) => {
+    setViewingFileId(docId);
+    try {
+      const url = await getFileViewUrl(supabasePath);
+      if (!url) {
+        alert("Failed to generate download URL. Please try again.");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.download = filename || "download";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error("Error downloading file:", err);
+      alert("Failed to download file. Please try again.");
+    } finally {
+      setViewingFileId(null);
+    }
+  };
+
+  const handleViewProfileDoc = async (key: string, bucket: string, path: string) => {
+    setViewingFileId(key);
+    try {
+      const url = await getProfileDocViewUrl(bucket, path);
+      if (url) {
+        window.open(url, "_blank", "noopener");
+      } else {
+        alert("Failed to generate file view URL. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error viewing profile document:", err);
+      alert("Failed to view file. Please try again.");
+    } finally {
+      setViewingFileId(null);
+    }
+  };
+
+  const handleDownloadProfileDoc = async (key: string, bucket: string, path: string, filename: string) => {
+    setViewingFileId(key);
+    try {
+      const url = await getProfileDocViewUrl(bucket, path);
+      if (!url) {
+        alert("Failed to generate download URL. Please try again.");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.download = filename || "download";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error("Error downloading profile document:", err);
+      alert("Failed to download file. Please try again.");
     } finally {
       setViewingFileId(null);
     }
@@ -152,53 +217,109 @@ export default function UserDetailPage() {
           {/* Documents */}
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Documents</h2>
-            {user.documents.length === 0 ? (
+            {user.documents.length === 0 && user.profile_documents.length === 0 ? (
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
                 <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                 <p className="text-gray-600">No documents uploaded</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {user.documents.map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="bg-white border border-gray-200 rounded-lg p-4"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <FileText className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-gray-900 truncate">
-                            {doc.original_name || "Unnamed Document"}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {doc.mime_type || "Unknown type"}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            Uploaded: {formatDate(doc.created_at)}
-                          </p>
+              <div className="space-y-6">
+                {user.profile_documents.length > 0 ? (
+                  <div className="space-y-3">
+                    <div className="text-sm font-semibold text-gray-900">Profile uploads</div>
+                    {user.profile_documents.map((doc) => {
+                      const key = `${doc.bucket}:${doc.path}`;
+                      return (
+                        <div key={key} className="bg-white border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                              <FileText className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-medium text-gray-900 truncate">{doc.name}</h3>
+                                <p className="text-xs text-gray-400 mt-1">
+                                  Bucket: {doc.bucket} · Updated:{" "}
+                                  {doc.updated_at ? formatDate(doc.updated_at) : "recently"}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleViewProfileDoc(key, doc.bucket, doc.path)}
+                              disabled={viewingFileId === key}
+                              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                            >
+                              {viewingFileId === key ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  Opening...
+                                </>
+                              ) : (
+                                <>
+                                  <Eye className="w-4 h-4" />
+                                  View
+                                </>
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleDownloadProfileDoc(key, doc.bucket, doc.path, doc.name)}
+                              disabled={viewingFileId === key}
+                              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                            >
+                              Download
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+
+                {user.documents.length > 0 ? (
+                  <div className="space-y-3">
+                    <div className="text-sm font-semibold text-gray-900">Query attachments</div>
+                    {user.documents.map((doc) => (
+                      <div key={doc.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
+                            <FileText className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-medium text-gray-900 truncate">
+                                {doc.original_name || "Unnamed Document"}
+                              </h3>
+                              <p className="text-sm text-gray-500">{doc.mime_type || "Unknown type"}</p>
+                              <p className="text-xs text-gray-400 mt-1">Uploaded: {formatDate(doc.created_at)}</p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => handleViewFile(doc.id, doc.supabase_path)}
+                            disabled={viewingFileId === doc.id}
+                            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                          >
+                            {viewingFileId === doc.id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Opening...
+                              </>
+                            ) : (
+                              <>
+                                <Eye className="w-4 h-4" />
+                                View
+                              </>
+                            )}
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDownloadFile(doc.id, doc.supabase_path, doc.original_name || "download")
+                            }
+                            disabled={viewingFileId === doc.id}
+                            className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                          >
+                            Download
+                          </button>
                         </div>
                       </div>
-                      <button
-                        onClick={() => handleViewFile(doc.id, doc.supabase_path)}
-                        disabled={viewingFileId === doc.id}
-                        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
-                      >
-                        {viewingFileId === doc.id ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            Opening...
-                          </>
-                        ) : (
-                          <>
-                            <Eye className="w-4 h-4" />
-                            View
-                          </>
-                        )}
-                      </button>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                ) : null}
               </div>
             )}
           </div>

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { getConversationDetail, ConversationDetail } from "@/lib/api";
+import { getConversationDetail, ConversationDetail, getFileViewUrl } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
-import { ArrowLeft, MessageSquare, Loader2, User, Bot } from "lucide-react";
+import { ArrowLeft, MessageSquare, Loader2, User, Bot, FileText, Eye } from "lucide-react";
 import Link from "next/link";
 
 export default function ConversationDetailPage() {
@@ -14,6 +14,7 @@ export default function ConversationDetailPage() {
   const [conversation, setConversation] = useState<ConversationDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [viewingFileId, setViewingFileId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchConversation() {
@@ -50,6 +51,47 @@ export default function ConversationDetailPage() {
     );
   }
 
+  const handleViewFile = async (docId: string, supabasePath: string) => {
+    setViewingFileId(docId);
+    try {
+      const url = await getFileViewUrl(supabasePath);
+      if (url) {
+        window.open(url, "_blank", "noopener");
+      } else {
+        alert("Failed to generate file view URL. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error viewing file:", err);
+      alert("Failed to view file. Please try again.");
+    } finally {
+      setViewingFileId(null);
+    }
+  };
+
+  const handleDownloadFile = async (docId: string, supabasePath: string, filename: string) => {
+    setViewingFileId(docId);
+    try {
+      const url = await getFileViewUrl(supabasePath);
+      if (!url) {
+        alert("Failed to generate download URL. Please try again.");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.download = filename || "download";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error("Error downloading file:", err);
+      alert("Failed to download file. Please try again.");
+    } finally {
+      setViewingFileId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200">
@@ -73,6 +115,61 @@ export default function ConversationDetailPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Attachments ({conversation.documents.length})
+            </h2>
+          </div>
+
+          {conversation.documents.length === 0 ? (
+            <div className="p-6 text-sm text-gray-500">No documents attached to this query.</div>
+          ) : (
+            <div className="divide-y divide-gray-200">
+              {conversation.documents.map((doc) => (
+                <div key={doc.id} className="p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <FileText className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-gray-900 truncate">
+                          {doc.original_name || "Unnamed Document"}
+                        </h3>
+                        <p className="text-sm text-gray-500">{doc.mime_type || "Unknown type"}</p>
+                        <p className="text-xs text-gray-400 mt-1">Uploaded: {formatDate(doc.created_at)}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleViewFile(doc.id, doc.supabase_path)}
+                      disabled={viewingFileId === doc.id}
+                      className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                    >
+                      {viewingFileId === doc.id ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Opening...
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="w-4 h-4" />
+                          View
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => handleDownloadFile(doc.id, doc.supabase_path, doc.original_name || "download")}
+                      disabled={viewingFileId === doc.id}
+                      className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-semibold text-gray-900">

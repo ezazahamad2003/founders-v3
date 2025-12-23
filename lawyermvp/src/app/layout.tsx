@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AdminToolbar from "@/components/AdminToolbar";
 
 export const metadata: Metadata = {
   title: "Lawyer CRM - Scopic Legal",
@@ -15,8 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <AdminToolbar />
-        <div className="pt-14">{children}</div>
+        {children}
       </body>
     </html>
   );

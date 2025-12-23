@@ -26,6 +26,14 @@ export interface DocumentPreview {
   created_at: string;
 }
 
+export interface ProfileDocumentPreview {
+  bucket: string;
+  path: string;
+  name: string;
+  size: number;
+  updated_at: string | null;
+}
+
 export interface UserDetail {
   user_id: string;
   email: string | null;
@@ -38,6 +46,7 @@ export interface UserDetail {
   total_documents: number;
   conversations: ConversationPreview[];
   documents: DocumentPreview[];
+  profile_documents: ProfileDocumentPreview[];
 }
 
 export interface MessageDetail {
@@ -53,6 +62,7 @@ export interface ConversationDetail {
   created_at: string;
   updated_at: string;
   messages: MessageDetail[];
+  documents: DocumentPreview[];
 }
 
 export async function getAllUsers(): Promise<UserStats[]> {
@@ -112,6 +122,9 @@ export async function getAllUsers(): Promise<UserStats[]> {
         .select('*', { count: 'exact', head: true })
         .eq('user_id', profile.id);
 
+      // Get profile-library document count (Supabase Storage; service-role via Next API route)
+      const profileDocs = await getProfileDocuments(profile.id);
+
       // Get last activity (only if there are conversations)
       let lastActivity = null;
       if (conversationIds.length > 0) {
@@ -132,7 +145,7 @@ export async function getAllUsers(): Promise<UserStats[]> {
         full_name: profile.full_name,
         total_conversations: convCount || 0,
         total_messages: msgCount,
-        total_documents: docCount || 0,
+        total_documents: (docCount || 0) + profileDocs.length,
         last_activity: lastActivity,
       };
     })
@@ -198,6 +211,8 @@ export async function getUserDetail(userId: string): Promise<UserDetail> {
     created_at: d.created_at,
   }));
 
+  const profileDocuments = await getProfileDocuments(userId);
+
   // Get total message count
   const { count: totalMessages } = await supabase
     .from('messages')
@@ -213,9 +228,10 @@ export async function getUserDetail(userId: string): Promise<UserDetail> {
     created_at: profile.created_at,
     total_conversations: conversationList.length,
     total_messages: totalMessages || 0,
-    total_documents: documentList.length,
+    total_documents: documentList.length + profileDocuments.length,
     conversations: conversationList,
     documents: documentList,
+    profile_documents: profileDocuments,
   };
 }
 
@@ -245,12 +261,28 @@ export async function getConversationDetail(conversationId: string): Promise<Con
     created_at: m.created_at,
   }));
 
+  // Get documents attached to this conversation
+  const { data: files } = await supabase
+    .from("files")
+    .select("id, original_name, mime_type, supabase_path, created_at")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: false });
+
+  const documentList: DocumentPreview[] = (files || []).map((f: any) => ({
+    id: f.id,
+    original_name: f.original_name,
+    mime_type: f.mime_type,
+    supabase_path: f.supabase_path,
+    created_at: f.created_at,
+  }));
+
   return {
     id: conversation.id,
     title: conversation.title,
     created_at: conversation.created_at,
     updated_at: conversation.updated_at,
     messages: messageList,
+    documents: documentList,
   };
 }
 
@@ -273,6 +305,48 @@ export async function getFileViewUrl(supabasePath: string): Promise<string | nul
     return payload?.url ?? null;
   } catch (error) {
     console.error("Error requesting signed URL:", error);
+    return null;
+  }
+}
+
+export async function getProfileDocuments(userId: string): Promise<ProfileDocumentPreview[]> {
+  try {
+    const response = await fetch("/api/profile-docs/list", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to list profile documents:", response.statusText);
+      return [];
+    }
+
+    const payload = await response.json();
+    return (payload?.documents ?? []) as ProfileDocumentPreview[];
+  } catch (error) {
+    console.error("Error listing profile documents:", error);
+    return [];
+  }
+}
+
+export async function getProfileDocViewUrl(bucket: string, path: string): Promise<string | null> {
+  try {
+    const response = await fetch("/api/profile-docs/view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bucket, path }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to request profile-doc signed URL:", response.statusText);
+      return null;
+    }
+
+    const payload = await response.json();
+    return payload?.url ?? null;
+  } catch (error) {
+    console.error("Error requesting profile-doc signed URL:", error);
     return null;
   }
 }

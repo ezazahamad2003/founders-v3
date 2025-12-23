@@ -1,59 +1,46 @@
-import { NextRequest, NextResponse } from "next/server";
-
-const PUBLIC_PATHS = ["/login", "/api/admin/login"];
-
-const ASSET_PATHS = ["/_next", "/favicon.ico"];
-
-function isPublicPath(pathname: string) {
-  return PUBLIC_PATHS.some((path) => pathname.startsWith(path));
-}
-
-function isAssetPath(pathname: string) {
-  return ASSET_PATHS.some((path) => pathname.startsWith(path));
-}
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const sessionSecret = process.env.ADMIN_SESSION_SECRET;
-  if (!sessionSecret) {
-    return NextResponse.next();
-  }
-
   const { pathname } = request.nextUrl;
 
-  if (isAssetPath(pathname)) {
+  // Allow public assets / Next internals
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/robots.txt") ||
+    pathname.startsWith("/sitemap.xml")
+  ) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith("/api") && !isPublicPath(pathname)) {
-    const cookieSession = request.cookies.get("admin_session")?.value;
-    if (cookieSession === sessionSecret) {
-      return NextResponse.next();
-    }
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  if (isPublicPath(pathname)) {
-    const cookieSession = request.cookies.get("admin_session")?.value;
-    if (cookieSession === sessionSecret && pathname === "/login") {
-      const redirectUrl = new URL("/", request.url);
-      return NextResponse.redirect(redirectUrl);
-    }
+  // Allow login page and admin auth endpoints
+  if (pathname === "/login" || pathname.startsWith("/api/admin/")) {
     return NextResponse.next();
   }
 
-  const cookieSession = request.cookies.get("admin_session")?.value;
-  if (cookieSession === sessionSecret) {
-    return NextResponse.next();
+  // Everything else requires admin session cookie
+  const secret = process.env.ADMIN_PASSWORD || process.env.ADMIN_SESSION_SECRET;
+  const sessionCookie = request.cookies.get("admin_session")?.value;
+
+  if (!secret || sessionCookie !== secret) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
   }
 
-  const loginUrl = new URL("/login", request.url);
-  if (pathname !== "/") {
-    loginUrl.searchParams.set("redirect", pathname + request.nextUrl.search);
-  }
-  return NextResponse.redirect(loginUrl);
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    /*
+     * Protect all routes (pages + API) except:
+     * - next internals/assets (handled above)
+     * - /login
+     * - /api/admin/*
+     */
+    "/((?!_next/static|_next/image).*)",
+  ],
 };
 
