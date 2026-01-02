@@ -209,7 +209,13 @@ export default function ChatInput({
         ) : null}
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-          <span>A reminder that Scopic is an AI assistant providing information, not legal advice. No attorney-client relationship is formed here, and always review outputs with a qualified professional. Your data is private and will be kept confidential pursuant to our Privacy Policy.</span>
+          <span>
+            A reminder that Scopic is an AI assistant providing information, not legal advice. No attorney-client relationship is formed here, and always review outputs with a qualified professional. Your data is private and will be kept confidential pursuant to our{" "}
+            <a href="/legal/privacy-policy.html" target="_blank" className="underline hover:text-indigo-400 transition">
+              Privacy Policy
+            </a>
+            .
+          </span>
           {modeOptions.length > 1 && (
             <div className="flex items-center gap-2 text-white">
               <span className="text-white/60">Mode</span>
