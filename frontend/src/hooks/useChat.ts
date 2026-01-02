@@ -32,11 +32,9 @@ Welcome to Scopic Legal! Thanks for joining our private beta program. We designe
 
 - **Ask Away:** Type any legal question in a "+New Legal Query" or use the \\[prompts\\] in the sidebar for common use cases.
 - **Meet Us:** Book a free legal/fundraising strategy consultation with our CEO, Amit Bhanot (10+ years Corporate Lawyer & VC Partner) by clicking "+Book a Meeting".
-- **Provide Context:** To get the most out of that meeting, click "+Upload Legal Docs" to upload past or future agreements, so we'll be ready to help you.
+- **Provide Context:** To get the most out of that meeting, click "+Upload Legal Docs" to upload past or future agreements, so we'll be ready to help you. Any data or documents that you upload will be kept confidential pursuant to our Privacy Policy.
 
 We're thrilled to have you onboard and your feedback is crucial to shaping Scopic Legal. Let's get to work!
-
-\\[Watch a quick welcome video from Amit\\]\\[Note: to be embedded once video is created\\]
 
 **Important Note:** Scopic Legal is an AI assistant, not a law firm. The responses are for informational purposes only and do not constitute legal advice. Please ensure critical documents are reviewed by a qualified professional, whom we can connect you with if needed.
 `;
