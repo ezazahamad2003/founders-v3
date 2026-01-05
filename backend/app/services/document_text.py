@@ -17,7 +17,7 @@ from pypdf import PdfReader
 from app.config import Settings
 from app.models import FileMeta
 
-MAX_CHARS_PER_FILE = 6000
+MAX_CHARS_PER_FILE = 50000  # Increased for legal documents (~8,000 words)
 MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB
 
 logger = logging.getLogger(__name__)

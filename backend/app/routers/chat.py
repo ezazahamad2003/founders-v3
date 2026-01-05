@@ -63,9 +63,29 @@ async def chat_endpoint(
     )
     conversation_id: UUID = conversation_row["id"]
 
+    # Fetch message history first to collect all file_ids from previous messages
+    history = await messages_service.fetch_recent_messages(
+        db=db,
+        conversation_id=conversation_id,
+        limit=settings.max_history_messages,
+    )
+
+    # Collect file_ids from current request AND from message history
+    # This ensures files uploaded in previous messages remain in context
+    all_file_ids = set(payload.file_ids or [])
+    for msg in history:
+        if msg.metadata and "input_files" in msg.metadata:
+            # Extract file_ids from message metadata
+            for file_id_str in msg.metadata["input_files"]:
+                try:
+                    all_file_ids.add(UUID(file_id_str))
+                except (ValueError, TypeError):
+                    logger.warning(f"Invalid file_id in message metadata: {file_id_str}")
+                    continue
+
     validated_files = await files_service.validate_files_belong_to_conversation(
         db=db,
-        file_ids=payload.file_ids or [],
+        file_ids=list(all_file_ids),
         conversation_id=conversation_id,
         user_id=current_user.id,
     )
@@ -78,12 +98,6 @@ async def chat_endpoint(
         file_ids=payload.file_ids,
     )
     await conversations.touch_conversation_updated_at(db, conversation_id)
-
-    history = await messages_service.fetch_recent_messages(
-        db=db,
-        conversation_id=conversation_id,
-        limit=settings.max_history_messages,
-    )
 
     # Use the appropriate system prompt based on request's prompt_mode
     # Frontend manages which mode is active and sends it with each request
