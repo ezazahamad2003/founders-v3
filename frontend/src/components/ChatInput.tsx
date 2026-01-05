@@ -2,19 +2,22 @@
 
 import { Fragment, useMemo, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { ChatMode, FileMeta } from "@/lib/types";
+import { ChatMode, FileMeta, PromptMode } from "@/lib/types";
 import { Listbox, Transition } from "@headlessui/react";
 import {
   ChevronUpDownIcon,
   CheckIcon,
   PaperClipIcon,
   PaperAirplaneIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 
 interface ChatInputProps {
   disabled: boolean;
   mode: ChatMode;
   onModeChange: (mode: ChatMode) => void;
+  promptMode: PromptMode;
+  onPromptModeChange: (mode: PromptMode) => void;
   onSend: (text: string) => Promise<void>;
   isStreaming: boolean;
   conversationId: string | null;
@@ -31,6 +34,8 @@ export default function ChatInput({
   disabled,
   mode,
   onModeChange,
+  promptMode,
+  onPromptModeChange,
   onSend,
   isStreaming,
   conversationId,
@@ -153,6 +158,22 @@ export default function ChatInput({
 
   return (
     <div className="shrink-0 border-t border-white/5 bg-[#05060c]/90 px-4 py-5 sm:px-6 z-10">
+      {/* Contract Review Mode Indicator */}
+      {promptMode === "contract_review" && (
+        <div className="mx-auto max-w-4xl mb-3 flex items-center justify-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-300">
+            <span>⚖️ Contract Review Mode</span>
+            <button
+              onClick={() => onPromptModeChange("general")}
+              className="ml-1 flex h-5 w-5 items-center justify-center rounded-full hover:bg-indigo-500/20 transition"
+              title="Switch to general mode"
+            >
+              <XMarkIcon className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+      
       <div className="mx-auto max-w-4xl rounded-[32px] border border-white/10 bg-[#16181f] px-5 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.55)]">
         {pendingAttachments.length ? (
           <div className="mb-3 flex flex-col gap-2">

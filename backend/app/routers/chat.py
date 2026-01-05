@@ -85,8 +85,11 @@ async def chat_endpoint(
         limit=settings.max_history_messages,
     )
 
-    # Use the adaptive Scopic Legal system prompt
-    base_system_prompt = get_system_prompt(mode="default")
+    # Use the appropriate system prompt based on request's prompt_mode
+    # Frontend manages which mode is active and sends it with each request
+    prompt_mode_to_use = payload.prompt_mode or "general"
+    logger.info(f"Using prompt_mode: {prompt_mode_to_use} for conversation {conversation_id}")
+    base_system_prompt = get_system_prompt(prompt_mode=prompt_mode_to_use)
 
     openai_messages = [{"role": "system", "content": base_system_prompt}] + [
         {"role": msg.role, "content": msg.content} for msg in history

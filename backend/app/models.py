@@ -83,6 +83,7 @@ class ChatRequest(BaseModel):
     message: str
     file_ids: Optional[List[UUID]] = None
     mode: Literal["auto", "chat", "vision", "files", "deep_research"] = "auto"
+    prompt_mode: Optional[Literal["general", "contract_review"]] = "general"
 
 
 class MeResponse(UserProfile):

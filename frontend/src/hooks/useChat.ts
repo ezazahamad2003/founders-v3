@@ -6,6 +6,7 @@ import {
   ConversationSummary,
   FileMeta,
   Message,
+  PromptMode,
   RegisterFileInput,
   UserProfile,
 } from "@/lib/types";
@@ -52,6 +53,8 @@ export function useChat(accessToken: string | null) {
   const [streamedAssistantText, setStreamedAssistantText] = useState("");
   const streamedTextRef = useRef(""); // Track streamed text for onDone callback
   const [mode, setMode] = useState<ChatMode>("auto");
+  const [promptMode, setPromptMode] = useState<PromptMode>("general");
+  const [conversationPromptModes, setConversationPromptModes] = useState<Record<string, PromptMode>>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pendingAttachmentIds, setPendingAttachmentIds] = useState<string[]>([]);
   const [showScopicIntro, setShowScopicIntro] = useState(false);
@@ -64,6 +67,7 @@ export function useChat(accessToken: string | null) {
     setConversationFiles([]);
     setPendingAttachmentIds([]);
     setStreamedAssistantText("");
+    setPromptMode("general"); // Reset to general mode for new conversations
   }, []);
 
   const refreshConversations = useCallback(() => {
@@ -115,16 +119,37 @@ export function useChat(accessToken: string | null) {
           setConversationFiles(data.files);
           setPendingAttachmentIds([]);
           setStreamedAssistantText("");
+          
+          // Restore prompt mode from tracked modes or default to general
+          const savedMode = conversationPromptModes[conversationId] || "general";
+          setPromptMode(savedMode);
         })
         .catch((error) => setErrorMessage(error.message || "Unable to load conversation."));
     },
-    [accessToken, tokenReady],
+    [accessToken, tokenReady, conversationPromptModes],
   );
 
   const startNewConversation = useCallback(() => {
     setShowScopicIntro(false);
     resetConversationState();
   }, [resetConversationState]);
+
+  const startContractReview = useCallback(() => {
+    setShowScopicIntro(false);
+    resetConversationState();
+    setPromptMode("contract_review");
+  }, [resetConversationState]);
+
+  const changePromptMode = useCallback((newMode: PromptMode) => {
+    setPromptMode(newMode);
+    // Track mode for current conversation if one is active
+    if (activeConversationId) {
+      setConversationPromptModes(prev => ({
+        ...prev,
+        [activeConversationId]: newMode
+      }));
+    }
+  }, [activeConversationId]);
 
   const handleAcceptTos = useCallback(async () => {
     if (!tokenReady) return;
@@ -205,6 +230,7 @@ export function useChat(accessToken: string | null) {
             message: trimmed,
             file_ids: fileIds.length ? fileIds : null,
             mode: options.modeOverride ?? mode,
+            prompt_mode: promptMode, // Include the current prompt mode
           },
           {
             onToken: (delta) => {
@@ -236,6 +262,11 @@ export function useChat(accessToken: string | null) {
               const isNewConversation = !activeConversationId && payload.conversation_id;
               if (isNewConversation) {
                 setActiveConversationId(payload.conversation_id);
+                // Track prompt mode for this new conversation
+                setConversationPromptModes(prev => ({
+                  ...prev,
+                  [payload.conversation_id]: promptMode
+                }));
               }
               
               // Update conversation list optimistically without full refresh
@@ -289,6 +320,7 @@ export function useChat(accessToken: string | null) {
       accessToken,
       activeConversationId,
       mode,
+      promptMode,
       profile,
       tokenReady,
     ],
@@ -334,12 +366,15 @@ export function useChat(accessToken: string | null) {
     streamedAssistantText,
     mode,
     setMode,
+    promptMode,
+    setPromptMode: changePromptMode,
     errorMessage,
     showScopicIntro,
     scopicIntroMarkdown: SCOPIC_INTRO_MARKDOWN,
     refreshConversations,
     loadConversation,
     startNewConversation,
+    startContractReview,
     acceptTos: handleAcceptTos,
     registerFilesForConversation,
     uploadFile,

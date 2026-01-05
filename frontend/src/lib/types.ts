@@ -1,5 +1,7 @@
 export type ChatMode = "auto" | "chat" | "vision" | "files" | "deep_research";
 
+export type PromptMode = "general" | "contract_review";
+
 export interface UserProfile {
   id: string;
   email?: string | null;
@@ -55,6 +57,7 @@ export interface ChatRequestPayload {
   message: string;
   file_ids?: string[] | null;
   mode: ChatMode;
+  prompt_mode?: PromptMode;
 }
 
 export interface ConversationDetailResponse {

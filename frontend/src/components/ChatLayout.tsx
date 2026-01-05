@@ -30,9 +30,12 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     messages,
     loadConversation,
     startNewConversation,
+    startContractReview,
     sendMessage,
     mode,
     setMode,
+    promptMode,
+    setPromptMode,
     isStreaming,
     streamedAssistantText,
     filesById,
@@ -114,6 +117,10 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
             startNewConversation();
             setIsSidebarOpen(false);
           }}
+          onStartContractReview={() => {
+            startContractReview();
+            setIsSidebarOpen(false);
+          }}
           onDeleteConversation={deleteConversation}
           profile={profile}
           supabase={supabase}
@@ -156,6 +163,8 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           disabled={isProfileLoading || requiresTos}
           mode={mode}
           onModeChange={setMode}
+          promptMode={promptMode}
+          onPromptModeChange={setPromptMode}
           onSend={handleSendMessage}
           isStreaming={isStreaming}
           conversationId={activeConversationId}
