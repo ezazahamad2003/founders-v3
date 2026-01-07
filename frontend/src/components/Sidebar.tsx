@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { ConversationSummary, UserProfile } from "@/lib/types";
 import ConversationList from "./ConversationList";
 import ProfileDrawer from "./ProfileDrawer";
+import DocumentReviewModal from "./DocumentReviewModal";
 
 interface SidebarProps {
   conversations: ConversationSummary[];
@@ -12,7 +13,7 @@ interface SidebarProps {
   loading: boolean;
   onSelectConversation: (conversationId: string) => void;
   onNewConversation: () => void;
-  onStartContractReview: () => void;
+  onStartDocumentReview: (file: File, clientRole: string, optionalPrompt: string) => Promise<void>;
   onDeleteConversation: (conversationId: string) => void;
   profile: UserProfile | null;
   supabase: SupabaseClient;
@@ -24,12 +25,13 @@ export default function Sidebar({
   loading,
   onSelectConversation,
   onNewConversation,
-  onStartContractReview,
+  onStartDocumentReview,
   onDeleteConversation,
   profile,
   supabase,
 }: SidebarProps) {
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
+  const [documentReviewModalOpen, setDocumentReviewModalOpen] = useState(false);
 
   return (
     <aside className="flex h-full w-[var(--sidebar-width)] flex-col overflow-hidden border-r border-white/5 bg-[#0c0f1a]">
@@ -43,7 +45,7 @@ export default function Sidebar({
           + New Legal Query
         </button>
         <button
-          onClick={onStartContractReview}
+          onClick={() => setDocumentReviewModalOpen(true)}
           className="mt-3 flex w-full items-center justify-center rounded-2xl border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"
         >
           ⚖️ Document Review
@@ -81,6 +83,11 @@ export default function Sidebar({
         onClose={() => setProfileDrawerOpen(false)}
         profile={profile}
         supabase={supabase}
+      />
+      <DocumentReviewModal
+        open={documentReviewModalOpen}
+        onClose={() => setDocumentReviewModalOpen(false)}
+        onReview={onStartDocumentReview}
       />
     </aside>
   );

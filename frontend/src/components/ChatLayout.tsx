@@ -81,6 +81,29 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     // Don't clear pendingAttachments immediately - keep them for display
   };
 
+  const handleStartDocumentReview = async (file: File, clientRole: string, optionalPrompt: string) => {
+    // Start a new conversation in contract review mode
+    startContractReview();
+    
+    // Upload the file
+    const uploadedFile = await uploadFile(file, null);
+    
+    // Add to pending attachments
+    setPendingAttachments([uploadedFile]);
+    setPendingAttachmentIds([uploadedFile.id]);
+    
+    // Construct the review message
+    let reviewMessage = `I am a ${clientRole}. Please review the attached document.`;
+    
+    if (optionalPrompt) {
+      reviewMessage += `\n\n${optionalPrompt}`;
+    }
+    
+    // Send the message with the file
+    await sendMessage({ text: reviewMessage, fileIds: [uploadedFile.id] });
+    setPendingAttachmentIds([]);
+  };
+
   if (isProfileLoading && !profile) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#05060c] text-slate-300">
@@ -117,8 +140,8 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
             startNewConversation();
             setIsSidebarOpen(false);
           }}
-          onStartContractReview={() => {
-            startContractReview();
+          onStartDocumentReview={async (file, clientRole, optionalPrompt) => {
+            await handleStartDocumentReview(file, clientRole, optionalPrompt);
             setIsSidebarOpen(false);
           }}
           onDeleteConversation={deleteConversation}
