@@ -141,6 +141,7 @@
 - 2025-12-23: Executor restored `lawyermvp` admin access: added `/login`, `/api/admin/login`, `/api/admin/logout`, and `middleware.ts` so the CRM and all API routes (including profile-doc signed-url endpoints) are protected behind the `admin_session` cookie.
 - 2025-12-23: Planner engaged to extend `tests/run_eval.py` to support file input (DOCX in `tests/public/`) and run the new Q1–Q5 contract-review evals with/without `tests/system_prompt.txt` (target output: 2 files × 25 answers).
 - 2025-12-23: Executor implementing `tests` eval runner changes: replaced `tests/questions.txt` with Q1–Q5, added DOCX extraction + file looping to `tests/run_eval.py`, and will run it to generate `tests/outputs/with_prompt.txt` and `tests/outputs/without_prompt.txt`.
+- 2026-01-07: Executor completed UI text updates: changed "Contract Review" to "Document Review" and "Upload Legal Docs" to "Document Vault" across frontend (Sidebar, ChatInput, useChat hook). All changes linted successfully with no errors.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.

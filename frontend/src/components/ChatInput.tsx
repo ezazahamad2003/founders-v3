@@ -162,7 +162,7 @@ export default function ChatInput({
       {promptMode === "contract_review" && (
         <div className="mx-auto max-w-4xl mb-3 flex items-center justify-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-300">
-            <span>⚖️ Contract Review Mode</span>
+            <span>⚖️ Document Review Mode</span>
             <button
               onClick={() => onPromptModeChange("general")}
               className="ml-1 flex h-5 w-5 items-center justify-center rounded-full hover:bg-indigo-500/20 transition"

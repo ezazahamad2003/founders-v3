@@ -46,7 +46,7 @@ export default function Sidebar({
           onClick={onStartContractReview}
           className="mt-3 flex w-full items-center justify-center rounded-2xl border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"
         >
-          ⚖️ Contract Review
+          ⚖️ Document Review
         </button>
       </div>
 
@@ -65,7 +65,7 @@ export default function Sidebar({
           onClick={() => setProfileDrawerOpen(true)}
           className="flex w-full items-center justify-center rounded-2xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
         >
-          + Upload Legal Docs
+          + Document Vault
         </button>
         <a
           href="https://calendar.google.com/calendar/u/0/appointments/AcZssZ0Kntrw_2jzyJwypoDvkeY1nCAaNdy6XUsKB4A="
