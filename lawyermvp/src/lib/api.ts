@@ -4,6 +4,7 @@ export interface UserStats {
   user_id: string;
   email: string | null;
   full_name: string | null;
+  referral_source: string | null;
   total_conversations: number;
   total_messages: number;
   total_documents: number;
@@ -71,7 +72,7 @@ export async function getAllUsers(): Promise<UserStats[]> {
   // Get all client profiles
   const { data: profiles, error: profileError } = await supabase
     .from('profiles')
-    .select('id, email, full_name, role')
+    .select('id, email, full_name, referral_source, role')
     .eq('role', 'client');
 
   console.log('Profiles response:', { profiles, error: profileError });
@@ -143,6 +144,7 @@ export async function getAllUsers(): Promise<UserStats[]> {
         user_id: profile.id,
         email: profile.email,
         full_name: profile.full_name,
+        referral_source: profile.referral_source ?? null,
         total_conversations: convCount || 0,
         total_messages: msgCount,
         total_documents: (docCount || 0) + profileDocs.length,

@@ -25,6 +25,12 @@ export default function UserCard({ user }: UserCardProps) {
               {user.email && (
                 <p className="text-sm text-gray-500">{user.email}</p>
               )}
+              <p className="text-xs text-gray-500 mt-1">
+                Referral source:{" "}
+                <span className="font-medium text-gray-700">
+                  {user.referral_source || "—"}
+                </span>
+              </p>
             </div>
           </div>
           {user.last_activity && (
