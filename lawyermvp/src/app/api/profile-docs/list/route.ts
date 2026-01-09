@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 type ProfileDocItem = {
   bucket: string;
@@ -32,7 +32,7 @@ function getProfileBucketCandidates(): string[] {
 }
 
 async function listFolder(
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient,
   bucket: string,
   folder: string,
 ): Promise<ProfileDocItem[]> {
