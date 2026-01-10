@@ -71,7 +71,7 @@ export default function DocumentReviewModal({ open, onClose, onReview }: Documen
 
   const handleReview = async () => {
     if (!selectedFile || !clientRole.trim()) {
-      setError("Please upload a document and specify your client role.");
+      setError("Please upload a document and specify your role as defined in the document.");
       return;
     }
 
@@ -119,7 +119,7 @@ export default function DocumentReviewModal({ open, onClose, onReview }: Documen
               <Dialog.Panel className="w-full max-w-2xl rounded-3xl border border-white/10 bg-[#0b0e16] p-6 text-white shadow-2xl">
                 <Dialog.Title className="text-xl font-semibold">⚖️ Document Review</Dialog.Title>
                 <p className="mt-1 text-sm text-slate-400">
-                  Upload a document to review, specify your role, and optionally add context or questions.
+                  Upload a document for review and provide context or questions to get a better response
                 </p>
 
                 {/* File Upload Area */}
@@ -178,34 +178,37 @@ export default function DocumentReviewModal({ open, onClose, onReview }: Documen
                   {/* Client Role Input */}
                   <div>
                     <label className="text-xs uppercase tracking-wide text-slate-500">
-                      Your Role <span className="text-red-400">*</span>
+                      Your Role (as specified in the document) <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="text"
                       value={clientRole}
                       onChange={(e) => setClientRole(e.target.value)}
-                      placeholder="e.g., Founder, Investor, Employee, Contractor"
+                      placeholder='e.g. Your company&apos;s legal name or a defined term such as "Company", "Vendor", "Discloser", etc.'
                       disabled={isSubmitting}
                       className="mt-2 w-full rounded-2xl border border-white/15 bg-[#0d0f16] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-40"
                     />
                     <p className="mt-1 text-xs text-slate-500">
-                      Helps us provide context-specific legal analysis
+                      This helps to provide a response from your perspective
                     </p>
                   </div>
 
                   {/* Optional Prompt */}
                   <div>
                     <label className="text-xs uppercase tracking-wide text-slate-500">
-                      Additional Context or Questions (Optional)
+                      Additional Prompts, Context or Questions (Optional)
                     </label>
                     <textarea
                       value={optionalPrompt}
                       onChange={(e) => setOptionalPrompt(e.target.value)}
-                      placeholder="e.g., What are the key terms I should be aware of? Are there any red flags?"
+                      placeholder="e.g. I received the attached NDA from a potential large client who is thinking about trying my product. The client is a financial institution in New York and I don&apos;t have much bargaining power here, so could you let me know if there are any major red flags that I should push back on?"
                       disabled={isSubmitting}
                       rows={4}
                       className="mt-2 w-full resize-none rounded-2xl border border-white/15 bg-[#0d0f16] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-40"
                     />
+                    <p className="mt-1 text-xs text-slate-500">
+                      The more context the better
+                    </p>
                   </div>
                 </div>
 
