@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import type { SupabaseClient, Session } from "@supabase/supabase-js";
 import ChatLayout from "./ChatLayout";
 import LandingPage from "./LandingPage";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
+import BlindSpotAnalysisView from "./BlindSpotAnalysisView";
 
 type AuthMode = "sign_in" | "sign_up";
 
-export default function AuthGate() {
+export type AuthGateView = "chat" | "blind_spot_analysis";
+
+interface AuthGateProps {
+  view?: AuthGateView;
+}
+
+export default function AuthGate({ view = "chat" }: AuthGateProps) {
   const supabase = supabaseBrowserClient();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -96,6 +103,10 @@ export default function AuthGate() {
 
   if (!accessToken) {
     return <LandingPage />;
+  }
+
+  if (view === "blind_spot_analysis") {
+    return <BlindSpotAnalysisView onSignOut={handleSignOut} />;
   }
 
   return (

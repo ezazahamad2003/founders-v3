@@ -1,0 +1,930 @@
+EVAL RUN - WITHOUT SYSTEM PROMPT (Q1–Q5 × 5 DOCX)
+=================================================
+
+Item 1/5
+File: 27. InheritChain Inc. - Voting Agreement.DOCX
+Question: Q1 — General Contract Review
+
+Prompt:
+You are reviewing a commercial contract where your client is the Customer / Paying Party. Identify the top 5 legal and commercial risks in the agreement. For each risk, quote the clause, explain why it is problematic for the Customer, and propose a reasonable redline.
+
+Agreement excerpt used (first 800 chars):
+INHERITCHAIN INC. VOTING AGREEMENT TABLE OF CONTENTS Page 1. Voting Provisions Regarding the Board of Directors 1 1.1 Size of the Board 1 1.2 Board Composition 1 1.3 Failure to Designate a Board Member 3 1.4 Removal of Board Members 3 1.5 No Liability for Election of Recommended Directors 4 1.6 Ceasing to Have the Right to Nominate a Director 4 1.7 Board Chair 4 2. Voting Regarding Shareholder Actions 4 3. Drag-Along Right 5 3.1 Definitions 5 3.2 Actions to be Taken 6 3.3 Exceptions 7 3.4 Restrictions on Sales of Control of the Company 9 4. Financial Statements 9 5. Remedies. 9 5.1 Covenants of the Company 9 5.2 Irrevocable Proxy and Power of Attorney 9 5.3 Specific Enforcement 10 5.4 Remedies Cumulative 10 6. Term 10 7. Miscellaneous 11 7.1 Confidentiality 11 7.2 Additional Parties 11 7.3…
+
+Answer:
+Below are five key risks for a minority/common shareholder “Customer” (i.e., a non‑founder, non‑control investor) under this Voting Agreement, with: (1) the problematic language, (2) why it’s risky, and (3) suggested redlines. I assume you are not one of the “Founders” or a “Supermajority Holder”.
+
+Because this is a unanimous shareholder agreement under the CBCA (see Section 7.25 / 7.16 legend), these risks are particularly serious: they override default statutory protections and concentrate control.
+
+---
+
+## 1. Very broad drag‑along; you must sell on terms set by others
+
+### Problematic clauses (excerpts)
+
+**Section 3.2 – Actions to be Taken (Drag‑along mechanics)**
+
+> “If, the Supermajority Holders (the “Electing Holders”) and the Board approve a Sale of the Company in writing, specifying that this Section 3 shall apply to such transaction, then each Shareholder and the Company shall:  
+> …  
+> (b) **if such transaction is a Share Sale, sell the same proportion of Shares beneficially held by such Shareholder as is being sold by the Electing Holders** to the Person to whom the Electing Holders propose to sell their Shares, and, except as permitted in Section 3.3, **on the same terms and conditions as the Electing Holders**;  
+> (c) **execute and deliver all related documentation and take any such other action in support of the Sale of the Company as shall reasonably be requested** by the Company or the Electing Holders…;  
+> (e) **refrain from (i) exercising any dissent rights or rights of appraisal**… or (ii) asserting any claim or commencing any suit challenging the Sale of the Company or this Agreement; …”
+
+**Section 3.3 – Exceptions (limited protections)**  
+(not quoted in full here, but it only gives narrow limits on reps, indemnities, etc.)
+
+### Why this is problematic for you
+
+- You can be **forced to sell your shares** whenever the Supermajority Holders and the Board approve a Sale of the Company and choose to invoke the drag‑along, even if the price or structure is unattractive to you.
+- You must **waive dissent and appraisal rights** and cannot challenge the deal (Section 3.2(e)), removing important statutory remedies if the deal is unfair or conflicted.
+- Your obligation to “execute and deliver all related documentation” is open‑ended; you could be pressured into **onerous sale documentation**, disclosure obligations, non‑competes, etc., constrained only by the partial carve‑outs in Section 3.3.
+- There is no explicit **minimum price or fairness protection** (e.g., “bona fide third‑party arm’s‑length transaction”, “fair market value”, “board fiduciary out”, independent approval in conflict scenarios).
+
+### Proposed redlines
+
+Add pricing/fairness and process protections and preserve limited dissent/claim rights in cases of misconduct. For example:
+
+1. **Condition drag‑along on bona fide third‑party, arm’s‑length deal and minimum consideration standard**:
+
+> “If, the Supermajority Holders (the “Electing Holders”) and the Board **(acting in good faith and in compliance with their fiduciary duties)** approve a **bona fide, arm’s‑length** Sale of the Company in writing, **for consideration that the Board determines in good faith to be fair to all Shareholders**, specifying that this Section 3 shall apply…”
+
+2. **Limit waiver of dissent/claims to non‑fraud situations**:
+
+Replace Section 3.2(e) with:
+
+> “(e) refrain from (i) exercising any dissent rights or rights of appraisal under applicable law at any time with respect to such Sale of the Company **other than in the case of fraud, bad faith, willful misconduct or a material breach of this Agreement by the Company, the Electing Holders or their Affiliates**, or (ii) asserting any claim or commencing any suit challenging the Sale of the Company or this Agreement, **except to the extent based on fraud, bad faith, willful misconduct or a material breach of this Agreement**;”
+
+3. **Tighten the obligation to sign documents**:
+
+Modify Section 3.2(c):
+
+> “…execute and deliver all related documentation **that is customary for transactions of such type and size and that is consistent with the limitations set out in Section 3.3** and take any such other action in support of the Sale of the Company as shall reasonably be requested…”
+
+4. **Add a “no conflict” safeguard** (new subsection in 3.3):
+
+> “(h) Notwithstanding anything to the contrary, no Shareholder shall be obligated to comply with Section 3.2 in connection with any Proposed Sale in which the primary acquiror is a Founder, an Affiliate of a Founder or of any Electing Holder, or a member of management of the Company, **unless such transaction has been approved by a committee of disinterested directors (or, if there are none, by holders of a majority of the Shares excluding such related parties) following receipt of a fairness opinion from a reputable financial advisor.**”
+
+---
+
+## 2. Extremely broad, irrevocable voting proxy and power of attorney
+
+### Problematic clause
+
+**Section 5.2 – Irrevocable Proxy and Power of Attorney**
+
+> “Each Shareholder constitutes and appoints as the proxies of such Shareholder and grants a power of attorney and mandate to the Chief Executive Officer of the Company … and a designee of the Electing Holders, and each of them (acting together or alone), with full power of substitution, with respect to the matters set forth herein, including, without limitation, **election and removal of persons as members of the Board**, **votes regarding any Shareholder Action**… and **votes regarding any Sale of the Company**… and authorizes each of them to represent and to:  
+> (a) vote, if and only if such Shareholder (i) fails to vote … or (ii) attempts to vote … in a manner which is inconsistent with the terms of this Agreement, all of such Shareholder’s Shares in favour of … the approval of the Shareholder Action or approval of any Sale of the Company…; or  
+> (b) **take any action necessary to effect Sections 1, 2, 3 and 4 respectively, including, without limitation, to sign, execute, and deliver any share certificate, stock transfer power, contract … shareholder agreement, consent, waiver and other document or instrument necessary or desirable** to effect any transactions contemplated…”
+
+And:
+
+> “Each proxy and power of attorney and mandatary … is coupled with an interest and shall be irrevocable unless and until this Agreement terminates…”
+
+### Why this is problematic for you
+
+- You give the CEO and the Electing Holders’ designee an **irreversible proxy over your voting rights** and power of attorney to sign documents **on your behalf**, whenever they judge your vote is inconsistent or you fail to act in 48 hours.
+- The “any action necessary or desirable” wording is very broad; combined with “full power of substitution,” this could allow actions you didn’t specifically foresee (e.g., signing waivers, consents, agreements limiting your rights).
+- It lasts until termination of the Agreement (which may be long‑term if there is no IPO or Sale), significantly **displacing your shareholder autonomy**.
+
+### Proposed redlines
+
+Narrow the scope, tighten triggers, and make the power revocable in certain circumstances:
+
+1. **Limit scope to strictly necessary actions**:
+
+> “…with respect to the matters set forth herein, **but solely to the extent necessary to implement votes and consents expressly required under Sections 1, 2, 3 and 4**, including…”
+
+2. **Delete “or desirable” and “full power of substitution”**:
+
+> “…(b) take any action necessary to effect Sections 1, 2, 3 and 4 respectively, including, without limitation, to sign, execute, and deliver any share certificate, stock transfer power, contract … **only to the extent such documents are customary and consistent with the terms of this Agreement**…”
+
+and
+
+> “with full power of substitution” → **delete**.
+
+3. **Increase response time and limit when they can override your vote**:
+
+> “…(i) fails to vote (whether by proxy, in person or by written resolution) (it being understood that failing to execute a written resolution within **five (5) business days** of being requested shall constitute a failure to vote) or (ii) attempts to vote … in a manner which is inconsistent with **a final and binding decision validly approved in accordance with this Agreement**…”
+
+4. **Allow revocation on certain events**:
+
+> “…and, as such, each is coupled with an interest and shall be irrevocable unless and until this Agreement terminates or expires… **or unless such officer or designee ceases to hold such office or capacity or is found by a court of competent jurisdiction to have acted with fraud, bad faith or willful misconduct with respect to this Agreement or the Company.**”
+
+---
+
+## 3. Supermajority/majority “Shareholder Action” mechanism overrides your vote
+
+### Problematic clause
+
+**Section 2 – Voting Regarding Shareholder Actions**
+
+> “Subject to Section 3,  
+> (a) if:  
+> (i) in the case of any action that would require a “special resolution”… **one or more Shareholders of record holding in aggregate… more than two-thirds of the votes attached to the outstanding voting Shares (the “Supermajority Holders”);**  
+> (ii) in the case of any other action that would require an “ordinary resolution”… the Majority Holders; or  
+> (iii) in the case of waiving the requirement to appoint an auditor… the Majority Holders,  
+> in any such case, agree by written consent to approve such action (each action, a “Shareholder Action”); and  
+> (b) such Shareholder Action has also been approved by the Board, then **all Shareholders shall: (1) vote all of their respective Shares in favour of such Shareholder Action; (2) waive any dissent, appraisal or similar rights…; and (3) execute and deliver all resolutions, consents and all other similar instruments in favour of such Shareholder Action.**”
+
+### Why this is problematic for you
+
+- Once the Majority or Supermajority Holders sign a written consent and the Board approves, **you must vote in favour**, regardless of your own assessment of the transaction or resolution.
+- You must **waive dissent/appraisal rights** for any such Shareholder Action, which could include major corporate changes (amalgamations, continuances, amendments to Articles, etc.).
+- This structure effectively turns the Agreement into a **standing, advance voting power** for the controlling holders against which you have no practical protection.
+
+### Proposed redlines
+
+1. **Exclude fundamental conflict transactions and personal prejudice**:
+
+Add at the end of Section 2(b):
+
+> “…then all Shareholders shall… **provided that no Shareholder shall be required to so vote or waive dissent, appraisal or similar rights in respect of any Shareholder Action that (x) constitutes a related‑party transaction primarily benefiting the Supermajority Holders, the Majority Holders, any Founder or their Affiliates, or (y) would result in such Shareholder receiving consideration or rights that are materially less favourable than those received by other holders of the same class or series of Shares.**”
+
+2. **Limit waiver of dissent rights**:
+
+Amend clause 2(b)(2):
+
+> “(2) waive any dissent, appraisal or similar rights to which they may be entitled with respect to such Shareholder Action… **except to the extent based on fraud, bad faith, willful misconduct, or a breach of this Agreement or applicable law by the Company, the Board or the approving Shareholders;**”
+
+3. **Clarify that documentation must be customary and not more onerous than others**:
+
+Add to 2(b)(3):
+
+> “…execute and deliver all resolutions, consents and all other similar instruments in favour of such Shareholder Action, **in form and substance that is customary for such transactions and that applies to all holders of the same class or series of Shares on a substantially equivalent basis.**”
+
+---
+
+## 4. Amendment and termination can be imposed by Supermajority Holders
+
+### Problematic clause
+
+**Section 7.12 – Consent Required to Amend, Terminate or Waive**
+
+> “This Agreement may be amended or terminated and the observance of any term hereof may be waived … only by a written instrument executed by (a) the Company; and (b) the Supermajority Holders.  
+> Notwithstanding the foregoing:  
+> (a) this Agreement may not be amended or terminated and the observance of any term of this Agreement may not be waived with respect to a particular Shareholder without the written consent of such Shareholder unless such amendment, termination or waiver applies to all Shareholders holding the same class or series… in the same fashion;  
+> (b) **the consent of a particular Shareholder shall not be required for any amendment or waiver if such amendment or waiver either (1) is not directly applicable to the unique rights of such Shareholder set forth in this Agreement or (2) does not adversely affect the rights of such Shareholder in a manner that is different than the effect on the rights of the other Shareholders holding the same class or series…**”
+
+### Why this is problematic for you
+
+- The **Supermajority Holders can change or terminate the Voting Agreement** without your consent, so long as they treat all holders of your class “equally,” even if the change is significantly adverse overall (e.g., strengthening drag‑along or proxy powers).
+- The carve‑out in 7.12(b) is vague; what “not directly applicable to the unique rights” or “not adversely affect … in a manner that is different” means is open to interpretation and may still allow **material dilution of your protections**.
+
+### Proposed redlines
+
+1. **Require consent of adversely affected minority for certain changes**:
+
+Replace 7.12(b) with:
+
+> “(b) Notwithstanding the foregoing, **no amendment, termination or waiver that materially and adversely affects the rights or obligations of any Shareholder (including, without limitation, with respect to drag‑along rights and obligations, voting commitments, powers of attorney, or restrictions on transfer) shall be effective as to such Shareholder without the prior written consent of Shareholders holding at least a majority of the Shares held by all Shareholders who are not Supermajority Holders and who are adversely affected thereby.**”
+
+2. **Clarify “same fashion” to include degree of impact**:
+
+In 7.12(a), add:
+
+> “…unless such amendment, termination or waiver applies to all Shareholders holding the same class or series… in the same fashion, **and to a substantially equivalent extent with respect to economic and governance impact.**”
+
+This gives non‑controlling holders a real veto on significant changes that affect them.
+
+---
+
+## 5. Broad confidentiality obligation with limited carve‑outs
+
+### Problematic clause
+
+**Section 7.1 – Confidentiality**
+
+> “Each Shareholder shall keep confidential and will not disclose, divulge or use for any purpose (other than to monitor its ownership of the Company) any confidential information obtained from the Company… unless such confidential information (a) is known or becomes known to the public in general… (b) is or has been independently developed… or (c) is or has been made known or disclosed… by a third party…; provided, however, that a Shareholder may disclose confidential information (i) to its lawyers, accountants, consultants and other professionals…; (ii) to any prospective purchaser… if such prospective purchaser agrees to be bound by the provisions of this Section 7.1; (iii) to any existing or prospective Affiliate …; or (iv) as may otherwise be required by law, provided that such Shareholder promptly notifies the Company of such disclosure and takes reasonable steps to minimize the extent of any such required disclosure.”
+
+### Why this is problematic for you
+
+- The permitted uses are **narrow**: “other than to monitor its ownership of the Company.” This may not clearly allow you to use information for:
+  - Compliance with **regulatory / fund reporting** requirements (e.g., to LPs, regulators).
+  - Internal risk management or valuation, beyond a literal “monitor ownership.”
+- The prospective purchaser must **agree to be bound by Section 7.1**, which in practice can be unworkable (buyers usually sign a separate NDA, not a full shareholder‑level clause).
+- For “required by law” disclosures, you must “promptly notify” and “minimize disclosure,” which may conflict with regulatory or court orders in short timelines.
+
+### Proposed redlines
+
+1. **Expand permitted use and disclosure to regulators and investors**:
+
+Modify the lead sentence:
+
+> “…will not disclose, divulge or use for any purpose (other than to **evaluate, manage and monitor its investment in the Company and to comply with applicable legal, regulatory, tax and reporting requirements**) any confidential information…”
+
+2. **Permit disclosure to regulators and actual/potential investors under NDA**:
+
+In the proviso, add:
+
+> “(v) to any governmental, regulatory, tax or self‑regulatory authority having jurisdiction over such Shareholder, to the extent reasonably required; and  
+> (vi) to such Shareholder’s actual or potential direct or indirect investors, financing sources or limited partners, **subject to customary confidentiality obligations no less protective than those set forth herein**; …”
+
+3. **Relax requirement that a buyer be “bound by Section 7.1”**:
+
+Amend 7.1(ii):
+
+> “(ii) to any prospective purchaser of any shares in the capital of the Company from such Shareholder, **subject to such prospective purchaser entering into a customary confidentiality agreement with terms substantially similar to those set forth in this Section 7.1**;”
+
+4. **Qualify notice for disclosures required by law**:
+
+At the end of 7.1(iv):
+
+> “…provided that such Shareholder promptly notifies the Company of such disclosure **to the extent legally permitted and practicable under the circumstances**, and takes reasonable steps to minimize the extent of any such required disclosure.”
+
+---
+
+If you’d like, I can next:  
+- Prioritize which of these redlines are “must‑have” vs “nice‑to‑have” for negotiation, or  
+- Re‑draft any of the relevant sections in full, in a markup‑ready format.
+
+------------------------------------------------------------
+
+Item 2/5
+File: 27. InheritChain Inc. - Voting Agreement.DOCX
+Question: Q2 — Liability & Indemnity Focus
+
+Prompt:
+Review this agreement and identify any clauses that expose the Customer to disproportionate liability or weak indemnification protection. Explain the risk and propose improved language.
+
+Agreement excerpt used (first 800 chars):
+INHERITCHAIN INC. VOTING AGREEMENT TABLE OF CONTENTS Page 1. Voting Provisions Regarding the Board of Directors 1 1.1 Size of the Board 1 1.2 Board Composition 1 1.3 Failure to Designate a Board Member 3 1.4 Removal of Board Members 3 1.5 No Liability for Election of Recommended Directors 4 1.6 Ceasing to Have the Right to Nominate a Director 4 1.7 Board Chair 4 2. Voting Regarding Shareholder Actions 4 3. Drag-Along Right 5 3.1 Definitions 5 3.2 Actions to be Taken 6 3.3 Exceptions 7 3.4 Restrictions on Sales of Control of the Company 9 4. Financial Statements 9 5. Remedies. 9 5.1 Covenants of the Company 9 5.2 Irrevocable Proxy and Power of Attorney 9 5.3 Specific Enforcement 10 5.4 Remedies Cumulative 10 6. Term 10 7. Miscellaneous 11 7.1 Confidentiality 11 7.2 Additional Parties 11 7.3…
+
+Answer:
+Below are the provisions that create material liability / indemnity exposure for the Shareholders (your “Customer”) together with (a) the risk and (b) sample improvements. I only rely on the quoted text you provided; if something is missing (e.g., full Articles), I say so.
+
+---
+
+## 1. Drag‑Along: Shareholder Liability in a Sale of the Company
+
+### 1.1. Shareholder representations & warranties in a Sale  
+**Relevant clause (Section 3.3(a))**  
+A Shareholder must comply with the drag‑along unless:
+
+> “any representations and warranties to be made by such Shareholder in connection with the Proposed Sale are limited to representations and warranties related to authority, ownership, residency for tax purposes, and the ability to convey title to such Shares…”
+
+**Risk**
+
+- The clause is generally protective, but it is **open‑ended**: “related to authority, ownership, residency for tax purposes, and the ability to convey title” could still be drafted in a very broad way in the transaction documents.
+- There is no explicit cap or survival limitation on the Shareholder’s own reps. That means reps about, for example, tax residency could survive a long time or be subject to uncapped liability depending on how the sale agreement is drafted.
+
+**Suggested improvement**
+
+Tighten the permitted scope and add caps/survival:
+
+> “any representations and warranties to be made by such Shareholder in connection with the Proposed Sale shall be **solely** with respect to (i) such Shareholder’s due authority and capacity to enter into the transaction documents, (ii) such Shareholder’s valid ownership of the Shares being sold, free and clear of encumbrances (other than those created by the transaction documents or under applicable securities laws), and (iii) such Shareholder’s tax residency **to the extent reasonably necessary to determine withholding or reporting obligations**, and in each case shall be **several and not joint, subject to an aggregate liability cap not exceeding the consideration actually received by such Shareholder in such Proposed Sale, and subject to customary survival periods not exceeding [12–24] months from closing (or such shorter period as may be negotiated for the Company’s representations and warranties in the Proposed Sale).**”
+
+---
+
+### 1.2. Exposure to other shareholders’/Company’s breaches & escrow
+
+**Relevant clauses (Section 3.3(b), (d), (e))**
+
+- 3.3(b):
+
+> “the Shareholder shall not be liable for the inaccuracy of any representation or warranty or covenant made by any other Person in connection with the Proposed Sale, other than the Company (except that and only to the extent that funds may be paid out of an escrow established to cover breach of representations, warranties and covenants of the Company as well as breach by any Shareholder of any representations, warranties and covenants provided by all Shareholders with respect to the Company)…”
+
+- 3.3(d):
+
+> “the liability for indemnification, if any, of such Shareholder… is several and not joint… and … is pro rata in proportion to, and does not exceed, the amount of consideration paid to such Shareholder in connection with such Proposed Sale;”
+
+- 3.3(e):
+
+> “liability shall be limited to such Shareholder’s applicable share… of a negotiated aggregate indemnification amount that applies equally to all Shareholders but that in no event exceeds the amount of consideration otherwise payable to such Shareholder… except with respect to claims related to fraud by such Shareholder, the liability for which need not be limited…”
+
+**Risks**
+
+Positive protections:
+
+- Liability is “several and not joint” and **capped at the consideration received**.
+- Fraud carve‑out is standard.
+
+Residual / disproportionate risks:
+
+1. **Company‑level breaches funded via escrow**  
+   - The clause allows escrow funds to be used for **both** Company‑level and Shareholder‑level breaches. This is typical, but it effectively makes each Shareholder a “backstop” for Company risk up to their escrowed portion, even if they had no control over those matters.
+   - There is no explicit cap on the **escrow size** or clarity that the aggregate indemnity basket and caps apply to Company‑level claims, not just shareholder claims.
+
+2. **No explicit baskets/deductibles**  
+   - The Agreement is silent on an overall de minimis, basket or threshold before claims drain escrow. That will be negotiated in the sale agreement, but from the Shareholder perspective, confirming a **single aggregate cap and basket** and “first loss” allocation to insurance (if any) would be protective.
+
+3. **Fraud carve‑out is uncapped**  
+   - “fraud by such Shareholder” is reasonable, but “fraud” should be tightly defined and limited to **actual fraud by that Shareholder with respect to their own representations**, not imputed or constructive fraud based on information supplied by others.
+
+**Suggested improvements**
+
+Add explicit caps / baskets and narrow fraud:
+
+> “(b) … except that, and only to the extent that, funds may be paid out of a **single, shared escrow or holdback** established to cover (A) breaches of representations, warranties and covenants of the Company, and (B) breaches by any Shareholder of the **limited** representations, warranties and covenants such Shareholders are required to give pursuant to Section 3.3(a); provided that the aggregate amount payable from such escrow or holdback on account of all such claims shall not exceed **[●]% of the aggregate consideration** and shall be subject to customary de minimis and basket thresholds negotiated in good faith.”
+
+> “(d) … and in any event the liability of such Shareholder for all indemnification obligations in connection with the Proposed Sale shall be **limited to the amount of consideration actually received by such Shareholder (net of any taxes paid or payable on such consideration)**.”
+
+> “(e) … except with respect to claims related to **actual, intentional fraud by such Shareholder in respect of the express representations and warranties made by such Shareholder in the definitive transaction documents, which shall be proven by clear and convincing evidence; for greater certainty, no Shareholder shall have any liability for imputed, vicarious, constructive or equitable fraud, or for any fraud of the Company or any other Person.**”
+
+---
+
+### 1.3. Forced sale on “same terms” – but with carve‑outs
+
+**Relevant clause (Section 3.2(b))**
+
+> “…if such transaction is a Share Sale, [each Shareholder must] sell the same proportion of Shares… as is being sold by the Electing Holders… and, **except as permitted in Section 3.3, on the same terms and conditions** as the Electing Holders;”
+
+**Risks**
+
+- “Same terms and conditions” is generally protective in a drag‑along, but:
+  - Section 3.3(f) and (g) allow **different forms of consideration** for some holders where there are employment or securities law constraints.
+  - There is no explicit obligation on the Electing Holders or Company to ensure the dragged Shareholders are **not left with worse net economic or tax outcomes** as a result of “same terms”.
+
+You are forced to sell, but the Agreement does not guarantee that the sale terms negotiated by the Electing Holders (economic, tax, conditionality, timing of payments) will be **fair, reasonable or arm’s‑length** from your perspective.
+
+**Suggested improvement**
+
+Add a fairness constraint:
+
+> “(b) … and, except as permitted in Section 3.3, on the same terms and conditions as the Electing Holders; **provided that such terms and conditions shall be negotiated in good faith and shall be no less favourable, in the aggregate, to the Shareholders as a group than those that would reasonably be expected to be obtained in an arm’s‑length transaction with an unrelated third party.**”
+
+---
+
+### 1.4. Different forms of consideration / cash‑out in lieu of securities
+
+**Relevant clauses: 3.2(f) and 3.3(f)(B)**
+
+- 3.2(f):
+
+> “…if the consideration… includes any securities and due receipt thereof by any Shareholder would require under applicable law (x) [registration/qualification] or (y) the provision… of any information other than such information as a prudent issuer would generally furnish in an offering made solely to Accredited Investors, the Company may cause to be paid to any such Shareholder in lieu thereof… cash equal to the **fair value (as determined in good faith by the Board)** of the securities…”
+
+- 3.3(f)(B): similar cash‑in‑lieu mechanism.
+
+**Risks**
+
+- “Fair value (as determined in good faith by the Board)”:
+  - No independent valuation or dispute mechanism.
+  - If the acquirer’s securities later appreciate substantially, the cash‑out Shareholder bears a potential **opportunity cost**, yet has no say in the valuation.
+- This is particularly sensitive where some shareholders receive stock that could be worth more over time, while others are forced into a cash‑out at Board‑determined “fair value”.
+
+**Suggested improvement**
+
+Add objective valuation mechanics and protection:
+
+> “…an amount in cash equal to the fair value of the securities that such Shareholder would otherwise receive, **such fair value to be equal to the price per security paid by the acquirer to other selling securityholders in the same transaction or, if no such price is determinable, based on the per‑security value used to determine the overall purchase price in such transaction. If such value cannot be readily determined, it shall be determined by an independent valuator mutually agreed upon by the Company and holders of a majority of the Shares to be so cashed out, with the cost of such valuation borne by the Company.**”
+
+Also make clear that this mechanism should not be used opportunistically:
+
+> “For greater certainty, the Company shall not elect to pay cash in lieu of securities under this Section 3.2(f) or 3.3(f)(B) **unless and only to the extent reasonably required to comply with applicable law**.”
+
+---
+
+### 1.5. Shareholder Representative immunity
+
+**Relevant clause (Section 3.2(g))**
+
+> “…not to assert any claim or commence any suit against the Shareholder Representative or any other Shareholder with respect to any action or inaction taken or failed to be taken by the Shareholder Representative in connection with its service as the Shareholder Representative, **absent fraud, bad faith, gross negligence or willful misconduct.**”
+
+**Risk**
+
+- This is broadly standard, but it effectively **insulates the Shareholder Representative** from most liability and legal challenge:
+  - Ordinary negligence (even serious but not “gross”) is waived.
+  - The Representative can make significant decisions that affect how escrow is used, disputes are settled, etc., with limited accountability.
+
+**Suggested improvement**
+
+Slightly lower the liability threshold and add process protections:
+
+> “…not to assert any claim… absent fraud, **intentional misconduct or gross negligence**… **provided that the Shareholder Representative shall at all times act in good faith and in a manner it reasonably believes to be in the best interests of the Shareholders as a group and shall provide periodic updates to the Shareholders on material decisions affecting their economic interests.**”
+
+---
+
+## 2. Irrevocable Proxy & Power of Attorney (Section 5.2)
+
+**Relevant clause (Section 5.2)**
+
+Shareholders:
+
+> “constitute and appoint… the Chief Executive Officer… and a designee of the Electing Holders… as the proxies… and grant a power of attorney… with respect to the matters set forth herein… [to] vote… if and only if such Shareholder (i) fails to vote… or (ii) attempts to vote… in a manner which is inconsistent with the terms of this Agreement…”
+
+and:
+
+> “take any action necessary to effect Sections 1, 2, 3 and 4 respectively, including… sign, execute, and deliver any… contract… shareholder agreement, consent, waiver and other document or instrument necessary or desirable to effect any transactions contemplated in Sections 1, 2, 3 and 4…”
+
+**Risks**
+
+- This power of attorney is **very broad** and “coupled with an interest” (expressly “irrevocable” until the Agreement terminates).
+- It allows the proxyholders to:
+  - Sign contracts, sale agreements, escrow agreements, etc., in your name.
+  - Potentially agree to **waivers, consents and other obligations** that may create **additional liability or reduce your rights** beyond what you would have agreed to yourself.
+- It is triggered if you fail to vote **within 48 hours** of a written resolution request—this is a short window and increases the chance that the proxy is used by default.
+
+**Suggested improvements**
+
+1. Narrow the scope to **only what is strictly necessary**:
+   > “…to sign, execute, and deliver any… document or instrument **that is consistent with the terms of this Agreement and the definitive transaction documents approved in accordance with this Agreement and that does not impose on such Shareholder any obligations, liabilities or restrictions beyond those expressly contemplated herein or in such definitive transaction documents.**”
+
+2. Extend the response window and require notice:
+   > “(a)… failing to execute a written resolution within **five (5) business days** of being requested shall constitute a failure to vote… **provided that the Company shall include in such request a clear summary of the action to be taken and shall promptly notify the Shareholder when such proxy is exercised on its behalf.**”
+
+3. Clarify that POA cannot be used to change economic terms:
+   > “For greater certainty, the foregoing proxy and power of attorney may not be exercised to alter the **amount, form or timing of consideration or the liability caps or survival periods** applicable to such Shareholder, except as expressly authorized by such Shareholder or as required by this Agreement.”
+
+---
+
+## 3. Limitation of Liability for Designated Directors (Section 1.5)
+
+**Relevant clause**
+
+> “No Shareholder… shall have any liability as a result of designating a person for election as a director… nor shall any Shareholder have any liability as a result of voting for any such designee…”
+
+**Risk**
+
+- This clause protects shareholders (including potentially controlling ones) from “shadow director” liability for the conduct of their nominees.
+- There is **no symmetry**: directors themselves have no additional indemnity or advancement protections in this Agreement; those protections, if any, would be in separate D&O indemnity agreements and by‑laws.
+- From the “Customer as shareholder” perspective, this is actually **beneficial** (limiting your liability). There is no need to soften this; if anything, you might want to ensure it is **not weakened**.
+
+**Optional improvement (if you want more clarity)**
+
+> “…provided that nothing in this Section 1.5 shall limit (i) the liability of any individual acting as a director in such capacity, or (ii) the liability of any Shareholder for its own fraud or other misconduct.”
+
+---
+
+## 4. Costs of Enforcement (Section 7.22)
+
+**Relevant clause**
+
+> “If any party to this Agreement seeks to enforce its rights under this Agreement by legal proceedings, the non‑prevailing party shall pay all reasonable costs and expenses incurred by the prevailing party, including all reasonable legal fees.”
+
+**Risks**
+
+- This is a **one‑way loser‑pays** rule: if you lose any dispute (even if the issue was reasonably arguable), you pay the other side’s costs, which may be substantial.
+- It can deter shareholders from challenging unfair conduct, including in connection with drag‑along transactions or the exercise of the irrevo­cable proxy.
+
+**Suggested improvement**
+
+Introduce reasonableness and/or a court discretion:
+
+> “If any party… seeks to enforce its rights under this Agreement by legal proceedings, the court may, **in its discretion and subject to applicable law**, award costs and expenses, including reasonable legal fees, to the prevailing party, **taking into account the relative success of the parties, the reasonableness of their positions and conduct, and any written settlement offers.**”
+
+Or at least limit to material breaches:
+
+> “…the non‑prevailing party shall pay… costs and expenses… **in connection with any material breach of this Agreement, as finally determined by a court of competent jurisdiction.**”
+
+---
+
+## 5. Missing / External Protections
+
+The Agreement expressly relies on:
+
+- The **Articles**,  
+- The **Shareholder Rights Agreement**, and  
+- The **Right of First Refusal and Co‑Sale Agreement**  
+
+for economic allocation, governance and other protections (including how escrows are shared, liquidation preferences, etc.). These documents are **not provided**, so:
+
+- There may be additional **indemnity‑like** exposures (e.g., guarantees, co‑sale structures, forfeiture mechanisms) that are not visible here.
+- Some of the protections in Section 3.3 (esp. 3.3(d) and (e)) reference the Articles for allocation. Without seeing the Articles, we cannot confirm whether that allocation is economically balanced or could create disproportionate downside for you compared to others.
+
+You should review those related documents to confirm:
+
+- A single, clearly defined **aggregate indemnity cap** (including Company‑level breaches),
+- A reasonable **basket/deductible**,
+- That escrow or holdback releases are not unreasonably delayed,
+- And that there are no additional joint and several obligations hidden there.
+
+---
+
+If you’d like, I can next produce a redline‑style summary (clause‑by‑clause) that you can hand directly to your counsel for negotiation.
+
+------------------------------------------------------------
+
+Item 3/5
+File: 27. InheritChain Inc. - Voting Agreement.DOCX
+Question: Q3 — Termination & Exit Risk
+
+Prompt:
+Analyze the contract for termination, renewal, and lock-in risks. Which provisions could trap the Customer in an unfavorable relationship, and how would you revise them?
+
+Agreement excerpt used (first 800 chars):
+INHERITCHAIN INC. VOTING AGREEMENT TABLE OF CONTENTS Page 1. Voting Provisions Regarding the Board of Directors 1 1.1 Size of the Board 1 1.2 Board Composition 1 1.3 Failure to Designate a Board Member 3 1.4 Removal of Board Members 3 1.5 No Liability for Election of Recommended Directors 4 1.6 Ceasing to Have the Right to Nominate a Director 4 1.7 Board Chair 4 2. Voting Regarding Shareholder Actions 4 3. Drag-Along Right 5 3.1 Definitions 5 3.2 Actions to be Taken 6 3.3 Exceptions 7 3.4 Restrictions on Sales of Control of the Company 9 4. Financial Statements 9 5. Remedies. 9 5.1 Covenants of the Company 9 5.2 Irrevocable Proxy and Power of Attorney 9 5.3 Specific Enforcement 10 5.4 Remedies Cumulative 10 6. Term 10 7. Miscellaneous 11 7.1 Confidentiality 11 7.2 Additional Parties 11 7.3…
+
+Answer:
+[EMPTY MODEL OUTPUT]
+
+------------------------------------------------------------
+
+Item 4/5
+File: 27. InheritChain Inc. - Voting Agreement.DOCX
+Question: Q4 — Payment & Financial Exposure
+
+Prompt:
+Identify clauses that could create unexpected payment obligations, penalties, or revenue leakage for the Customer. Explain the risk and suggest contract edits to limit financial exposure.
+
+Agreement excerpt used (first 800 chars):
+INHERITCHAIN INC. VOTING AGREEMENT TABLE OF CONTENTS Page 1. Voting Provisions Regarding the Board of Directors 1 1.1 Size of the Board 1 1.2 Board Composition 1 1.3 Failure to Designate a Board Member 3 1.4 Removal of Board Members 3 1.5 No Liability for Election of Recommended Directors 4 1.6 Ceasing to Have the Right to Nominate a Director 4 1.7 Board Chair 4 2. Voting Regarding Shareholder Actions 4 3. Drag-Along Right 5 3.1 Definitions 5 3.2 Actions to be Taken 6 3.3 Exceptions 7 3.4 Restrictions on Sales of Control of the Company 9 4. Financial Statements 9 5. Remedies. 9 5.1 Covenants of the Company 9 5.2 Irrevocable Proxy and Power of Attorney 9 5.3 Specific Enforcement 10 5.4 Remedies Cumulative 10 6. Term 10 7. Miscellaneous 11 7.1 Confidentiality 11 7.2 Additional Parties 11 7.3…
+
+Answer:
+Below I flag provisions that could expose the Shareholders (your “Customer”) to unexpected or outsized financial obligations or value loss, explain the risk, and suggest concrete edits. I only rely on what’s in the excerpt; if something is missing (e.g., full Articles), I note that.
+
+---
+
+## 1. Drag‑Along and Sale of the Company (Section 3)
+
+### 1.1. Forced Sale on Supermajority Decision (Sections 3.1–3.2)
+
+**What it does**
+
+- A Sale of the Company can be approved by:
+  - the “Supermajority Holders” (holders of > 2/3 of votes) and
+  - the Board,
+  and then made subject to the drag‑along (Section 3.2).
+- Once that happens, each Shareholder must:
+  - vote in favour of the Sale of the Company;
+  - sell the same proportion of their Shares as the Electing Holders (Supermajority Holders) “on the same terms and conditions” (Section 3.2(b));
+  - refrain from dissent or appraisal rights (Section 3.2(e));
+  - sign all sale documentation, including any escrow or indemnity arrangements (Section 3.2(c), 3.2(h)).
+
+**Risk**
+
+- **Loss of control over exit timing and price**: A Supermajority can force a sale even if a minority Shareholder believes the price is too low or terms are unfavourable.
+- **Forced waiver of dissent/appraisal** removes a statutory safeguard that might otherwise let you seek fair value.
+- If consideration includes **securities** that you cannot legally or practically receive (non‑Accredited status, etc.), the Board can instead pay you cash at “fair value (as determined in good faith by the Board)” (Section 3.2(f)), potentially at a discount or with a valuation you cannot influence.
+
+**Suggested edits**
+
+- **Raise the approval threshold and/or add class protections**:
+  - Change “Supermajority Holders” for a Sale of the Company to something higher or require consent of specific groups:
+    > “If, the holders of at least 80% of the outstanding voting Shares, including at least 50% of the Shares held by the Founders [or by non‑founder investors, as applicable] (collectively, the ‘Electing Holders’), and the Board approve a Sale of the Company …”
+- **Limit mandatory waiver of dissent rights**:
+  - Narrow Section 3.2(e):
+    > “Each Shareholder shall refrain from exercising dissent or appraisal rights solely to the extent the consideration and other terms of the Sale of the Company comply with Sections 3.3(f) and 3.3(g).”
+- **Constrain Board‑set “fair value” for substitute cash**:
+  - In Sections 3.2(f) and 3.3(f)(B), add an objective process:
+    > “...an amount in cash equal to the fair value (as determined in good faith by the Board **and, in the event of a dispute, by an independent, mutually agreed valuation firm, whose determination shall be final and binding**) of the securities …”
+
+---
+
+### 1.2. Indemnity / Escrow and Seller Liability (Section 3.2(h), Section 3.3)
+
+**What it does**
+
+- Section 3.2(h) lets the Electing Holders appoint a Shareholder Representative who can:
+  - establish escrows/expense funds,
+  - consent to payment of your **pro rata share** of their fees and expenses.
+- Section 3.3 sets conditions for when you must comply with the drag‑along but also defines your liability exposure:
+  - Your liability for indemnification is “several and not joint,” pro rata, and “does not exceed, the amount of consideration paid to such Shareholder” (Section 3.3(d), 3.3(e)), except for your own fraud (unlimited).
+  - Indemnity can be funded from a common escrow that also covers Company breaches and possibly other Shareholders’ breaches.
+
+**Risks**
+
+- **Revenue leakage through broad escrow/indemnity**: A meaningful portion of your sale proceeds can be locked up for a long period and partially lost through indemnity claims and Shareholder Representative expenses.
+- **Open‑ended Shareholder Representative costs**: “Any and all reasonable fees and expenses” (Section 3.2(h)(x)(iii)) paid from your share of proceeds, with no cap, can materially reduce your net proceeds.
+- Although liability is “several and not joint,” the common escrow to cover Company representations may mean **your escrowed capital is used to satisfy Company‑level risks** (Section 3.3(b), 3.3(d) carve‑outs).
+
+**Suggested edits**
+
+- **Cap Shareholder Representative fees**:
+  - Modify 3.2(h)(x)(iii):
+    > “…and (iii) the payment of such Shareholder’s pro rata portion … of any and all reasonable fees and expenses to such Shareholder Representative, **provided that the aggregate amount of such fees and expenses shall not exceed [X]% of the aggregate consideration and such Shareholder’s share shall not exceed [Y]% of the consideration payable to such Shareholder.**”
+- **Limit escrow size and duration**:
+  - Add:
+    > “Any escrow or holdback established in connection with a Proposed Sale shall not exceed [10–15]% of the aggregate consideration otherwise payable to the Shareholders and shall not remain in place for more than [18–24] months following closing, except with respect to specific identified contingent liabilities expressly agreed in writing by the affected Shareholders.”
+- **Sharper separation of Company vs. Shareholder risk**:
+  - Tighten company/Shareholder liability carve‑outs in 3.3(b) and 3.3(d):
+    > “Funds may be paid out of an escrow established to cover breach of representations, warranties and covenants of the Company **only to the extent such claims relate to the Company, and not to any Shareholder’s individual representations, which shall be satisfied solely from such Shareholder’s separate portion of the escrow, if any.**”
+
+---
+
+### 1.3. Allocation and Form of Consideration (Sections 3.3(f) and 3.3(g), 3.4)
+
+**What it does**
+
+- 3.3(f)(i)–(ii): Same **form and per‑share amount** of consideration for holders within the same class, and allocation based on liquidation preferences under the Articles.
+- However:
+  - 3.3(f)(A): Additional consideration can be paid to certain people for services (employment, retention bonuses, etc.) and is carved out from equal treatment as long as it doesn’t exceed “reasonable fair market value.”
+  - 3.3(f)(B) and 3.2(f): If securities are part of the consideration and you cannot receive them due to legal reasons, you get cash at a “fair value” set by the Board.
+- 3.4: In any Share Sale, no Shareholder can sell control unless all Shareholders can participate and consideration is allocated as per Articles, **unless** the required percentage of holders waives Deemed Liquidation Event treatment and chooses a different allocation with 10 days’ notice.
+
+**Risks**
+
+- **Economic dilution via “service” consideration**: Key persons (e.g., founders, executives) can receive additional value categorized as employment or retention compensation, effectively diverting sale economics away from ordinary Shareholders.
+- **Supermajority can re‑allocate proceeds**: Under 3.4, the requisite percentage can decide to allocate consideration “differently.” Depending on what the Articles and Deemed Liquidation Event rules say (not supplied), this could reduce your share of sale proceeds.
+- **Board‑determined “fair value” for substitute cash** can undercompensate certain holders where securities would otherwise be more valuable.
+
+**Suggested edits**
+
+- **Tighten the “service” carve‑out**:
+  - In 3.3(f)(A) add objective constraints:
+    > “…so long as such consideration does not exceed the reasonable fair market value of such services **as supported by contemporaneous third‑party market compensation data and approved by disinterested directors. Such amounts shall be disclosed in reasonable detail to all Shareholders prior to closing.**”
+- **Limit ability to re‑allocate proceeds (Section 3.4)**:
+  - Require broader consent:
+    > “…unless the holders of at least [80–90]% of the outstanding voting Shares, including [●], elect to allocate the consideration differently…”
+  - Or for your protection, carve yourself out:
+    > “…provided that no such election shall reduce the aggregate consideration otherwise payable to any non‑consenting Shareholder under the Articles.”
+- **Fair value determination for substitute cash**:
+  - As above, introduce independent valuation or floor:
+    > “…fair value… shall in no event be less than the per‑Share price implied by the transaction for holders who receive such securities.”
+
+---
+
+## 2. Irrevocable Proxy & Power of Attorney (Section 5.2)
+
+**What it does**
+
+- Grants the CEO and a designee of the Electing Holders a broad, irrevocable proxy and power of attorney to:
+  - vote your Shares and
+  - “sign, execute, and deliver any… contract (including, sale agreement, escrow agreement and support agreement)” needed to implement Sections 1, 2, 3 and 4.
+- Activated if you:
+  - fail to vote within 48 hours or
+  - vote inconsistently with the Agreement.
+
+**Risks**
+
+- **Loss of ability to protect yourself against adverse financial terms**:
+  - The proxy holders can bind you to sale agreements (including escrows, indemnities, earn‑outs) without your direct review, as long as they are acting “to effect Sections 1, 2, 3 and 4.”
+- Potential for **unintended obligations**: You may inadvertently become party to additional covenants or obligations (e.g., non‑compete with penalties, minimum hold periods for consideration securities) that the proxy signs on your behalf.
+
+**Suggested edits**
+
+- **Limit scope of the power**:
+  - Clarify it cannot extend or expand your economic/financial obligations beyond what is explicitly allowed:
+    > “…(b) take any action necessary to effect Sections 1, 2, 3 and 4 respectively, **provided that such action does not impose on the Shareholder any liability or obligation (including indemnities, restrictive covenants or expense obligations) beyond those expressly contemplated and capped in this Agreement or the Articles.**”
+- **Notice and review protection**:
+  - Require circulation of definitive documents before execution:
+    > “The proxy holders shall not execute any definitive transaction agreement on behalf of a Shareholder unless a substantially final form has been delivered to such Shareholder at least [5] business days in advance, except where such Shareholder has expressly waived such period in writing.”
+
+---
+
+## 3. Costs of Enforcement (Section 7.22)
+
+**What it does**
+
+- The non‑prevailing party in any legal proceedings to enforce the Agreement must pay the prevailing party’s reasonable costs and legal fees.
+
+**Risks**
+
+- **Fee‑shifting risk**: If you challenge a Board or Supermajority decision (e.g., position on “fair value” under Sections 3.2(f)/3.3(f)(B) or the application of drag‑along), and lose, you may pay not only your own legal fees but also the Company’s and/or other Shareholders’ fees. This can deter you from defending your financial interests and magnify loss if you mis‑assess chances of success.
+
+**Suggested edits**
+
+- **Narrow the fee‑shifting clause**:
+  - Limit to clear, material breaches, or require court‑determined reasonableness:
+    > “If any party seeks to enforce its rights under this Agreement by legal proceedings with respect to a material breach, the non‑prevailing party shall pay all **court‑awarded** reasonable costs and expenses…”
+- **Consider a mutual cap**:
+  - Add:
+    > “In no event shall the aggregate amount of such costs and expenses recoverable from any one party exceed [X]% of the amount in dispute or [a fixed cap].”
+
+---
+
+## 4. Shareholder Representative and Disputes (Section 3.2(h), 7.20–7.21)
+
+(These are mostly process, but they can affect financial exposure.)
+
+**What they do**
+
+- Exclusive jurisdiction in Ontario courts (Section 7.20) and waiver of jury trial (7.21).
+- Combined with the broad power of the Shareholder Representative and drag‑along, your only remedy for unfair allocation/valuation may be litigation under these rules, with fee‑shifting (7.22).
+
+**Risks**
+
+- **High cost to contest unfair economics**: Litigation in Ontario courts, without a jury and with fee‑shifting, can be expensive. This may discourage you from challenging transactions that disadvantage you financially.
+
+**Suggested edits**
+
+- If feasible, add **pre‑litigation expert determination** for valuation disputes (Sections 3.2(f), 3.3(f)(B)) as described above, to avoid expensive court fights that could trigger 7.22.
+
+---
+
+## 5. Missing/External References
+
+Several economic protections or risks are driven by documents not provided in the excerpt:
+
+- **Articles** (including liquidation preference waterfall and Deemed Liquidation Event mechanics).
+- **Shareholder Rights Agreement** (definition of “Major Shareholder” and associated rights).
+- **Right of First Refusal and Co‑Sale Agreement** (which interacts with transfer rights and may contain price/participation mechanisms).
+
+Without those, your total financial exposure (especially in a sale or recapitalization) cannot be fully assessed. You should review those documents specifically for:
+
+- priority and multiple of any liquidation preferences;
+- participation features;
+- anti‑dilution protections;
+- any additional drag/tag/co‑sale mechanics;
+- any additional obligations to purchase or sell Shares.
+
+---
+
+### Summary of Key Protective Edits
+
+To limit unexpected financial exposure and revenue leakage, you should consider negotiating:
+
+1. **Higher or more protective thresholds for drag‑along approval** and class‑based consents.
+2. **Tighter control over escrow and indemnity**: caps on size/duration; clear separation of Company risk vs. your personal risk; caps on Shareholder Representative fees.
+3. **Objective “fair value” mechanisms** for any cash substituted for securities.
+4. **Narrowing the irrevocable proxy** so it cannot impose new or greater financial obligations than those expressly and clearly capped in the Agreement.
+5. **More conservative fee‑shifting** so that enforcing your economic rights does not itself create outsized financial risk.
+
+If you indicate your role (founder vs. investor, minority vs. majority) I can tailor the edits to your likely leverage and specific priorities.
+
+------------------------------------------------------------
+
+Item 5/5
+File: 27. InheritChain Inc. - Voting Agreement.DOCX
+Question: Q5 — Data, IP, and Confidentiality
+
+Prompt:
+Review the agreement for data protection, confidentiality, and intellectual property risks affecting the Customer. Highlight problematic clauses and propose corrections that align with standard market practice.
+
+Agreement excerpt used (first 800 chars):
+INHERITCHAIN INC. VOTING AGREEMENT TABLE OF CONTENTS Page 1. Voting Provisions Regarding the Board of Directors 1 1.1 Size of the Board 1 1.2 Board Composition 1 1.3 Failure to Designate a Board Member 3 1.4 Removal of Board Members 3 1.5 No Liability for Election of Recommended Directors 4 1.6 Ceasing to Have the Right to Nominate a Director 4 1.7 Board Chair 4 2. Voting Regarding Shareholder Actions 4 3. Drag-Along Right 5 3.1 Definitions 5 3.2 Actions to be Taken 6 3.3 Exceptions 7 3.4 Restrictions on Sales of Control of the Company 9 4. Financial Statements 9 5. Remedies. 9 5.1 Covenants of the Company 9 5.2 Irrevocable Proxy and Power of Attorney 9 5.3 Specific Enforcement 10 5.4 Remedies Cumulative 10 6. Term 10 7. Miscellaneous 11 7.1 Confidentiality 11 7.2 Additional Parties 11 7.3…
+
+Answer:
+Below is an issue‑spotting review focused on data protection, confidentiality, and IP risks for the Customer (i.e., a shareholder who is a party to this Voting Agreement). I am limited to the text you provided; if a concept isn’t addressed in the excerpt, I’ll note that it is missing/unclear.
+
+Because this is primarily a voting/unanimous shareholder agreement, it doesn’t directly allocate IP ownership or contain detailed data‑protection terms. The main relevant areas are: (i) confidentiality, (ii) treatment of information in disputes, and (iii) how shareholder obligations might expose a shareholder’s own confidential information or rights.
+
+---
+
+## 1. Confidentiality (Section 7.1)
+
+### 1.1. Scope and asymmetry
+
+Section 7.1 imposes confidentiality obligations only on Shareholders with respect to “confidential information obtained from the Company.” There is:
+
+- No reciprocal obligation on the Company to protect any confidential information Shareholders may provide to the Company; and
+- No special protections for particularly sensitive Shareholder information (trade secrets, personal data, proprietary methodologies, etc.).
+
+**Risk for Customer:**  
+If the Customer provides any confidential or proprietary information to the Company (e.g., strategic data, trade secrets, or even personally identifiable information beyond what is mandated by law), there is no contractual obligation in this Agreement for the Company to keep it confidential or to limit its use. The Company could share or use that information more broadly, subject only to whatever limits might exist in other agreements or at law, which we cannot see from this excerpt.
+
+**Market‑practice correction (add reciprocal company obligations):**
+
+Add a new subsection or sentence, for example:
+
+> “The Company shall keep confidential and will not disclose, divulge or use for any purpose (other than in connection with the operation of the Company and performance of this Agreement, the Shareholder Rights Agreement and the Right of First Refusal and Co‑Sale Agreement) any confidential information of a Shareholder that is disclosed to the Company and designated in writing as confidential, unless such information (a) is known or becomes known to the public in general (other than as a result of a breach of this confidentiality obligation by the Company), (b) is or has been independently developed by the Company without use of the Shareholder’s confidential information, or (c) is or has been made known or disclosed to the Company by a third party without a breach of any obligation of confidentiality such third party may have to such Shareholder; provided that the Company may disclose such confidential information (i) to its employees, officers, directors and professional advisers who have a need to know such information and who are bound by obligations of confidentiality no less protective than those set forth herein, or (ii) as may otherwise be required by law, regulation or court order, in which case the Company shall, to the extent legally permissible, promptly notify the Shareholder and take reasonable steps to minimize the extent of such required disclosure.”
+
+This brings confidentiality closer to a mutual standard seen in venture‑style shareholder agreements.
+
+### 1.2. Carve‑outs and use limitation
+
+The Company‑side confidentiality clause for Shareholders (7.1) allows Shareholders to use Company confidential information “to monitor its ownership of the Company.” This is reasonably standard, but:
+
+- There is no explicit prohibition on using the Company’s information to compete (e.g., using detailed product/roadmap details to advance a competitor). Generally, companies rely on general “use only to monitor investment” wording, but some add a more explicit covenant.
+- The permitted disclosure to “prospective purchasers” (7.1(ii)) is conditioned only on the prospect agreeing to be “bound by the provisions of this Section 7.1.” That’s fine in principle, but doesn’t address the practicalities (e.g., written NDA, remedies).
+
+**Risk for Customer:**  
+This is more a Company‑side risk than a Customer risk; however, in disputes, the Company may argue that the Customer is limited to using Company information only for “monitoring its ownership,” which could be interpreted narrowly and weaponized to restrict the Customer’s use of information in, for example, an activist or litigation context. That risk is partly mitigated by the “required by law” carve‑out but not fully.
+
+**Market‑practice corrections (clarify permitted use and disclosure):**
+
+Add clarifying language such as:
+
+> “For greater certainty, nothing in this Section 7.1 shall restrict a Shareholder from using or disclosing confidential information of the Company to the extent reasonably necessary in connection with the enforcement of such Shareholder’s rights under this Agreement, the Articles, the Shareholder Rights Agreement, the Right of First Refusal and Co‑Sale Agreement or applicable law, subject to such Shareholder using reasonable efforts to seek confidential treatment of such information.”
+
+And:
+
+> “Any disclosure pursuant to clause (ii) or (iii) above shall be made pursuant to a written confidentiality agreement containing terms no less protective than those set forth in this Section 7.1.”
+
+This preserves the Customer’s ability to use Company information in protecting/enforcing its rights.
+
+### 1.3. Notice of required disclosure
+
+Section 7.1(iv) allows disclosure “as may otherwise be required by law” but requires the Shareholder to “promptly notif[y] the Company” and to take reasonable steps to minimize disclosure.
+
+**Risk for Customer:**  
+- The clause is one‑sided: Shareholders must notify the Company when they are compelled to disclose Company confidential information, but there is no reciprocal obligation for the Company to notify Shareholders if it is compelled to disclose Shareholder information (if any).
+- The obligation to “take reasonable steps to minimize the extent of any such required disclosure” is reasonable, but the Company could argue that the Shareholder must expend time/money (e.g., to seek protective orders) without any cost‑sharing.
+
+**Market‑practice corrections (reciprocity and cost allocation):**
+
+Add a reciprocal obligation for the Company, and clarify “reasonable steps”:
+
+> “In the event that the Company is required by law, regulation or court order to disclose any confidential information of any Shareholder, the Company shall, to the extent legally permissible, promptly notify such Shareholder and cooperate with such Shareholder, at such Shareholder’s expense, in seeking a protective order or other appropriate remedy. Likewise, if a Shareholder is required by law, regulation or court order to disclose any confidential information of the Company, such Shareholder shall, to the extent legally permissible, promptly notify the Company and cooperate with the Company, at the Company’s expense, in seeking a protective order or other appropriate remedy.”
+
+This ensures balanced treatment.
+
+---
+
+## 2. Data Protection / Privacy
+
+The Agreement as provided:
+
+- Does not contain any express provisions on personal data protection, PIPEDA/other privacy compliance, cross‑border transfers, data security, or data breach notification.
+- Only incidentally references electronic delivery of notices (Section 7.11), without security or privacy controls.
+
+**Risk for Customer:**
+
+1. **No explicit data‑protection standards.** If the Customer is an individual or is subject to regulatory obligations regarding personal or client data, there is no assurance that the Company will handle any personal data the Customer provides (IDs, KYC data, contact info, etc.) in accordance with any minimum security standard or privacy practice.
+
+2. **Electronic notice without security safeguards.** Section 7.11 allows the Company to use the Shareholder’s email address for delivery of notices. There is no explicit obligation regarding secure transmission or handling of such information, or protection in the event of an inadvertent disclosure (e.g., misdirected emails with sensitive attachments).
+
+3. **No data breach notification.** There is no obligation for the Company to notify Shareholders in the event of a data breach affecting their information.
+
+Given this is a voting agreement, these matters are often addressed in a privacy policy, broader shareholder rights agreement, or separate data‑processing documents. But from this text alone, these protections are missing/unclear.
+
+**Market‑practice corrections (minimum, high‑level protections):**
+
+Add a basic data‑protection clause, for example:
+
+> “The Company shall collect, use, store and disclose personal information of the Shareholders only in accordance with applicable privacy and data protection laws and its then‑current privacy policy, a copy of which shall be provided to the Shareholders upon request. The Company shall implement and maintain commercially reasonable administrative, physical and technical safeguards designed to protect such personal information against unauthorized access, use or disclosure.”
+
+And:
+
+> “In the event of a breach of security leading to the accidental or unlawful destruction, loss, alteration, unauthorized disclosure of, or access to, personal information of a Shareholder maintained by the Company, the Company shall, to the extent required by applicable law, promptly notify such Shareholder and provide reasonable information about the nature of the breach and remedial actions taken.”
+
+If the Customer is a regulated entity (e.g., financial institution) or handles sensitive client data, it may need more robust, tailored data‑processing language in a separate agreement.
+
+---
+
+## 3. Intellectual Property
+
+The excerpted Voting Agreement does not address:
+
+- Ownership or assignment of IP created by founders, employees, consultants or shareholders;
+- Use of the Company’s IP by Shareholders or vice versa;
+- Licenses to use trademarks, software, or other proprietary materials;
+- Open‑source compliance or similar topics.
+
+Those issues are typically handled in:
+
+- Employment / consulting agreements,
+- IP assignment agreements,
+- License agreements,
+- Shareholder Rights or Investor Rights Agreements.
+
+**Risk for Customer:**
+
+1. **No protection for Customer IP contributions.** If a Customer‑Shareholder might contribute technology, know‑how, or other IP directly to the Company under or alongside this Agreement (e.g., in voting or transaction negotiations), this Voting Agreement does not regulate ownership or licensing of such IP. Absent a separate written agreement, standard default IP rules will apply, which may be uncertain or unfavorable.
+
+2. **Drag‑Along IP risk.** Under the Drag‑Along provisions (Section 3), the Customer must execute “any purchase agreement, merger agreement, amalgamation agreement, arrangement agreement, indemnity agreement, escrow agreement” etc. without any explicit carve‑out to protect the Customer’s own pre‑existing IP. In practice, M&A documents often include broad IP representations, assignments, and non‑competes. The “exception” language in 3.3 limits representations/warranties and liability to some extent, but it does not expressly exclude the possibility that a Customer could be asked to license or assign its own separate IP as part of the deal.
+
+   The Contract does say in 3.3(c) that Shareholders are not required to amend, extend or terminate “any contractual or other relationship with the Company, the acquirer or their respective affiliates, except that the Shareholder may be required to agree to terminate the investment‑related documents…” This indirectly helps, but doesn’t explicitly protect standalone IP rights (e.g., a separate technology‑license agreement the Customer has with the Company).
+
+**Market‑practice corrections (preserve Customer’s separate IP):**
+
+Add an explicit IP protection carve‑out to the drag‑along section, e.g., in Section 3.3:
+
+> “Notwithstanding anything to the contrary in this Agreement, no Shareholder shall be required, in connection with any Sale of the Company, to assign, license or otherwise transfer any intellectual property owned or controlled by such Shareholder (other than the Shares and any rights appurtenant thereto), except to the extent such assignment or license is expressly agreed by such Shareholder in a separate written agreement.”
+
+If the Customer has (or may have) separate IP or commercial contracts with the Company, it may also want 3.3(c) tightened:
+
+Current:
+
+> “the Shareholder and its affiliates are not required to amend, extend or terminate any contractual or other relationship with the Company, the acquirer or their respective affiliates, except that the Shareholder may be required to agree to terminate the investment-related documents between or among such Shareholder, the Company and/or other shareholders of the Company;”
+
+Proposed enhancement:
+
+> “…provided that nothing in this Section 3.3(c) shall require a Shareholder or any of its affiliates to amend, extend, terminate or otherwise adversely modify any commercial agreement or license relating to such Shareholder’s or its affiliates’ products, services or intellectual property, except to the extent expressly agreed by such Shareholder or affiliate in a separate written agreement.”
+
+---
+
+## 4. Use of Information in Disputes / Enforcement (Sections 5.3, 7.20, 7.21, 7.22)
+
+The Agreement:
+
+- Requires disputes to be brought in Ontario courts (7.20);
+- Contains a broad waiver of jury trial (7.21) and a “costs of enforcement” provision in favour of the prevailing party (7.22);
+- Contains strong specific‑performance / injunctive relief in favour of both Company and Shareholders (5.3).
+
+From a confidentiality and data perspective, the main question is whether the Customer is clearly allowed to use necessary Company confidential information in litigation or regulatory proceedings without breaching 7.1. As noted above, 7.1’s “as may otherwise be required by law” carve‑out will usually allow that, but it is better practice to make this explicit.
+
+**Market‑practice correction (already suggested under 1.2):**
+
+Explicitly allow use of Company confidential information to enforce rights under the Agreement and applicable law.
+
+---
+
+## 5. Irrevocable Proxy and Power of Attorney (Section 5.2) – ancillary risk
+
+While this is not strictly an IP or data clause, it can indirectly affect the Customer’s control over how its shares and votes are used in transactions affecting IP and data:
+
+- The CEO and a designee of the Electing Holders are given a broad power of attorney to “sign, execute, and deliver any … contract (including, sale agreement, escrow agreement and support agreement)” (5.2(b)) if the Shareholder fails to vote/act or acts inconsistently.
+
+**Risk for Customer:**
+
+- The Company and Electing Holders can execute transaction documents on the Customer’s behalf, potentially including provisions affecting warranties, indemnities, or covenants that might indirectly touch on the Customer’s information or IP obligations (e.g., non‑disclosure, assignment, or non‑compete). Section 3.3 mitigates this somewhat but not entirely.
+
+**Market‑practice correction (tie proxy to limitations in 3.3):**
+
+Amend 5.2(b) to cross‑reference the protections in Section 3.3 so that the power of attorney cannot be used to override them:
+
+> “Any action taken by such proxies pursuant to this Section 5.2 shall be consistent with and subject to the limitations on Shareholder obligations set forth in Section 3.3, and nothing in this Section 5.2 shall authorize any Person to bind a Shareholder to any covenant, representation, warranty or obligation in connection with a Sale of the Company in excess of those permitted under Section 3.3.”
+
+---
+
+## 6. Summary of Key Customer‑Facing Risks and Fixes
+
+1. **No reciprocal confidentiality obligation on the Company (7.1).**  
+   - *Risk:* Customer’s own confidential/IP information is unprotected in this document.  
+   - *Fix:* Add mutual confidentiality obligations and notice/assistance mechanisms.
+
+2. **No explicit data‑protection/privacy provisions.**  
+   - *Risk:* No contractual controls over handling, security, or breach notification for Customer personal data.  
+   - *Fix:* Add a basic data‑protection clause referencing applicable laws and commercially reasonable safeguards, with breach‑notification obligations.
+
+3. **Drag‑along may indirectly pressure assignment or use of Customer IP (3.2, 3.3, 5.2).**  
+   - *Risk:* In a Sale of the Company, the power of attorney and drag‑along mechanics could be used to sign documents with broader‑than‑intended IP obligations.  
+   - *Fix:* Add explicit language that no Shareholder is required to assign/license its own standalone IP or to modify existing commercial IP agreements, except by separate written agreement.
+
+4. **Use of Company confidential information in enforcement is not clearly protected.**  
+   - *Risk:* Company could argue the Customer’s use of information in disputes breaches 7.1.  
+   - *Fix:* Clarify that confidential information may be used/disclosed as reasonably necessary to enforce rights under this Agreement and applicable law, with reasonable efforts to seek confidential treatment.
+
+If you’d like, I can draft consolidated redline‑style amendments that could be appended as an “Amendment No. 1 to Voting Agreement” incorporating all of the above changes in contract language form.
+
+------------------------------------------------------------
+

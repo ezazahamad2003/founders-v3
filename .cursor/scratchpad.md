@@ -143,6 +143,11 @@
 - 2025-12-23: Executor implementing `tests` eval runner changes: replaced `tests/questions.txt` with Q1–Q5, added DOCX extraction + file looping to `tests/run_eval.py`, and will run it to generate `tests/outputs/with_prompt.txt` and `tests/outputs/without_prompt.txt`.
 - 2026-01-07: Executor completed UI text updates: changed "Contract Review" to "Document Review" and "Upload Legal Docs" to "Document Vault" across frontend (Sidebar, ChatInput, useChat hook). All changes linted successfully with no errors.
 - 2026-01-07: Executor implemented Document Review modal workflow: created `DocumentReviewModal.tsx` with file upload, required client role input, and optional prompt textarea. Updated `Sidebar.tsx` to open modal instead of direct contract review start. Modified `ChatLayout.tsx` to handle document review submission by uploading file, starting contract review mode, and sending structured message with all context. No database changes required - all data flows through existing chat message system.
+- 2026-01-10: Executor updated Document Review modal copy (subheader, role/context labels, placeholders, helper text) and aligned validation error message to match “role as defined in the document”.
+- 2026-01-10: Executor traced end-to-end Document Review inputs→outputs (modal → `/api/files/upload` → `/api/chat` streaming) and captured the exact payloads/mode selection (auto→files, contract_review system prompt) for explanation/debugging.
+- 2026-01-13: Executor created and switched to git branch `blind-spot-analysis` (git does not allow spaces in branch names like "blind spot analysis").
+- 2026-01-13: Executor added a new left-sidebar item “Blind Spot Analysis” (in chat sidebar) that navigates to `/blind-spot-analysis`, plus a placeholder page for that route.
+- 2026-01-13: Executor updated the Blind Spot Analysis page with 3 cards (Incorporation/Funding/Operations), each showing Purpose + checklist + blind-spot risks.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
@@ -155,11 +160,14 @@
 - 2025-12-23: Installed `python-docx` into `tests/venv` (required to extract DOCX agreements in `tests/public/`). The full eval run (`tests/run_eval.py`) was started but cancelled mid-run (it will take time + OpenAI tokens/cost). Please confirm you want me to rerun the full 5 files × 5 questions × 2 modes and that `OPENAI_API_KEY` is set.
 - 2025-12-23: Confirmed the current shell environment shows `OPENAI_API_KEY=MISSING`, so `tests/run_eval.py` will fail fast until the key is provided (either as an env var or via a `.env` file that `python-dotenv` can load).
 - For `lawyermvp-merge-profile-and-query-docs`: I will implement new `lawyermvp` API routes that use `SUPABASE_SERVICE_ROLE_KEY` to (a) list profile-library objects (from likely bucket names) and (b) create signed URLs so the admin can view them. Then I’ll update the `lawyermvp` dashboard/user pages to merge counts and display both “Query attachments” and “Profile uploads”.
+- Note: backend `FileMeta` includes `openai_file_id`, but `frontend/src/lib/types.ts` `FileMeta` currently ignores it. That’s OK for UI, but it can be useful to expose later for debugging whether PDFs are using OpenAI Files API vs text-extraction fallback.
 
 # Lessons
 - Include debugging-friendly info in program output/logs.
 - Always read files before editing them.
 - Run `npm audit` if terminal output hints at vulnerabilities (not applicable yet but keep in mind).
 - Never use `git push -f` / `--force` without explicit approval.
+- Git branch names cannot contain spaces; use hyphens (e.g., `blind-spot-analysis`).
+- On Windows PowerShell, use `;` instead of `&&` to separate commands.
 - For streaming chat UIs, only auto-scroll when user is near bottom (e.g., within 100px threshold). Track scroll position via scroll events and respect user-initiated scrolls during streaming to allow reading earlier content while new content is generated.
 

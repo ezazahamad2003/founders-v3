@@ -90,6 +90,11 @@ async def chat_with_files(
     """
     settings = settings or get_settings()
 
+    # === DEBUG LOGGING ===
+    logger.info(f"[FILE_CONTEXT] chat_with_files called with {len(files_meta)} files")
+    for f in files_meta:
+        logger.info(f"[FILE_CONTEXT]   File: {f.original_name}, mime={f.mime_type}, openai_file_id={f.openai_file_id}")
+
     # Decide if we can safely use the Files API
     all_have_ids = all(f.openai_file_id for f in files_meta)
     all_are_pdfs = all(
@@ -101,8 +106,11 @@ async def chat_with_files(
         for f in files_meta
     )
 
+    logger.info(f"[FILE_CONTEXT] all_have_ids={all_have_ids}, all_are_pdfs={all_are_pdfs}")
+
     # Preferred path: Files API for PDFs only
     if files_meta and all_have_ids and all_are_pdfs:
+        logger.info(f"[FILE_CONTEXT] >>> Using OpenAI Files API path (PDFs with file_ids)")
         try:
             return await _chat_with_openai_files(
                 messages=messages,
@@ -118,20 +126,33 @@ async def chat_with_files(
             # fall through to legacy path
 
     # Legacy / fallback path: text extraction from Supabase
+    logger.info(f"[FILE_CONTEXT] >>> Using TEXT EXTRACTION fallback path")
     augmented_messages = list(messages)
 
     doc_contexts = await build_documents_contexts(files_meta, settings)
+    logger.info(f"[FILE_CONTEXT] build_documents_contexts returned {len(doc_contexts)} context snippets")
+    for i, ctx in enumerate(doc_contexts):
+        # Log first 200 chars of each context to verify content is being extracted
+        preview = ctx[:200].replace('\n', ' ') + "..." if len(ctx) > 200 else ctx.replace('\n', ' ')
+        logger.info(f"[FILE_CONTEXT]   Context {i+1} preview: {preview}")
+    
     if doc_contexts:
+        doc_system_message = (
+            "User provided these document excerpts. "
+            "Ground your response in them when relevant:\n\n"
+            + "\n\n".join(doc_contexts)
+        )
         augmented_messages.append(
             {
                 "role": "system",
-                "content": (
-                    "User provided these document excerpts. "
-                    "Ground your response in them when relevant:\n\n"
-                    + "\n\n".join(doc_contexts)
-                ),
+                "content": doc_system_message,
             }
         )
+        logger.info(f"[FILE_CONTEXT] Appended document excerpts as system message ({len(doc_system_message)} chars)")
+    else:
+        logger.warning(f"[FILE_CONTEXT] WARNING: No document contexts extracted! Files may not be readable.")
+
+    logger.info(f"[FILE_CONTEXT] Final message count to OpenAI: {len(augmented_messages)}")
 
     client = _get_client(settings)
     response: ChatCompletion = await client.chat.completions.create(

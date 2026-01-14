@@ -28,8 +28,13 @@ async def build_documents_contexts(
     settings: Settings,
 ) -> List[str]:
     """Download each file, extract text, and return context snippets for prompts."""
+    logger.info(f"[DOC_EXTRACT] build_documents_contexts called with {len(files_meta)} files")
     if not files_meta:
+        logger.info(f"[DOC_EXTRACT] No files to process, returning empty")
         return []
+
+    for fm in files_meta:
+        logger.info(f"[DOC_EXTRACT] Will process: {fm.original_name} (path={fm.supabase_path}, mime={fm.mime_type})")
 
     tasks = [_fetch_file_text(file_meta, settings) for file_meta in files_meta]
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -37,13 +42,17 @@ async def build_documents_contexts(
     contexts: List[str] = []
     for file_meta, result in zip(files_meta, results):
         if isinstance(result, Exception):
-            logger.error(f"Failed to read {file_meta.supabase_path}: {result}")
+            logger.error(f"[DOC_EXTRACT] Failed to read {file_meta.supabase_path}: {result}")
             continue
         snippet = _truncate(result)
         if not snippet:
+            logger.warning(f"[DOC_EXTRACT] Empty snippet for {file_meta.original_name}")
             continue
         title = file_meta.original_name or str(file_meta.id)
+        logger.info(f"[DOC_EXTRACT] Extracted {len(snippet)} chars from {title}")
         contexts.append(f"### {title}\n{snippet}")
+    
+    logger.info(f"[DOC_EXTRACT] Returning {len(contexts)} context snippets")
     return contexts
 
 

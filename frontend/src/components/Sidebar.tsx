@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 import { ConversationSummary, UserProfile } from "@/lib/types";
 import ConversationList from "./ConversationList";
 import ProfileDrawer from "./ProfileDrawer";
@@ -30,6 +31,7 @@ export default function Sidebar({
   profile,
   supabase,
 }: SidebarProps) {
+  const router = useRouter();
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
   const [documentReviewModalOpen, setDocumentReviewModalOpen] = useState(false);
 
@@ -49,6 +51,12 @@ export default function Sidebar({
           className="mt-3 flex w-full items-center justify-center rounded-2xl border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"
         >
           ⚖️ Document Review
+        </button>
+        <button
+          onClick={() => router.push("/blind-spot-analysis")}
+          className="mt-3 flex w-full items-center justify-center rounded-2xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+        >
+          Blind Spot Analysis
         </button>
       </div>
 

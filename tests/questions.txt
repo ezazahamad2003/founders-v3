@@ -1,0 +1,19 @@
+Q1 — General Contract Review
+
+You are reviewing a commercial contract where your client is the Customer / Paying Party. Identify the top 5 legal and commercial risks in the agreement. For each risk, quote the clause, explain why it is problematic for the Customer, and propose a reasonable redline.
+
+Q2 — Liability & Indemnity Focus
+
+Review this agreement and identify any clauses that expose the Customer to disproportionate liability or weak indemnification protection. Explain the risk and propose improved language.
+
+Q3 — Termination & Exit Risk
+
+Analyze the contract for termination, renewal, and lock-in risks. Which provisions could trap the Customer in an unfavorable relationship, and how would you revise them?
+
+Q4 — Payment & Financial Exposure
+
+Identify clauses that could create unexpected payment obligations, penalties, or revenue leakage for the Customer. Explain the risk and suggest contract edits to limit financial exposure.
+
+Q5 — Data, IP, and Confidentiality
+
+Review the agreement for data protection, confidentiality, and intellectual property risks affecting the Customer. Highlight problematic clauses and propose corrections that align with standard market practice.
