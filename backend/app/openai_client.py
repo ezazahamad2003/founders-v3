@@ -40,6 +40,42 @@ class OpenAIChatResult(BaseModel):
     total_tokens: int = 0
 
 
+async def stream_chat_with_vision(
+    messages: Sequence[Dict[str, Any]],
+    image_urls: Sequence[str],
+    *,
+    settings: Settings | None = None,
+    max_output_tokens: Optional[int] = None,
+) -> "StreamingChatSession":
+    """Stream a vision-capable model response."""
+    settings = settings or get_settings()
+    augmented_messages = list(messages)
+    if image_urls:
+        augmented_messages.append(
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "Consider the attached images in your response."},
+                    *[
+                        {"type": "image_url", "image_url": {"url": url}}
+                        for url in image_urls
+                    ],
+                ],
+            }
+        )
+
+    client = _get_client(settings)
+    stream = await client.chat.completions.create(
+        model=settings.openai_model_vision,
+        messages=augmented_messages,
+        max_completion_tokens=max_output_tokens or settings.max_output_tokens,
+        temperature=0.2,
+        stream=True,
+    )
+    accumulator = _StreamAccumulator(model_name=settings.openai_model_vision)
+    return StreamingChatSession(stream=stream, accumulator=accumulator)
+
+
 async def chat_with_vision(
     messages: Sequence[Dict[str, Any]],
     image_urls: Sequence[str],
@@ -47,7 +83,7 @@ async def chat_with_vision(
     settings: Settings | None = None,
     max_output_tokens: Optional[int] = None,
 ) -> OpenAIChatResult:
-    """Invoke a vision-capable model."""
+    """Invoke a vision-capable model (non-streaming)."""
     settings = settings or get_settings()
     augmented_messages = list(messages)
     if image_urls:
@@ -74,6 +110,98 @@ async def chat_with_vision(
     return _completion_to_result(response, fallback_model=settings.openai_model_vision)
 
 
+async def stream_chat_with_files(
+    messages: Sequence[Dict[str, Any]],
+    files_meta: Sequence[FileMeta],
+    *,
+    settings: Settings | None = None,
+    max_output_tokens: Optional[int] = None,
+) -> "StreamingChatSession":
+    """
+    Stream a chat response with uploaded documents.
+
+    Behavior:
+    - If all files are PDFs and have openai_file_id → use OpenAI Files API directly.
+    - Otherwise → fall back to text extraction from Supabase.
+    """
+    settings = settings or get_settings()
+
+    # === DEBUG LOGGING ===
+    logger.info(f"[FILE_CONTEXT] stream_chat_with_files called with {len(files_meta)} files")
+    for f in files_meta:
+        logger.info(f"[FILE_CONTEXT]   File: {f.original_name}, mime={f.mime_type}, openai_file_id={f.openai_file_id}")
+
+    # Decide if we can safely use the Files API
+    all_have_ids = all(f.openai_file_id for f in files_meta)
+    all_are_pdfs = all(
+        (
+            f.mime_type and f.mime_type.startswith("application/pdf")
+        ) or (
+            f.original_name and f.original_name.lower().endswith(".pdf")
+        )
+        for f in files_meta
+    )
+
+    logger.info(f"[FILE_CONTEXT] all_have_ids={all_have_ids}, all_are_pdfs={all_are_pdfs}")
+
+    # Preferred path: Files API for PDFs only
+    if files_meta and all_have_ids and all_are_pdfs:
+        logger.info(f"[FILE_CONTEXT] >>> Using OpenAI Files API path (PDFs with file_ids) - STREAMING")
+        try:
+            return await _stream_chat_with_openai_files(
+                messages=messages,
+                files_meta=files_meta,
+                settings=settings,
+                max_output_tokens=max_output_tokens,
+            )
+        except BadRequestError as e:
+            logger.warning(
+                "OpenAI Files API failed for PDFs, falling back to text extraction: %s",
+                e,
+            )
+            # fall through to legacy path
+
+    # Legacy / fallback path: text extraction from Supabase
+    logger.info(f"[FILE_CONTEXT] >>> Using TEXT EXTRACTION fallback path - STREAMING")
+    augmented_messages = list(messages)
+
+    doc_contexts = await build_documents_contexts(files_meta, settings)
+    logger.info(f"[FILE_CONTEXT] build_documents_contexts returned {len(doc_contexts)} context snippets")
+    for i, ctx in enumerate(doc_contexts):
+        # Log first 200 chars of each context to verify content is being extracted
+        preview = ctx[:200].replace('\n', ' ') + "..." if len(ctx) > 200 else ctx.replace('\n', ' ')
+        logger.info(f"[FILE_CONTEXT]   Context {i+1} preview: {preview}")
+    
+    if doc_contexts:
+        doc_system_message = (
+            "User provided these document excerpts. "
+            "Ground your response in them when relevant:\n\n"
+            + "\n\n".join(doc_contexts)
+        )
+        augmented_messages.append(
+            {
+                "role": "system",
+                "content": doc_system_message,
+            }
+        )
+        logger.info(f"[FILE_CONTEXT] Appended document excerpts as system message ({len(doc_system_message)} chars)")
+    else:
+        logger.warning(f"[FILE_CONTEXT] WARNING: No document contexts extracted! Files may not be readable.")
+
+    logger.info(f"[FILE_CONTEXT] Final message count to OpenAI: {len(augmented_messages)}")
+
+    client = _get_client(settings)
+    stream = await client.chat.completions.create(
+        model=settings.openai_model_chat,
+        messages=augmented_messages,
+        max_completion_tokens=max_output_tokens or settings.max_output_tokens,
+        temperature=0.2,
+        stream=True,
+    )
+    accumulator = _StreamAccumulator(model_name=settings.openai_model_chat)
+    return StreamingChatSession(stream=stream, accumulator=accumulator)
+
+
 async def chat_with_files(
     messages: Sequence[Dict[str, Any]],
     files_meta: Sequence[FileMeta],
@@ -82,7 +210,7 @@ async def chat_with_files(
     max_output_tokens: Optional[int] = None,
 ) -> OpenAIChatResult:
     """
-    Invoke a model with uploaded documents.
+    Invoke a model with uploaded documents (non-streaming).
 
     Behavior:
     - If all files are PDFs and have openai_file_id → use OpenAI Files API directly.
@@ -167,6 +295,64 @@ async def chat_with_files(
     )
 
 
+async def _stream_chat_with_openai_files(
+    messages: Sequence[Dict[str, Any]],
+    files_meta: Sequence[FileMeta],
+    *,
+    settings: Settings,
+    max_output_tokens: Optional[int] = None,
+) -> "StreamingChatSession":
+    """
+    Stream chat with OpenAI Files API directly with file_id references.
+    This allows the model to see the full PDF with images/formatting.
+    """
+    client = _get_client(settings)
+    
+    # Build messages with file references
+    augmented_messages = list(messages)
+    
+    # Add file context to the last user message
+    if augmented_messages and augmented_messages[-1]["role"] == "user":
+        last_message = augmented_messages[-1]
+        
+        # Convert to content array format if it's a simple string
+        if isinstance(last_message["content"], str):
+            text_content = last_message["content"]
+            content_array = [{"type": "text", "text": text_content}]
+        else:
+            content_array = list(last_message["content"])
+        
+        # Add file references
+        for file_meta in files_meta:
+            if file_meta.openai_file_id:
+                logger.info(f"Adding OpenAI file to chat (streaming): {file_meta.openai_file_id} ({file_meta.original_name})")
+                content_array.append({
+                    "type": "file",
+                    "file": {"file_id": file_meta.openai_file_id}
+                })
+        
+        augmented_messages[-1] = {
+            "role": "user",
+            "content": content_array
+        }
+    
+    # Use a vision-capable model for file processing
+    try:
+        stream = await client.chat.completions.create(
+            model=settings.openai_model_vision,  # gpt-4o-mini supports files
+            messages=augmented_messages,
+            max_completion_tokens=max_output_tokens or settings.max_output_tokens,
+            temperature=0.2,
+            stream=True,
+        )
+    except Exception as e:
+        logger.error(f"OpenAI Files API error: {e}")
+        logger.error(f"Files attempted: {[f.openai_file_id for f in files_meta if f.openai_file_id]}")
+        raise
+    accumulator = _StreamAccumulator(model_name=settings.openai_model_vision)
+    return StreamingChatSession(stream=stream, accumulator=accumulator)
+
+
 async def _chat_with_openai_files(
     messages: Sequence[Dict[str, Any]],
     files_meta: Sequence[FileMeta],
@@ -175,7 +361,7 @@ async def _chat_with_openai_files(
     max_output_tokens: Optional[int] = None,
 ) -> OpenAIChatResult:
     """
-    Use OpenAI Files API directly with file_id references.
+    Use OpenAI Files API directly with file_id references (non-streaming).
     This allows the model to see the full PDF with images/formatting.
     """
     client = _get_client(settings)

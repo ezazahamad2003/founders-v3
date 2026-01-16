@@ -79,12 +79,18 @@ export default function DocumentReviewModal({ open, onClose, onReview }: Documen
     setError(null);
 
     try {
-      await onReview(selectedFile, clientRole.trim(), optionalPrompt.trim());
+      // Close the dialog immediately and let the review happen in the background
+      const fileToReview = selectedFile;
+      const roleToReview = clientRole.trim();
+      const promptToReview = optionalPrompt.trim();
+      
       handleReset();
       onClose();
+      
+      // Fire off the review request in the background (don't await)
+      onReview(fileToReview, roleToReview, promptToReview);
     } catch (err) {
       setError((err as Error).message || "Failed to start document review.");
-    } finally {
       setIsSubmitting(false);
     }
   };

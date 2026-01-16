@@ -51,6 +51,7 @@ export default function ChatInput({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const handleSubmit = async (event?: React.FormEvent) => {
     // Prevent form submission/page refresh
@@ -77,6 +78,17 @@ export default function ChatInput({
       event.preventDefault();
       handleSubmit();
     }
+  };
+
+  // Auto-resize textarea as user types
+  const handleMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(event.target.value);
+    
+    // Auto-resize logic
+    const textarea = event.target;
+    textarea.style.height = "auto"; // Reset height to recalculate
+    const newHeight = Math.min(textarea.scrollHeight, 200); // Max height of 200px
+    textarea.style.height = `${newHeight}px`;
   };
 
   const disabledSend = disabled || isStreaming || isUploading || !message.trim();
@@ -203,12 +215,14 @@ export default function ChatInput({
             )}
           </button>
           <textarea
+            ref={textareaRef}
             value={message}
-            onChange={(event) => setMessage(event.target.value)}
+            onChange={handleMessageChange}
             onKeyDown={handleKeyDown}
             placeholder="Ask anything..."
             rows={1}
-            className="max-h-40 flex-1 resize-none rounded-3xl bg-[#0d0f16] px-4 py-3 text-base text-white outline-none placeholder:text-slate-500"
+            className="flex-1 resize-none overflow-y-auto rounded-3xl bg-[#0d0f16] px-4 py-3 text-base text-white outline-none placeholder:text-slate-500"
+            style={{ minHeight: "44px", maxHeight: "200px" }}
             disabled={disabled}
           />
           <div className="flex items-center gap-2">

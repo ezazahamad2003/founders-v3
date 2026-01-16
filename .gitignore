@@ -28,6 +28,7 @@ backend/.env.*
 # Environment / secret dumps
 .env
 .env.local
+.env.production
 .env.*.local
 .env.yaml
 !.env.example

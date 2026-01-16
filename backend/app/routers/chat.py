@@ -21,6 +21,8 @@ from app.openai_client import (
     chat_with_vision,
     deep_research,
     stream_chat,
+    stream_chat_with_files,
+    stream_chat_with_vision,
 )
 from app.prompts import get_system_prompt
 from app.services import conversations, files as files_service, messages as messages_service
@@ -159,37 +161,51 @@ async def chat_endpoint(
             settings=settings,
         )
     elif effective_mode == "vision":
-        logger.info(f"[FILE_CONTEXT] >>> Taking VISION path with {len(file_urls)} image URLs")
-        oa_result = await chat_with_vision(
-            messages=openai_messages,
-            image_urls=file_urls or [],
-            settings=settings,
-        )
-        response_generator = _non_streaming_generator(
-            result=oa_result,
-            db=db,
-            conversation_id=conversation_id,
-            file_ids=payload.file_ids,
-            mode=effective_mode,
-            settings=settings,
-        )
+        logger.info(f"[FILE_CONTEXT] >>> Taking VISION path with {len(file_urls)} image URLs - STREAMING")
+        try:
+            stream_session = await stream_chat_with_vision(
+                messages=openai_messages,
+                image_urls=file_urls or [],
+                settings=settings,
+            )
+            response_generator = _streaming_generator(
+                stream_session=stream_session,
+                db=db,
+                conversation_id=conversation_id,
+                file_ids=payload.file_ids,
+                mode=effective_mode,
+                settings=settings,
+            )
+        except Exception as e:
+            logger.exception("Failed to create streaming vision session")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to start vision chat: {str(e)}"
+            )
     elif effective_mode == "files":
-        logger.info(f"[FILE_CONTEXT] >>> Taking FILES path with {len(doc_files)} documents")
+        logger.info(f"[FILE_CONTEXT] >>> Taking FILES path with {len(doc_files)} documents - STREAMING")
         for df in doc_files:
-            logger.info(f"[FILE_CONTEXT]     Passing to chat_with_files: {df.original_name} (openai_file_id={df.openai_file_id})")
-        oa_result = await chat_with_files(
-            messages=openai_messages,
-            files_meta=doc_files,
-            settings=settings,
-        )
-        response_generator = _non_streaming_generator(
-            result=oa_result,
-            db=db,
-            conversation_id=conversation_id,
-            file_ids=payload.file_ids,
-            mode=effective_mode,
-            settings=settings,
-        )
+            logger.info(f"[FILE_CONTEXT]     Passing to stream_chat_with_files: {df.original_name} (openai_file_id={df.openai_file_id})")
+        try:
+            stream_session = await stream_chat_with_files(
+                messages=openai_messages,
+                files_meta=doc_files,
+                settings=settings,
+            )
+            response_generator = _streaming_generator(
+                stream_session=stream_session,
+                db=db,
+                conversation_id=conversation_id,
+                file_ids=payload.file_ids,
+                mode=effective_mode,
+                settings=settings,
+            )
+        except Exception as e:
+            logger.exception("Failed to create streaming files session")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to start files chat: {str(e)}"
+            )
     else:
         logger.info(f"[FILE_CONTEXT] >>> Taking STREAMING CHAT path (no files/vision)")
         try:

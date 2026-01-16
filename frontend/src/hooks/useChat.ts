@@ -195,7 +195,7 @@ export function useChat(accessToken: string | null) {
   );
 
   const sendMessage = useCallback(
-    async (options: { text: string; modeOverride?: ChatMode; fileIds?: string[] }) => {
+    async (options: { text: string; modeOverride?: ChatMode; promptModeOverride?: PromptMode; fileIds?: string[] }) => {
       if (!tokenReady || !profile) return;
       const trimmed = options.text.trim();
       if (!trimmed) return;
@@ -222,6 +222,8 @@ export function useChat(accessToken: string | null) {
       setIsStreaming(true);
       setErrorMessage(null);
 
+      const effectivePromptMode = options.promptModeOverride ?? promptMode;
+
       try {
         await streamChat(
           accessToken!,
@@ -230,7 +232,7 @@ export function useChat(accessToken: string | null) {
             message: trimmed,
             file_ids: fileIds.length ? fileIds : null,
             mode: options.modeOverride ?? mode,
-            prompt_mode: promptMode, // Include the current prompt mode
+            prompt_mode: effectivePromptMode, // Use override if provided
           },
           {
             onToken: (delta) => {
@@ -240,6 +242,24 @@ export function useChat(accessToken: string | null) {
             },
             onDone: async (payload) => {
               setIsStreaming(false);
+              
+              // Update active conversation ID if it was a new conversation
+              const isNewConversation = !activeConversationId && payload.conversation_id;
+              if (isNewConversation) {
+                setActiveConversationId(payload.conversation_id);
+                // Track prompt mode for this new conversation (use effective mode)
+                setConversationPromptModes(prev => ({
+                  ...prev,
+                  [payload.conversation_id]: effectivePromptMode
+                }));
+                
+                // Update temp user message with real conversation ID
+                setMessages((prev) => prev.map(msg => 
+                  msg.conversation_id === "pending" 
+                    ? { ...msg, conversation_id: payload.conversation_id }
+                    : msg
+                ));
+              }
               
               // Add the completed assistant message to the messages list
               const assistantMessage: Message = {
@@ -257,17 +277,6 @@ export function useChat(accessToken: string | null) {
               setStreamedAssistantText("");
               streamedTextRef.current = ""; // Reset ref
               setPendingAttachmentIds([]);
-              
-              // Update active conversation ID if it was a new conversation
-              const isNewConversation = !activeConversationId && payload.conversation_id;
-              if (isNewConversation) {
-                setActiveConversationId(payload.conversation_id);
-                // Track prompt mode for this new conversation
-                setConversationPromptModes(prev => ({
-                  ...prev,
-                  [payload.conversation_id]: promptMode
-                }));
-              }
               
               // Update conversation list optimistically without full refresh
               setConversations((prev) => {

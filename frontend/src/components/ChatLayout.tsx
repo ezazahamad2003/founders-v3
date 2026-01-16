@@ -18,6 +18,7 @@ interface ChatLayoutProps {
 
 export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [triggerDocumentReview, setTriggerDocumentReview] = useState(false);
   
   const {
     profile,
@@ -99,8 +100,12 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
       reviewMessage += `\n\n${optionalPrompt}`;
     }
     
-    // Send the message with the file
-    await sendMessage({ text: reviewMessage, fileIds: [uploadedFile.id] });
+    // Send the message with the file, explicitly setting contract_review mode
+    await sendMessage({ 
+      text: reviewMessage, 
+      fileIds: [uploadedFile.id],
+      promptModeOverride: "contract_review" 
+    });
     setPendingAttachmentIds([]);
   };
 
@@ -143,10 +148,13 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           onStartDocumentReview={async (file, clientRole, optionalPrompt) => {
             await handleStartDocumentReview(file, clientRole, optionalPrompt);
             setIsSidebarOpen(false);
+            setTriggerDocumentReview(false);
           }}
           onDeleteConversation={deleteConversation}
           profile={profile}
           supabase={supabase}
+          externalTrigger={triggerDocumentReview}
+          onExternalTriggerHandled={() => setTriggerDocumentReview(false)}
         />
       </div>
 
@@ -179,6 +187,8 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           errorMessage={errorMessage}
           showIntro={showScopicIntro && !activeConversationId && messages.length === 0}
           introMarkdown={scopicIntroMarkdown}
+          onStartDocumentReview={() => setTriggerDocumentReview(true)}
+          onSendMessage={handleSendMessage}
         />
 
         {/* Input area - fixed at bottom, shrink-0 prevents squishing */}

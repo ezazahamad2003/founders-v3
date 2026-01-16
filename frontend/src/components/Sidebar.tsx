@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { ConversationSummary, UserProfile } from "@/lib/types";
@@ -18,6 +18,8 @@ interface SidebarProps {
   onDeleteConversation: (conversationId: string) => void;
   profile: UserProfile | null;
   supabase: SupabaseClient;
+  externalTrigger?: boolean;
+  onExternalTriggerHandled?: () => void;
 }
 
 export default function Sidebar({
@@ -30,10 +32,20 @@ export default function Sidebar({
   onDeleteConversation,
   profile,
   supabase,
+  externalTrigger,
+  onExternalTriggerHandled,
 }: SidebarProps) {
   const router = useRouter();
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
   const [documentReviewModalOpen, setDocumentReviewModalOpen] = useState(false);
+
+  // Handle external trigger to open document review modal
+  useEffect(() => {
+    if (externalTrigger) {
+      setDocumentReviewModalOpen(true);
+      onExternalTriggerHandled?.();
+    }
+  }, [externalTrigger, onExternalTriggerHandled]);
 
   return (
     <aside className="flex h-full w-[var(--sidebar-width)] flex-col overflow-hidden border-r border-white/5 bg-[#0c0f1a]">
@@ -44,7 +56,7 @@ export default function Sidebar({
           onClick={onNewConversation}
           className="mt-4 flex w-full items-center justify-center rounded-2xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
         >
-          + New Legal Query
+          + New Chat
         </button>
         <button
           onClick={() => setDocumentReviewModalOpen(true)}
