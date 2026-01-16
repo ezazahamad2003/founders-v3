@@ -52,12 +52,13 @@ export default function Sidebar({
         >
           ⚖️ Document Review
         </button>
-        <button
+        {/* Blind Spot Analysis - Hidden until requirements finalized */}
+        {/* <button
           onClick={() => router.push("/blind-spot-analysis")}
           className="mt-3 flex w-full items-center justify-center rounded-2xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
         >
           Blind Spot Analysis
-        </button>
+        </button> */}
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-4">

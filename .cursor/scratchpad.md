@@ -146,8 +146,9 @@
 - 2026-01-10: Executor updated Document Review modal copy (subheader, role/context labels, placeholders, helper text) and aligned validation error message to match “role as defined in the document”.
 - 2026-01-10: Executor traced end-to-end Document Review inputs→outputs (modal → `/api/files/upload` → `/api/chat` streaming) and captured the exact payloads/mode selection (auto→files, contract_review system prompt) for explanation/debugging.
 - 2026-01-13: Executor created and switched to git branch `blind-spot-analysis` (git does not allow spaces in branch names like "blind spot analysis").
-- 2026-01-13: Executor added a new left-sidebar item “Blind Spot Analysis” (in chat sidebar) that navigates to `/blind-spot-analysis`, plus a placeholder page for that route.
+- 2026-01-13: Executor added a new left-sidebar item "Blind Spot Analysis" (in chat sidebar) that navigates to `/blind-spot-analysis`, plus a placeholder page for that route.
 - 2026-01-13: Executor updated the Blind Spot Analysis page with 3 cards (Incorporation/Funding/Operations), each showing Purpose + checklist + blind-spot risks.
+- 2026-01-16: Executor hid the "Blind Spot Analysis" feature by commenting out the sidebar navigation button until requirements are finalized. The page and components remain in the codebase at `/blind-spot-analysis` but are no longer accessible via UI.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
