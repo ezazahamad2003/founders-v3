@@ -116,7 +116,7 @@ async def chat_endpoint(
         conversation_id=conversation_id,
         user_id=current_user.id,
         content=payload.message,
-        file_ids=payload.file_ids,
+        file_ids=list(all_file_ids),  # Include files from history + current request
     )
     await conversations.touch_conversation_updated_at(db, conversation_id)
 
@@ -156,7 +156,7 @@ async def chat_endpoint(
             result=oa_result,
             db=db,
             conversation_id=conversation_id,
-            file_ids=payload.file_ids,
+            file_ids=list(all_file_ids),  # Include files from history + current request
             mode=effective_mode,
             settings=settings,
         )
@@ -172,7 +172,7 @@ async def chat_endpoint(
                 stream_session=stream_session,
                 db=db,
                 conversation_id=conversation_id,
-                file_ids=payload.file_ids,
+                file_ids=list(all_file_ids),  # Include files from history + current request
                 mode=effective_mode,
                 settings=settings,
             )
@@ -196,7 +196,7 @@ async def chat_endpoint(
                 stream_session=stream_session,
                 db=db,
                 conversation_id=conversation_id,
-                file_ids=payload.file_ids,
+                file_ids=list(all_file_ids),  # Include files from history + current request
                 mode=effective_mode,
                 settings=settings,
             )
@@ -217,7 +217,7 @@ async def chat_endpoint(
                 stream_session=stream_session,
                 db=db,
                 conversation_id=conversation_id,
-                file_ids=payload.file_ids,
+                file_ids=list(all_file_ids),  # Include files from history + current request
                 mode=effective_mode,
                 settings=settings,
             )

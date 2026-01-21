@@ -26,11 +26,11 @@ export default function MessageBubble({
   const [copied, setCopied] = useState(false);
 
   const bubbleClass = clsx(
-    "rounded-3xl px-5 py-4 shadow-lg relative max-w-[760px]",
+    "rounded-3xl px-6 py-5 shadow-lg relative max-w-[760px]",
     isOwn
       ? "bg-indigo-600/80 text-white"
       : "w-full",
-    !isOwn && (role === "assistant" ? "bg-[#16181f] text-slate-100" : "bg-white/10 text-slate-100"),
+    !isOwn && (role === "assistant" ? "bg-[#1a1c24] text-slate-100" : "bg-white/10 text-slate-100"),
   );
 
   const rowClass = clsx(
@@ -85,19 +85,52 @@ export default function MessageBubble({
         ) : null}
         <div
           className={clsx(
-            "prose prose-invert max-w-none text-[0.95rem] leading-7",
+            "prose prose-invert max-w-none text-[15px] leading-[1.7]",
             isStreaming && "animate-pulse",
-            "[&_p]:mb-5 [&_p:last-child]:mb-0",
-            "[&_ul]:mb-5 [&_ol]:mb-5 [&_li]:leading-7",
-            "[&_code]:rounded [&_code]:bg-black/40 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-xs",
-            "[&_pre]:rounded-2xl [&_pre]:bg-black/60 [&_pre]:p-4 [&_pre]:text-xs",
+            // Paragraphs
+            "[&_p]:mb-4 [&_p:last-child]:mb-0 [&_p]:leading-[1.7]",
+            // Headers
+            "[&_h1]:text-xl [&_h1]:font-semibold [&_h1]:mb-4 [&_h1]:mt-6",
+            "[&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-5",
+            "[&_h3]:text-base [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4",
+            // Lists - improved spacing and styling
+            "[&_ul]:mb-4 [&_ul]:mt-2 [&_ul]:space-y-1.5",
+            "[&_ol]:mb-4 [&_ol]:mt-2 [&_ol]:space-y-1.5",
+            "[&_li]:leading-[1.7] [&_li]:pl-1",
+            "[&_ul>li]:relative [&_ul>li]:pl-2",
+            // Nested lists
+            "[&_li>ul]:mt-1.5 [&_li>ol]:mt-1.5",
+            "[&_li>ul]:mb-1.5 [&_li>ol]:mb-1.5",
+            // Inline code
+            "[&_code]:rounded [&_code]:bg-black/50 [&_code]:px-1.5 [&_code]:py-0.5",
+            "[&_code]:text-[13px] [&_code]:font-mono [&_code]:text-blue-300",
+            "[&_code]:border [&_code]:border-white/10",
+            // Code blocks
+            "[&_pre]:rounded-xl [&_pre]:bg-[#0d1117] [&_pre]:border [&_pre]:border-white/10",
+            "[&_pre]:p-4 [&_pre]:my-4 [&_pre]:overflow-x-auto",
+            "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-[13px]",
+            "[&_pre_code]:border-0 [&_pre_code]:text-slate-200",
+            // Bold and emphasis
+            "[&_strong]:font-semibold [&_strong]:text-white",
+            "[&_em]:italic [&_em]:text-slate-200",
+            // Links
+            "[&_a]:text-blue-400 [&_a]:underline [&_a]:underline-offset-2",
+            "[&_a:hover]:text-blue-300",
+            // Blockquotes
+            "[&_blockquote]:border-l-4 [&_blockquote]:border-indigo-500/50",
+            "[&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-300",
+            "[&_blockquote]:my-4",
           )}
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
               p: ({ children }) => <p>{children}</p>,
-              li: ({ children }) => <li className="mb-1">{children}</li>,
+              li: ({ children }) => <li>{children}</li>,
+              strong: ({ children }) => <strong>{children}</strong>,
+              h1: ({ children }) => <h1>{children}</h1>,
+              h2: ({ children }) => <h2>{children}</h2>,
+              h3: ({ children }) => <h3>{children}</h3>,
             }}
           >
             {content || "…"}

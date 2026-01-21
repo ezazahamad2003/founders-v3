@@ -18,6 +18,10 @@ html {
 body {
   @apply bg-[#05060c] text-slate-100 antialiased;
   min-height: 100vh;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 * {

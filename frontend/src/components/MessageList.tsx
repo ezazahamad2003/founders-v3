@@ -140,8 +140,8 @@ export default function MessageList({
         {!showIntro && messages.length === 0 && !isStreaming ? (
           <div className="flex flex-col gap-6 pt-12">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold text-white">How can I help you today?</h2>
-              <p className="mt-2 text-sm text-slate-400">Choose a starting point or ask anything</p>
+              <h2 className="text-2xl font-semibold text-white tracking-tight">How can I help you today?</h2>
+              <p className="mt-2 text-[15px] text-slate-400">Choose a starting point or ask anything</p>
             </div>
             
             <div className="grid gap-3 sm:grid-cols-2">
@@ -170,23 +170,23 @@ export default function MessageList({
             </div>
 
             <div className="mt-4 space-y-2">
-              <p className="text-xs uppercase tracking-wide text-slate-500">Trending Questions</p>
+              <p className="text-xs uppercase tracking-wide text-slate-500 font-medium">Trending Questions</p>
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => onSendMessage?.("Should I incorporate in Delaware or my home state?")}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-left text-sm text-slate-300 transition hover:border-white/20 hover:bg-white/10"
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-left text-[15px] text-slate-300 transition hover:border-white/20 hover:bg-white/10"
                 >
                   &quot;Should I incorporate in Delaware or my home state?&quot;
                 </button>
                 <button
                   onClick={() => onSendMessage?.("What are standard SAFE terms for a pre-seed round?")}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-left text-sm text-slate-300 transition hover:border-white/20 hover:bg-white/10"
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-left text-[15px] text-slate-300 transition hover:border-white/20 hover:bg-white/10"
                 >
                   &quot;What are standard SAFE terms for a pre-seed round?&quot;
                 </button>
                 <button
                   onClick={() => onSendMessage?.("How do I protect my IP before raising capital?")}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-left text-sm text-slate-300 transition hover:border-white/20 hover:bg-white/10"
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-left text-[15px] text-slate-300 transition hover:border-white/20 hover:bg-white/10"
                 >
                   &quot;How do I protect my IP before raising capital?&quot;
                 </button>
@@ -219,13 +219,13 @@ export default function MessageList({
         ) : null}
 
         {isStreaming && !streamingMessage ? (
-          <div className="flex items-center gap-3 rounded-3xl border border-white/10 bg-[#0d0f16] px-6 py-4 text-slate-300">
+          <div className="flex items-center gap-3 rounded-3xl border border-white/10 bg-[#1a1c24] px-6 py-4 text-slate-300 shadow-lg">
             <div className="flex gap-1">
               <span className="inline-block h-2 w-2 animate-bounce rounded-full bg-indigo-400" style={{ animationDelay: "0ms" }} />
               <span className="inline-block h-2 w-2 animate-bounce rounded-full bg-indigo-400" style={{ animationDelay: "150ms" }} />
               <span className="inline-block h-2 w-2 animate-bounce rounded-full bg-indigo-400" style={{ animationDelay: "300ms" }} />
             </div>
-            <span className="text-sm text-slate-400">Thinking...</span>
+            <span className="text-[15px] text-slate-300">Thinking...</span>
           </div>
         ) : null}
 

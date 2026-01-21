@@ -149,6 +149,17 @@
 - 2026-01-13: Executor added a new left-sidebar item "Blind Spot Analysis" (in chat sidebar) that navigates to `/blind-spot-analysis`, plus a placeholder page for that route.
 - 2026-01-13: Executor updated the Blind Spot Analysis page with 3 cards (Incorporation/Funding/Operations), each showing Purpose + checklist + blind-spot risks.
 - 2026-01-16: Executor hid the "Blind Spot Analysis" feature by commenting out the sidebar navigation button until requirements are finalized. The page and components remain in the codebase at `/blind-spot-analysis` but are no longer accessible via UI.
+- 2026-01-18: Executor starting UI/formatting improvements task: user reported chat message formatting quality is significantly worse than ChatGPT. Key issues identified: typography (font weights, sizes, line heights), list formatting, code block styling, message spacing/padding, and overall visual polish. Plan: update MessageBubble prose styles, improve list/code rendering, refine spacing throughout message UI.
+- 2026-01-18: Executor completed first round of formatting improvements:
+  - Enhanced typography: increased base font size to 15px, improved line-height to 1.7, added font kerning/ligatures
+  - Improved list formatting: better spacing (space-y-1.5), proper nested list handling, cleaner bullet styling
+  - Enhanced code styling: inline code with borders/bg, code blocks with proper syntax colors, improved contrast
+  - Better heading hierarchy: proper sizes/weights/spacing for h1/h2/h3
+  - Updated message bubble bg color (#1a1c24) for better contrast
+  - Improved "Thinking..." indicator and empty state styling
+  - Enhanced global font rendering (antialiasing, text-rendering: optimizeLegibility)
+  All changes linted successfully with no errors. Ready for user testing.
+- 2026-01-20: Executor fixed document context persistence bug. Changed `backend/app/routers/chat.py` to use `all_file_ids` (which includes files from both current request AND message history) instead of just `payload.file_ids` when persisting user and assistant messages. This ensures document context is maintained across all follow-up questions in a conversation. Updated 6 locations: user message insert (line 119) and all assistant message persistence calls (lines 159, 175, 199, 220) plus file validation (line 105). **User tested and confirmed working** - document context now persists correctly across follow-up questions without requiring re-upload.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
