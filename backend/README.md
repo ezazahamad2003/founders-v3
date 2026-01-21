@@ -5,7 +5,20 @@ FastAPI backend for **Scopic Legal**, a ChatGPT-style legal research assistant w
 - Supabase Postgres persistence for profiles, conversations, messages, and files
 - Supabase Auth JWT verification
 - OpenAI-powered chat, vision, file-aware, and deep-research responses with streaming output
+- **Document context persistence** - uploaded documents remain in context across all follow-up questions
 - Architecture ready for a future lawyer portal (`assigned_lawyer_id`, role-aware access)
+
+## Production Deployment
+
+**Live URL**: https://scopic-legal-api-566998539930.us-central1.run.app
+
+Deployed on Google Cloud Run (`us-central1`) with:
+- Auto-scaling: 0-5 instances
+- Resources: 1 vCPU, 1GB RAM per instance
+- Timeout: 300 seconds (supports long streaming responses)
+- Secrets managed via GCP Secret Manager
+
+**Deployment Guide**: See `CLOUDRUN-DEPLOYMENT.md` for full deployment instructions
 
 ## Requirements
 

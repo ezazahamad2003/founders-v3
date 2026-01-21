@@ -160,6 +160,8 @@
   - Enhanced global font rendering (antialiasing, text-rendering: optimizeLegibility)
   All changes linted successfully with no errors. Ready for user testing.
 - 2026-01-20: Executor fixed document context persistence bug. Changed `backend/app/routers/chat.py` to use `all_file_ids` (which includes files from both current request AND message history) instead of just `payload.file_ids` when persisting user and assistant messages. This ensures document context is maintained across all follow-up questions in a conversation. Updated 6 locations: user message insert (line 119) and all assistant message persistence calls (lines 159, 175, 199, 220) plus file validation (line 105). **User tested and confirmed working** - document context now persists correctly across follow-up questions without requiring re-upload.
+- 2026-01-20: Executor deployed backend to Google Cloud Run production environment. Built container image using Cloud Build (`gcr.io/founders-v3/scopic-legal-api`), deployed to `us-central1` region with configuration: 0-5 instances, 1 vCPU, 1GB RAM, 300s timeout, 80 concurrency. All secrets (OpenAI API key, Supabase credentials) configured via Secret Manager. Service live at: `https://scopic-legal-api-566998539930.us-central1.run.app` - health check confirmed working (200 OK).
+- 2026-01-20: Executor redeployed backend with latest code changes (revision `scopic-legal-api-00027-8z7`). Build completed in ~2 minutes, deployment completed in ~30 seconds. Health check passed (200 OK). Production backend updated successfully.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
