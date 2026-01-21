@@ -10,15 +10,13 @@ FastAPI backend for **Scopic Legal**, a ChatGPT-style legal research assistant w
 
 ## Production Deployment
 
-**Live URL**: https://scopic-legal-api-566998539930.us-central1.run.app
+The backend is designed for deployment on Google Cloud Run with:
+- Auto-scaling configuration (0-N instances based on traffic)
+- Configurable resources (CPU, memory)
+- Support for long streaming responses (configurable timeout)
+- Secrets management via GCP Secret Manager
 
-Deployed on Google Cloud Run (`us-central1`) with:
-- Auto-scaling: 0-5 instances
-- Resources: 1 vCPU, 1GB RAM per instance
-- Timeout: 300 seconds (supports long streaming responses)
-- Secrets managed via GCP Secret Manager
-
-**Deployment Guide**: See `CLOUDRUN-DEPLOYMENT.md` for full deployment instructions
+**Deployment Guide**: See `CLOUDRUN-DEPLOYMENT.md` for full deployment instructions.
 
 ## Requirements
 
