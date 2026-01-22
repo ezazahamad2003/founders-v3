@@ -154,7 +154,7 @@ export default function MessageList({
                   <span className="font-medium text-indigo-300">Document Review</span>
                 </div>
                 <p className="text-sm text-slate-400">
-                  Upload a contract and I&apos;ll identify risks, analyze clauses, and suggest improvements
+                  Upload a contract and ChatGPT 5.2 can identify risks, analyze clauses and suggestion improvements based on the prompt of your choice
                 </p>
               </button>
 

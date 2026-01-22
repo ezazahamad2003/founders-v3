@@ -162,6 +162,8 @@
 - 2026-01-20: Executor fixed document context persistence bug. Changed `backend/app/routers/chat.py` to use `all_file_ids` (which includes files from both current request AND message history) instead of just `payload.file_ids` when persisting user and assistant messages. This ensures document context is maintained across all follow-up questions in a conversation. Updated 6 locations: user message insert (line 119) and all assistant message persistence calls (lines 159, 175, 199, 220) plus file validation (line 105). **User tested and confirmed working** - document context now persists correctly across follow-up questions without requiring re-upload.
 - 2026-01-20: Executor deployed backend to Google Cloud Run production environment. Built container image using Cloud Build (`gcr.io/founders-v3/scopic-legal-api`), deployed to `us-central1` region with configuration: 0-5 instances, 1 vCPU, 1GB RAM, 300s timeout, 80 concurrency. All secrets (OpenAI API key, Supabase credentials) configured via Secret Manager. Service live at: `https://scopic-legal-api-566998539930.us-central1.run.app` - health check confirmed working (200 OK).
 - 2026-01-20: Executor redeployed backend with latest code changes (revision `scopic-legal-api-00027-8z7`). Build completed in ~2 minutes, deployment completed in ~30 seconds. Health check passed (200 OK). Production backend updated successfully.
+- 2026-01-20: Executor updated README files with production deployment information (Cloud Run URL, document context persistence feature, deployment configuration). Committed changes to git (commit `598e743`) and pushed to main branch successfully.
+- 2026-01-22: Executor updated homepage Document Review description to clarify ChatGPT 5.2 as the provider of analysis.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
@@ -175,6 +177,7 @@
 - 2025-12-23: Confirmed the current shell environment shows `OPENAI_API_KEY=MISSING`, so `tests/run_eval.py` will fail fast until the key is provided (either as an env var or via a `.env` file that `python-dotenv` can load).
 - For `lawyermvp-merge-profile-and-query-docs`: I will implement new `lawyermvp` API routes that use `SUPABASE_SERVICE_ROLE_KEY` to (a) list profile-library objects (from likely bucket names) and (b) create signed URLs so the admin can view them. Then I’ll update the `lawyermvp` dashboard/user pages to merge counts and display both “Query attachments” and “Profile uploads”.
 - Note: backend `FileMeta` includes `openai_file_id`, but `frontend/src/lib/types.ts` `FileMeta` currently ignores it. That’s OK for UI, but it can be useful to expose later for debugging whether PDFs are using OpenAI Files API vs text-extraction fallback.
+- Document Review homepage copy updated per request; please confirm language is acceptable.
 
 # Lessons
 - Include debugging-friendly info in program output/logs.
