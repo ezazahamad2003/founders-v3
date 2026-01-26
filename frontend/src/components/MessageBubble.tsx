@@ -34,7 +34,7 @@ export default function MessageBubble({
     isOwn
       ? "bg-indigo-600/80 text-white max-w-[760px]"
       : hasTable 
-        ? "w-full max-w-6xl" // Wider for tables (document review)
+        ? "w-full" // Full container width for tables (document review)
         : "w-full max-w-3xl", // Normal width for regular chat
     !isOwn && (role === "assistant" ? "bg-[#1a1c24] text-slate-100" : "bg-white/10 text-slate-100"),
   );

@@ -174,6 +174,7 @@
 - 2026-01-22: Executor enabled HTML rendering in ReactMarkdown by adding rehype-raw plugin to properly render `<br>` tags in table cells for line breaks in the Analysis column.
 - 2026-01-22: Executor increased message container width in MessageList.tsx from max-w-3xl (768px) to max-w-6xl (1152px) to give document review tables 50% more horizontal space for better column width distribution.
 - 2026-01-22: Executor made width increase conditional - added table detection in MessageBubble.tsx so only messages with tables (document reviews) use max-w-6xl while regular chat messages remain at max-w-3xl. Messages are now center-aligned for better presentation.
+- 2026-01-22: Executor committed and pushed all document review UI improvements to main (commit `1eed2e9`). Changes include conditional width logic, Executive Summary bullet formatting, Risk Analysis table structure, rehype-raw plugin for HTML rendering, and comprehensive table styling.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.

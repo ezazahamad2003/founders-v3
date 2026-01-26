@@ -126,7 +126,7 @@ export default function MessageList({
       ref={scrollRef}
       className="flex-1 overflow-y-auto scroll-smooth bg-gradient-to-b from-[#05060c] via-[#070812] to-[#05060c] px-8 py-6"
     >
-      <div className="mx-auto flex w-full flex-col space-y-4">
+      <div className="mx-auto flex max-w-4xl flex-col space-y-4">
         {showIntro && introMarkdown ? (
           <MessageBubble
             role="system"
