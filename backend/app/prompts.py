@@ -166,39 +166,39 @@ Identify and explain the Top 5 material risks in the Agreement from my perspecti
 
 ### Step 1: Executive Summary (Required)
 
-At the very top, provide a concise executive summary (5–7 sentences) that:
+At the very top, provide a concise executive summary using **3-5 numbered bullet points** with proper spacing:
 
-- Explains the overall risk posture of the Agreement (e.g., founder-favorable, neutral, or counterparty-favorable)
-- Highlights the most dangerous exposure areas (e.g., financial liability, termination, IP, indemnity)
-- States whether the Agreement is signable as-is, requires renegotiation, or should not be signed without changes
+**CRITICAL FORMATTING RULES:**
+- Use numbered bullets (1., 2., 3.)
+- Add a blank line between each bullet point
+- Bold the label (e.g., **Overall Risk Posture:**) at the start of each bullet
+- Keep each bullet to 1-2 sentences maximum
 
-Do not restate every clause — focus on big-picture risk.
+**Required bullets:**
+1. **Overall Risk Posture**: State whether this Agreement is founder-favorable, neutral, or counterparty-favorable
+2. **Key Risks**: List the 2-3 most dangerous exposure areas (e.g., financial liability, termination, IP, indemnity)  
+3. **Recommendation**: State whether the Agreement is signable as-is, requires renegotiation, or should not be signed without changes
 
-### Step 2: Top 5 Risk Identification
+Focus on big-picture risk, not clause-by-clause details.
 
-For each of the Top 5 risks only, do the following:
+### Step 2: Top 5 Risk Analysis Table
 
-**Quote**
-Extract the exact contractual language creating the risk.
+**CRITICAL: You MUST output a proper markdown table with 5 columns and 5 rows (one per risk).**
 
-**Analyze (The "Why")**
-Explain precisely why this clause is problematic under standard contract principles, focusing on:
+**Table Structure:**
+- **Column 1 - Risk**: Section number + brief risk title (e.g., "Section 5.2: Irrevocable Proxy")
+- **Column 2 - Quote**: Brief problematic clause excerpt (max 40 words, in quotes)
+- **Column 3 - Analysis**: 2-3 bullet points with `<br>` tags between them (• Point 1<br>• Point 2<br>• Point 3)
+- **Column 4 - Proposed Fix**: Bracketed replacement clause in [square brackets]
+- **Column 5 - Severity**: "High" or "Medium"
 
-- Financial exposure
-- Termination / lock-in risk
-- Liability allocation
-- Off-market or one-sided provisions
-- Practical business consequences for a startup
-
-Be concrete. Avoid generic legal explanations.
-
-**Redline (The "Fix")**
-Draft a specific, bracketed replacement clause that:
-
-- Improves my position
-- Remains commercially reasonable
-- Matches the tone and drafting style of the Agreement
-- Keeps the deal moving (not an aggressive "nuke")
+**Critical Formatting Rules:**
+1. ALWAYS use proper markdown table syntax with pipes (|) and hyphens
+2. Keep quotes under 40 words
+3. In Analysis column, use bullet points (•) separated by `<br>` tags for line breaks
+4. Bold key risk terms in Analysis bullets (e.g., **Financial Risk**, **Control Risk**)
+5. Use [square brackets] for all proposed fixes
+6. Must have exactly 5 data rows (one per risk)
 
 ## CONSTRAINTS
 
@@ -213,19 +213,23 @@ Return the analysis in Markdown, using the following structure:
 
 ### Executive Summary
 
-(5-7 sentence paragraph summary here)
+1. **Overall Risk Posture**: [State whether this is founder-favorable, neutral, or counterparty-favorable]
+
+2. **Key Risks**: [List 2-3 most dangerous exposure areas]
+
+3. **Recommendation**: [State whether signable as-is, requires renegotiation, or should not be signed]
 
 ---
 
 ### Risk Analysis Table
 
-| Clause / Section # | Risk Analysis (The "Why") | Proposed Redline (The "Fix") | Severity |
-|-------------------|---------------------------|------------------------------|----------|
-| [Section X.X: Title] <br><br> "Exact quoted language from the contract..." | **Financial Exposure:** Explain the specific financial risk or liability issue.<br><br>**Why This Matters:** Explain the practical business consequence for a startup, focusing on lock-in risk, one-sided provisions, or off-market terms.<br><br>Be concrete and specific. | [Proposed replacement clause with specific bracketed language that improves your position while remaining commercially reasonable.] | High / Med |
-| [Section Y.Y: Title] <br><br> "Exact quoted language..." | Analysis here... | Redline here... | High / Med |
-| [Section Z.Z: Title] <br><br> "Exact quoted language..." | Analysis here... | Redline here... | High / Med |
-| ... | ... | ... | ... |
-| ... | ... | ... | ... |
+| Risk | Quote | Analysis | Proposed Fix | Severity |
+|------|-------|----------|--------------|----------|
+| **Section X.X: Risk Title** | "Brief excerpt of problematic language (under 40 words)" | • **Financial Risk**: One sentence<br>• **Why This Matters**: One sentence<br>• **Off-Market**: One sentence | [Bracketed replacement clause that improves your position] | High |
+| **Section Y.Y: Risk Title** | "Brief excerpt..." | • Point 1<br>• Point 2<br>• Point 3 | [Replacement clause...] | Medium |
+| **Section Z.Z: Risk Title** | "Brief excerpt..." | • Point 1<br>• Point 2 | [Replacement clause...] | High |
+| **Section A.A: Risk Title** | "Brief excerpt..." | • Point 1<br>• Point 2 | [Replacement clause...] | High |
+| **Section B.B: Risk Title** | "Brief excerpt..." | • Point 1<br>• Point 2 | [Replacement clause...] | Medium |
 
 ---
 
@@ -242,17 +246,23 @@ Return the analysis in Markdown, using the following structure:
 ```markdown
 ### Executive Summary
 
-This is a [type of agreement] between you (the "Company") and [Counterparty]. The overall risk posture is **moderately counterparty-favorable** with several one-sided provisions that create significant downside exposure. The most dangerous areas are: (1) uncapped liability for data breaches, (2) unilateral termination rights favoring the vendor, and (3) broad indemnification obligations without reciprocity. As drafted, this Agreement **requires renegotiation** before signing—specifically around liability caps, termination balance, and indemnity scope. The commercial terms are reasonable, but the risk allocation needs to be rebalanced to make this signable.
+1. **Overall Risk Posture**: This Agreement is **moderately counterparty-favorable** with several one-sided provisions that create significant downside exposure for you as the founder.
+
+2. **Key Risks**: (1) Uncapped liability for data breaches, (2) unilateral termination rights favoring the vendor, and (3) broad indemnification obligations without reciprocity.
+
+3. **Recommendation**: This Agreement **requires renegotiation** before signing—specifically around liability caps, termination balance, and indemnity scope. The commercial terms are reasonable, but the risk allocation needs rebalancing.
 
 ---
 
 ### Risk Analysis Table
 
-| Clause / Section # | Risk Analysis (The "Why") | Proposed Redline (The "Fix") | Severity |
-|-------------------|---------------------------|------------------------------|----------|
-| Section 8.2: Liability Cap <br><br> "Company shall be liable for all damages arising from any breach of this Agreement, including consequential damages, without limitation." | **Financial Exposure:** Uncapped liability means you could owe unlimited damages for any breach, including consequential damages (lost profits, business interruption). For a startup, this creates existential risk.<br><br>**Why This Matters:** Standard market practice is to cap liability at 12 months of fees paid or the contract value. Unlimited exposure is off-market and could exceed your insurance coverage. | [Company's total liability under this Agreement shall not exceed the greater of (i) fees paid by Customer in the 12 months preceding the claim or (ii) $[X],000, except in cases of fraud, willful misconduct, or breach of confidentiality obligations.] | High |
-| Section 10.1: Termination Rights <br><br> "Customer may terminate this Agreement at any time for any reason upon 30 days' notice. Company may only terminate for material breach after 90 days' cure period." | **Lock-in Risk:** Customer has unilateral termination for convenience, but you're locked in unless there's an uncured material breach. This creates asymmetric exit rights.<br><br>**Why This Matters:** You have no ability to walk away if the relationship becomes unprofitable or if Customer becomes difficult to work with. Market standard is mutual termination for convenience. | [Either party may terminate this Agreement for convenience upon [60] days' written notice. Either party may terminate for material breach if the breach remains uncured for [30] days after written notice.] | High |
-| ... | ... | ... | ... |
+| Risk | Quote | Analysis | Proposed Fix | Severity |
+|------|-------|----------|--------------|----------|
+| **Section 8.2: Uncapped Liability** | "Company shall be liable for all damages arising from any breach, including consequential damages, without limitation." | • **Financial Risk**: Unlimited damages for any breach creates existential risk<br>• **Why This Matters**: Single breach could exceed insurance/cash, forcing bankruptcy<br>• **Off-Market**: Standard is 12-month fee cap or $50K-$100K | [Company's total liability shall not exceed the greater of (i) fees paid in prior 12 months or (ii) $50,000, except for fraud or breach of confidentiality] | High |
+| **Section 10.1: Termination Rights** | "Customer may terminate anytime with 30 days' notice. Company may only terminate for material breach after 90-day cure." | • **Lock-in Risk**: Asymmetric exit rights trap you in unprofitable relationships<br>• **Why This Matters**: Customer can walk away anytime, but you're stuck<br>• **Off-Market**: Market standard is mutual 30-60 day termination for convenience | [Either party may terminate for convenience upon 60 days' written notice, or for material breach if uncured after 30 days] | High |
+| **Section 12.4: One-Sided Indemnity** | "Company indemnifies Customer for all claims arising from services, with no reciprocal protection." | • **Financial Risk**: You bear all liability but get no protection from Customer's actions<br>• **Off-Market**: Standard agreements have mutual indemnification obligations | [Mutual indemnification with each party protecting the other for claims arising from their respective breaches] | Medium |
+| **Section 5.2: Irrevocable Proxy** | "Each Shareholder appoints CEO as irrevocable proxy with full voting power and document signing authority." | • **Control Risk**: CEO can vote your shares and sign agreements without consent<br>• **Why This Matters**: Loss of board rights and approval authority over major decisions | [Proxy limited to voting only, requires written notice, excludes document-signing authority] | High |
+| **Section 7.1: IP Assignment** | "All work product and inventions automatically assigned to Customer, including pre-existing IP." | • **IP Risk**: Lose ownership of your core technology and pre-existing assets<br>• **Off-Market**: Standard is new work only, with carved-out prior IP | [Assignment limited to new work created specifically for Customer, with schedule carving out Company's prior IP] | High |
 
 ---
 

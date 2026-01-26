@@ -4,6 +4,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { FileMeta } from "@/lib/types";
 
 interface MessageBubbleProps {
@@ -24,18 +25,23 @@ export default function MessageBubble({
   attachments = [],
 }: MessageBubbleProps) {
   const [copied, setCopied] = useState(false);
+  
+  // Detect if message contains a table (for document review)
+  const hasTable = content.includes('|') && content.includes('---');
 
   const bubbleClass = clsx(
-    "rounded-3xl px-6 py-5 shadow-lg relative max-w-[760px]",
+    "rounded-3xl px-6 py-5 shadow-lg relative",
     isOwn
-      ? "bg-indigo-600/80 text-white"
-      : "w-full",
+      ? "bg-indigo-600/80 text-white max-w-[760px]"
+      : hasTable 
+        ? "w-full max-w-6xl" // Wider for tables (document review)
+        : "w-full max-w-3xl", // Normal width for regular chat
     !isOwn && (role === "assistant" ? "bg-[#1a1c24] text-slate-100" : "bg-white/10 text-slate-100"),
   );
 
   const rowClass = clsx(
     "flex w-full",
-    isOwn ? "justify-end" : "justify-start",
+    isOwn ? "justify-end" : "justify-center",
   );
 
   const handleCopy = async () => {
@@ -120,10 +126,20 @@ export default function MessageBubble({
             "[&_blockquote]:border-l-4 [&_blockquote]:border-indigo-500/50",
             "[&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-300",
             "[&_blockquote]:my-4",
+            // Tables - wider and better formatted
+            "[&_table]:w-full [&_table]:my-6 [&_table]:border-collapse",
+            "[&_table]:table-fixed",
+            "[&_thead]:bg-white/5",
+            "[&_th]:border [&_th]:border-white/20 [&_th]:px-4 [&_th]:py-3",
+            "[&_th]:text-left [&_th]:font-semibold [&_th]:text-sm [&_th]:text-white",
+            "[&_td]:border [&_td]:border-white/10 [&_td]:px-4 [&_td]:py-3",
+            "[&_td]:text-sm [&_td]:text-slate-200 [&_td]:align-top",
+            "[&_tr:hover]:bg-white/5",
           )}
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
             components={{
               p: ({ children }) => <p>{children}</p>,
               li: ({ children }) => <li>{children}</li>,

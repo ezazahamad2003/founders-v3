@@ -164,6 +164,16 @@
 - 2026-01-20: Executor redeployed backend with latest code changes (revision `scopic-legal-api-00027-8z7`). Build completed in ~2 minutes, deployment completed in ~30 seconds. Health check passed (200 OK). Production backend updated successfully.
 - 2026-01-20: Executor updated README files with production deployment information (Cloud Run URL, document context persistence feature, deployment configuration). Committed changes to git (commit `598e743`) and pushed to main branch successfully.
 - 2026-01-22: Executor updated homepage Document Review description to clarify ChatGPT 5.2 as the provider of analysis.
+- 2026-01-22: Executor restructured CONTRACT_REVIEW_SYSTEM_PROMPT Executive Summary format from 5-7 sentence paragraph to 3-5 concise bullet points (Overall Risk Posture, Key Risks, Recommendation) for better scannability and structure.
+- 2026-01-22: Executor started both backend (http://0.0.0.0:8000) and frontend (http://localhost:3001) dev servers for testing Executive Summary changes.
+- 2026-01-22: Executor updated Executive Summary format to use numbered bullets (1., 2., 3.) with blank lines between each bullet point for better spacing, gaps, and visual hierarchy per user feedback.
+- 2026-01-22: Executor restructured Risk Analysis from cramped table format to card-based layout with individual risk sections, shorter quotes (under 50 words), concise bullet points, and proper spacing between sections for better readability.
+- 2026-01-22: Executor reverted to proper markdown table format with clear line separations between rows, using `<br>` for multi-line content within cells, keeping quotes under 40 words, and using bullet points within Analysis column for better structure.
+- 2026-01-22: Executor strengthened table formatting instructions to ensure consistent 5-column markdown table output (Risk | Quote | Analysis | Proposed Fix | Severity) with explicit rules for bullet points, line breaks, and proper table structure.
+- 2026-01-22: Executor fixed table rendering in frontend by adding comprehensive table CSS styling to MessageBubble.tsx (full width, borders, padding, hover effects) and removed max-width constraint on assistant messages to allow tables to display properly with adequate column space.
+- 2026-01-22: Executor enabled HTML rendering in ReactMarkdown by adding rehype-raw plugin to properly render `<br>` tags in table cells for line breaks in the Analysis column.
+- 2026-01-22: Executor increased message container width in MessageList.tsx from max-w-3xl (768px) to max-w-6xl (1152px) to give document review tables 50% more horizontal space for better column width distribution.
+- 2026-01-22: Executor made width increase conditional - added table detection in MessageBubble.tsx so only messages with tables (document reviews) use max-w-6xl while regular chat messages remain at max-w-3xl. Messages are now center-aligned for better presentation.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
