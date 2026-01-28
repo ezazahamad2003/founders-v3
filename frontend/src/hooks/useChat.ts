@@ -24,7 +24,7 @@ import {
 const emptyMessages: Message[] = [];
 
 const getIntroSeenKey = (userId: string) => `scopic_intro_seen:${userId}`;
-const getWelcomeSeenKey = (userId: string) => `scopic_welcome_seen:${userId}`;
+const getWelcomeFirstVisitKey = (userId: string) => `scopic_welcome_first_visit:${userId}`;
 
 export const WELCOME_CONVERSATION_ID = "welcome-onboarding";
 
@@ -101,7 +101,7 @@ export function useChat(accessToken: string | null) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pendingAttachmentIds, setPendingAttachmentIds] = useState<string[]>([]);
   const [showScopicIntro, setShowScopicIntro] = useState(false);
-  const [showWelcomeConversation, setShowWelcomeConversation] = useState(false);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
 
   const tokenReady = Boolean(accessToken);
 
@@ -119,17 +119,13 @@ export function useChat(accessToken: string | null) {
     setConversationsLoading(true);
     listConversations(accessToken!)
       .then((res) => {
-        // Only prepend welcome conversation if user hasn't seen it yet
-        if (showWelcomeConversation) {
-          const welcomeConversation = createWelcomeConversation();
-          setConversations([welcomeConversation, ...res.conversations]);
-        } else {
-          setConversations(res.conversations);
-        }
+        // Always prepend welcome conversation at the top for all users
+        const welcomeConversation = createWelcomeConversation();
+        setConversations([welcomeConversation, ...res.conversations]);
       })
       .catch((error) => setErrorMessage(error.message || "Unable to load conversations."))
       .finally(() => setConversationsLoading(false));
-  }, [accessToken, tokenReady, showWelcomeConversation]);
+  }, [accessToken, tokenReady]);
 
   const loadConversation = useCallback(
     (conversationId: string) => {
@@ -144,15 +140,7 @@ export function useChat(accessToken: string | null) {
         setPendingAttachmentIds([]);
         setStreamedAssistantText("");
         setPromptMode("general");
-        
-        // Mark welcome as seen and hide it from future sessions
-        if (profile && typeof window !== "undefined") {
-          const welcomeSeenKey = getWelcomeSeenKey(profile.id);
-          window.localStorage.setItem(welcomeSeenKey, "true");
-          setShowWelcomeConversation(false);
-          // Remove welcome conversation from the list
-          setConversations((prev) => prev.filter((conv) => conv.id !== WELCOME_CONVERSATION_ID));
-        }
+        // Welcome conversation stays in sidebar permanently - no removal
         return;
       }
       
@@ -170,7 +158,7 @@ export function useChat(accessToken: string | null) {
         })
         .catch((error) => setErrorMessage(error.message || "Unable to load conversation."));
     },
-    [accessToken, tokenReady, conversationPromptModes, profile],
+    [accessToken, tokenReady, conversationPromptModes],
   );
 
   useEffect(() => {
@@ -189,11 +177,16 @@ export function useChat(accessToken: string | null) {
         setRequiresTos(needsTos);
         setShowScopicIntro(false);
         
-        // Check if user has seen the welcome conversation before
+        // Check if this is the user's first visit
         const userId = me.id;
-        const welcomeSeenKey = getWelcomeSeenKey(userId);
-        const hasSeenWelcome = typeof window !== "undefined" && window.localStorage.getItem(welcomeSeenKey) === "true";
-        setShowWelcomeConversation(!hasSeenWelcome);
+        const firstVisitKey = getWelcomeFirstVisitKey(userId);
+        const hasVisitedBefore = typeof window !== "undefined" && window.localStorage.getItem(firstVisitKey) === "true";
+        setIsFirstVisit(!hasVisitedBefore);
+        
+        // Mark as visited
+        if (!hasVisitedBefore && typeof window !== "undefined") {
+          window.localStorage.setItem(firstVisitKey, "true");
+        }
         
         if (!needsTos) {
           refreshConversations();
@@ -209,22 +202,19 @@ export function useChat(accessToken: string | null) {
       });
   }, [accessToken, tokenReady, resetConversationState, refreshConversations]);
 
-  // Auto-load welcome conversation on first load for first-time users
+  // Auto-load welcome conversation ONLY on first visit
   useEffect(() => {
-    if (conversations.length > 0 && !activeConversationId && !isProfileLoading && showWelcomeConversation) {
+    if (conversations.length > 0 && !activeConversationId && !isProfileLoading && isFirstVisit) {
       loadConversation(WELCOME_CONVERSATION_ID);
+      setIsFirstVisit(false); // Only auto-load once
     }
-  }, [conversations.length, activeConversationId, isProfileLoading, showWelcomeConversation, loadConversation]);
+  }, [conversations.length, activeConversationId, isProfileLoading, isFirstVisit, loadConversation]);
 
   const startNewConversation = useCallback(() => {
     setShowScopicIntro(false);
     resetConversationState();
-    // Remove welcome conversation from sidebar when user starts a new chat
-    if (showWelcomeConversation) {
-      setConversations((prev) => prev.filter((conv) => conv.id !== WELCOME_CONVERSATION_ID));
-      setShowWelcomeConversation(false);
-    }
-  }, [resetConversationState, showWelcomeConversation]);
+    // Welcome conversation stays in sidebar - don't remove it
+  }, [resetConversationState]);
 
   const startContractReview = useCallback(() => {
     setShowScopicIntro(false);
