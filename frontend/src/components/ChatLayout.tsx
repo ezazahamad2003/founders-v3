@@ -193,7 +193,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
 
         {/* Input area - fixed at bottom, shrink-0 prevents squishing */}
         <ChatInput
-          disabled={isProfileLoading || requiresTos}
+          disabled={isProfileLoading || requiresTos || activeConversationId === "welcome-onboarding"}
           mode={mode}
           onModeChange={setMode}
           promptMode={promptMode}

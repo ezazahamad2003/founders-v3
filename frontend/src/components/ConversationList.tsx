@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import { ConversationSummary } from "@/lib/types";
+import { WELCOME_CONVERSATION_ID } from "@/hooks/useChat";
 
 interface ConversationListProps {
   conversations: ConversationSummary[];
@@ -39,6 +40,7 @@ export default function ConversationList({
     <ul className="space-y-2">
       {conversations.map((conversation) => {
         const isActive = conversation.id === activeId;
+        const isWelcome = conversation.id === WELCOME_CONVERSATION_ID;
         return (
           <li key={conversation.id} className="relative">
             <button
@@ -50,29 +52,33 @@ export default function ConversationList({
                   : "border-white/5 bg-white/0 text-slate-200 hover:border-white/20 hover:bg-white/5",
               )}
             >
-              <div className="flex-1 pr-8">
+              <div className={clsx("flex-1", !isWelcome && "pr-8")}>
                 <p className="line-clamp-1 text-sm font-medium">
                   {conversation.title ?? "New chat"}
                 </p>
-                <p className="mt-1 text-xs text-slate-400">
-                  {new Date(conversation.updated_at).toLocaleString()}
-                </p>
+                {!isWelcome && (
+                  <p className="mt-1 text-xs text-slate-400">
+                    {new Date(conversation.updated_at).toLocaleString()}
+                  </p>
+                )}
               </div>
             </button>
-            <button
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                const confirmed = window.confirm("Delete this conversation?");
-                if (confirmed) {
-                  onDeleteConversation(conversation.id);
-                }
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl border border-white/10 px-2 py-1 text-xs text-slate-300 transition hover:border-red-400 hover:text-red-300"
-              aria-label="Delete conversation"
-            >
-              ×
-            </button>
+            {!isWelcome && (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const confirmed = window.confirm("Delete this conversation?");
+                  if (confirmed) {
+                    onDeleteConversation(conversation.id);
+                  }
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl border border-white/10 px-2 py-1 text-xs text-slate-300 transition hover:border-red-400 hover:text-red-300"
+                aria-label="Delete conversation"
+              >
+                ×
+              </button>
+            )}
           </li>
         );
       })}

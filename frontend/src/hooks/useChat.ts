@@ -24,6 +24,29 @@ import {
 const emptyMessages: Message[] = [];
 
 const getIntroSeenKey = (userId: string) => `scopic_intro_seen:${userId}`;
+const getWelcomeSeenKey = (userId: string) => `scopic_welcome_seen:${userId}`;
+
+export const WELCOME_CONVERSATION_ID = "welcome-onboarding";
+
+const WELCOME_MESSAGE_CONTENT = `## Welcome to Scopic Legal! 🎉
+
+Thanks for joining our private beta program. We designed this tool to explore your experience with "self-serving" legal work and to identify where you need the most help.
+
+### 📹 Watch this quick intro video to get started:
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; width: 100%; max-width: 100%; margin: 20px 0;"><iframe src="https://www.loom.com/embed/f1696ad77b9b47c2a7d76b747b505cd7?sid=e6b0c4b3-6f8c-4f3a-b8e5-8f5e5e5e5e5e" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+### How to get started:
+
+- **Ask Away:** Type any legal question in a "+New Chat" or use the buttons below for common use cases.
+- **Document Review:** Click "⚖️ Document Review" to upload and analyze contracts.
+- **Meet Us:** Book a free legal/fundraising strategy consultation with our CEO, Amit Bhanot (10+ years Corporate Lawyer & VC Partner) by clicking "+Book a Meeting".
+- **Provide Context:** Click "+Document Vault" to upload past or future agreements, so we'll be ready to help you. Any data or documents that you upload will be kept confidential pursuant to our Privacy Policy.
+
+We're thrilled to have you onboard and your feedback is crucial to shaping Scopic Legal. Let's get to work!
+
+**Important Note:** Scopic Legal is an AI assistant, not a law firm. The responses are for informational purposes only and do not constitute legal advice. Please ensure critical documents are reviewed by a qualified professional, whom we can connect you with if needed.
+`;
 
 const SCOPIC_INTRO_MARKDOWN = `## Scopic Intro
 
@@ -39,6 +62,26 @@ We're thrilled to have you onboard and your feedback is crucial to shaping Scopi
 
 **Important Note:** Scopic Legal is an AI assistant, not a law firm. The responses are for informational purposes only and do not constitute legal advice. Please ensure critical documents are reviewed by a qualified professional, whom we can connect you with if needed.
 `;
+
+// Create a static welcome conversation with the video
+const createWelcomeConversation = (): ConversationSummary => ({
+  id: WELCOME_CONVERSATION_ID,
+  title: "👋 Welcome to Scopic Legal",
+  created_at: new Date(0).toISOString(), // Set to epoch to always be first
+  updated_at: new Date(0).toISOString(),
+  assigned_lawyer_id: null,
+});
+
+const createWelcomeMessage = (): Message => ({
+  id: "welcome-message-1",
+  conversation_id: WELCOME_CONVERSATION_ID,
+  user_id: null,
+  role: "assistant",
+  content: WELCOME_MESSAGE_CONTENT,
+  model: null,
+  metadata: null,
+  created_at: new Date(0).toISOString(),
+});
 
 export function useChat(accessToken: string | null) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -58,6 +101,7 @@ export function useChat(accessToken: string | null) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pendingAttachmentIds, setPendingAttachmentIds] = useState<string[]>([]);
   const [showScopicIntro, setShowScopicIntro] = useState(false);
+  const [showWelcomeConversation, setShowWelcomeConversation] = useState(false);
 
   const tokenReady = Boolean(accessToken);
 
@@ -74,10 +118,60 @@ export function useChat(accessToken: string | null) {
     if (!tokenReady) return;
     setConversationsLoading(true);
     listConversations(accessToken!)
-      .then((res) => setConversations(res.conversations))
+      .then((res) => {
+        // Only prepend welcome conversation if user hasn't seen it yet
+        if (showWelcomeConversation) {
+          const welcomeConversation = createWelcomeConversation();
+          setConversations([welcomeConversation, ...res.conversations]);
+        } else {
+          setConversations(res.conversations);
+        }
+      })
       .catch((error) => setErrorMessage(error.message || "Unable to load conversations."))
       .finally(() => setConversationsLoading(false));
-  }, [accessToken, tokenReady]);
+  }, [accessToken, tokenReady, showWelcomeConversation]);
+
+  const loadConversation = useCallback(
+    (conversationId: string) => {
+      if (!tokenReady || !conversationId) return;
+      setShowScopicIntro(false);
+      
+      // Handle special welcome conversation
+      if (conversationId === WELCOME_CONVERSATION_ID) {
+        setActiveConversationId(conversationId);
+        setMessages([createWelcomeMessage()]);
+        setConversationFiles([]);
+        setPendingAttachmentIds([]);
+        setStreamedAssistantText("");
+        setPromptMode("general");
+        
+        // Mark welcome as seen and hide it from future sessions
+        if (profile && typeof window !== "undefined") {
+          const welcomeSeenKey = getWelcomeSeenKey(profile.id);
+          window.localStorage.setItem(welcomeSeenKey, "true");
+          setShowWelcomeConversation(false);
+          // Remove welcome conversation from the list
+          setConversations((prev) => prev.filter((conv) => conv.id !== WELCOME_CONVERSATION_ID));
+        }
+        return;
+      }
+      
+      getConversation(accessToken!, conversationId)
+        .then((data) => {
+          setActiveConversationId(conversationId);
+          setMessages(data.messages);
+          setConversationFiles(data.files);
+          setPendingAttachmentIds([]);
+          setStreamedAssistantText("");
+          
+          // Restore prompt mode from tracked modes or default to general
+          const savedMode = conversationPromptModes[conversationId] || "general";
+          setPromptMode(savedMode);
+        })
+        .catch((error) => setErrorMessage(error.message || "Unable to load conversation."));
+    },
+    [accessToken, tokenReady, conversationPromptModes, profile],
+  );
 
   useEffect(() => {
     if (!tokenReady) {
@@ -94,6 +188,13 @@ export function useChat(accessToken: string | null) {
         const needsTos = !me.accepted_tos_at;
         setRequiresTos(needsTos);
         setShowScopicIntro(false);
+        
+        // Check if user has seen the welcome conversation before
+        const userId = me.id;
+        const welcomeSeenKey = getWelcomeSeenKey(userId);
+        const hasSeenWelcome = typeof window !== "undefined" && window.localStorage.getItem(welcomeSeenKey) === "true";
+        setShowWelcomeConversation(!hasSeenWelcome);
+        
         if (!needsTos) {
           refreshConversations();
         } else {
@@ -108,31 +209,22 @@ export function useChat(accessToken: string | null) {
       });
   }, [accessToken, tokenReady, resetConversationState, refreshConversations]);
 
-  const loadConversation = useCallback(
-    (conversationId: string) => {
-      if (!tokenReady || !conversationId) return;
-      setShowScopicIntro(false);
-      getConversation(accessToken!, conversationId)
-        .then((data) => {
-          setActiveConversationId(conversationId);
-          setMessages(data.messages);
-          setConversationFiles(data.files);
-          setPendingAttachmentIds([]);
-          setStreamedAssistantText("");
-          
-          // Restore prompt mode from tracked modes or default to general
-          const savedMode = conversationPromptModes[conversationId] || "general";
-          setPromptMode(savedMode);
-        })
-        .catch((error) => setErrorMessage(error.message || "Unable to load conversation."));
-    },
-    [accessToken, tokenReady, conversationPromptModes],
-  );
+  // Auto-load welcome conversation on first load for first-time users
+  useEffect(() => {
+    if (conversations.length > 0 && !activeConversationId && !isProfileLoading && showWelcomeConversation) {
+      loadConversation(WELCOME_CONVERSATION_ID);
+    }
+  }, [conversations.length, activeConversationId, isProfileLoading, showWelcomeConversation, loadConversation]);
 
   const startNewConversation = useCallback(() => {
     setShowScopicIntro(false);
     resetConversationState();
-  }, [resetConversationState]);
+    // Remove welcome conversation from sidebar when user starts a new chat
+    if (showWelcomeConversation) {
+      setConversations((prev) => prev.filter((conv) => conv.id !== WELCOME_CONVERSATION_ID));
+      setShowWelcomeConversation(false);
+    }
+  }, [resetConversationState, showWelcomeConversation]);
 
   const startContractReview = useCallback(() => {
     setShowScopicIntro(false);
@@ -345,6 +437,12 @@ export function useChat(accessToken: string | null) {
   const deleteConversation = useCallback(
     async (conversationId: string) => {
       if (!tokenReady) return;
+      
+      // Prevent deletion of the welcome conversation
+      if (conversationId === WELCOME_CONVERSATION_ID) {
+        return;
+      }
+      
       try {
         await deleteConversationApi(accessToken!, conversationId);
         setConversations((prev) => prev.filter((conversation) => conversation.id !== conversationId));
