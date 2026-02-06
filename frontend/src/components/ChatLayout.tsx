@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@/hooks/useChat";
 import Sidebar from "./Sidebar";
 import MessageList from "./MessageList";
@@ -9,6 +10,7 @@ import ChatInput from "./ChatInput";
 import TosModal from "./TosModal";
 import ProfileMenu from "./ProfileMenu";
 import type { FileMeta } from "@/lib/types";
+import DocumentGenerationView from "./DocumentGenerationView";
 
 interface ChatLayoutProps {
   accessToken: string;
@@ -17,8 +19,11 @@ interface ChatLayoutProps {
 }
 
 export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLayoutProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [triggerDocumentReview, setTriggerDocumentReview] = useState(false);
+  const isDocumentGeneration = pathname === "/document-generation";
   
   const {
     profile,
@@ -155,13 +160,18 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           supabase={supabase}
           externalTrigger={triggerDocumentReview}
           onExternalTriggerHandled={() => setTriggerDocumentReview(false)}
+          onNavigate={() => setIsSidebarOpen(false)}
         />
       </div>
 
       {/* Main chat area with proper flex structure */}
       <div className="flex h-screen w-full flex-1 flex-col">
         {/* Header - fixed height */}
-        <div className="flex h-16 shrink-0 items-center justify-end border-b border-white/5 bg-[#05060c] px-4 sm:px-6">
+        <div
+          className={`flex h-16 shrink-0 items-center border-b border-white/5 bg-[#05060c] px-4 sm:px-6 ${
+            isDocumentGeneration ? "justify-between" : "justify-end"
+          }`}
+        >
           {/* Hamburger Menu Button - Only visible on mobile, positioned absolutely on left */}
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -173,42 +183,57 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
             </svg>
           </button>
 
+          {isDocumentGeneration && (
+            <button
+              onClick={() => router.push("/")}
+              className="hidden rounded-xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10 sm:inline-flex"
+            >
+              ← Back to Chat
+            </button>
+          )}
+
           {/* Profile Menu - always in right corner */}
           <ProfileMenu profile={profile} onSignOut={onSignOut} />
         </div>
         
-        {/* Message area - flex-1 to fill available space, overflow-y-auto for scrolling */}
-        <MessageList
-          messages={messages}
-          streamingMessage={streamedAssistantText}
-          isStreaming={isStreaming}
-          profileId={profile?.id}
-          filesById={allFilesById}
-          errorMessage={errorMessage}
-          showIntro={showScopicIntro && !activeConversationId && messages.length === 0}
-          introMarkdown={scopicIntroMarkdown}
-          onStartDocumentReview={() => setTriggerDocumentReview(true)}
-          onSendMessage={handleSendMessage}
-        />
+        {isDocumentGeneration ? (
+          <DocumentGenerationView />
+        ) : (
+          <>
+            {/* Message area - flex-1 to fill available space, overflow-y-auto for scrolling */}
+            <MessageList
+              messages={messages}
+              streamingMessage={streamedAssistantText}
+              isStreaming={isStreaming}
+              profileId={profile?.id}
+              filesById={allFilesById}
+              errorMessage={errorMessage}
+              showIntro={showScopicIntro && !activeConversationId && messages.length === 0}
+              introMarkdown={scopicIntroMarkdown}
+              onStartDocumentReview={() => setTriggerDocumentReview(true)}
+              onSendMessage={handleSendMessage}
+            />
 
-        {/* Input area - fixed at bottom, shrink-0 prevents squishing */}
-        <ChatInput
-          disabled={isProfileLoading || requiresTos || activeConversationId === "welcome-onboarding"}
-          mode={mode}
-          onModeChange={setMode}
-          promptMode={promptMode}
-          onPromptModeChange={setPromptMode}
-          onSend={handleSendMessage}
-          isStreaming={isStreaming}
-          conversationId={activeConversationId}
-          supabase={supabase}
-          profileId={profile?.id ?? null}
-          accessToken={accessToken}
-          uploadFile={uploadFile}
-          onFilesRegistered={handleFilesRegistered}
-          pendingAttachments={pendingAttachmentFiles}
-          onRemoveAttachment={handleRemoveAttachment}
-        />
+            {/* Input area - fixed at bottom, shrink-0 prevents squishing */}
+            <ChatInput
+              disabled={isProfileLoading || requiresTos || activeConversationId === "welcome-onboarding"}
+              mode={mode}
+              onModeChange={setMode}
+              promptMode={promptMode}
+              onPromptModeChange={setPromptMode}
+              onSend={handleSendMessage}
+              isStreaming={isStreaming}
+              conversationId={activeConversationId}
+              supabase={supabase}
+              profileId={profile?.id ?? null}
+              accessToken={accessToken}
+              uploadFile={uploadFile}
+              onFilesRegistered={handleFilesRegistered}
+              pendingAttachments={pendingAttachmentFiles}
+              onRemoveAttachment={handleRemoveAttachment}
+            />
+          </>
+        )}
       </div>
 
       <TosModal

@@ -105,6 +105,10 @@
 - [ ] tests-evals-runner (follow-up; evals will call the harness)
 - [ ] tests-evals-runner-file-input (Q1–Q5 × 5 files × with/without system prompt)
 - [ ] lawyermvp-merge-profile-and-query-docs
+- [ ] document-generation-demo-nav-and-route
+- [ ] document-generation-demo-ui-and-fake-generation
+- [ ] document-generation-demo-lawyer-review-popup
+- [ ] document-generation-demo-polish
 
 # Current Status / Progress Tracking
 - 2025-11-21: Executor mode engaged, preparing to start **bootstrap-structure**.
@@ -175,6 +179,8 @@
 - 2026-01-22: Executor increased message container width in MessageList.tsx from max-w-3xl (768px) to max-w-6xl (1152px) to give document review tables 50% more horizontal space for better column width distribution.
 - 2026-01-22: Executor made width increase conditional - added table detection in MessageBubble.tsx so only messages with tables (document reviews) use max-w-6xl while regular chat messages remain at max-w-3xl. Messages are now center-aligned for better presentation.
 - 2026-01-22: Executor committed and pushed all document review UI improvements to main (commit `1eed2e9`). Changes include conditional width logic, Executive Summary bullet formatting, Risk Analysis table structure, rehype-raw plugin for HTML rendering, and comprehensive table styling.
+- 2026-02-06: Executor starting new frontend-only demo feature: **Document Generation** (sidebar item → prompts → generated document preview → lawyer-review upsell popup). First milestone is navigation + route rendering without affecting existing chat.
+- 2026-02-06: Executor completed milestone: added sidebar item “📝 Document Generation”, added `/document-generation` route, and updated chat layout to render a placeholder Document Generation screen on that route (chat remains unchanged on `/`). Awaiting user manual check before marking task complete.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.

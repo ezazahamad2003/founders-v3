@@ -20,6 +20,7 @@ interface SidebarProps {
   supabase: SupabaseClient;
   externalTrigger?: boolean;
   onExternalTriggerHandled?: () => void;
+  onNavigate?: () => void;
 }
 
 export default function Sidebar({
@@ -34,6 +35,7 @@ export default function Sidebar({
   supabase,
   externalTrigger,
   onExternalTriggerHandled,
+  onNavigate,
 }: SidebarProps) {
   const router = useRouter();
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
@@ -63,6 +65,15 @@ export default function Sidebar({
           className="mt-3 flex w-full items-center justify-center rounded-2xl border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"
         >
           ⚖️ Document Review
+        </button>
+        <button
+          onClick={() => {
+            router.push("/document-generation");
+            onNavigate?.();
+          }}
+          className="mt-3 flex w-full items-center justify-center rounded-2xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+        >
+          📝 Document Generation
         </button>
         {/* Blind Spot Analysis - Hidden until requirements finalized */}
         {/* <button
