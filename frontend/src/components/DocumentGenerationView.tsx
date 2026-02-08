@@ -36,12 +36,14 @@ export default function DocumentGenerationView() {
 
   const handleGenerate = () => {
     if (isGenerating) return;
+    setIsGenerated(false);
+    setReviewStatus("idle");
     setIsGenerating(true);
     setTimeout(() => {
       setIsGenerated(true);
       setReviewStatus("prompted");
       setIsGenerating(false);
-    }, 900);
+    }, 2200);
   };
 
   return (
@@ -194,7 +196,52 @@ export default function DocumentGenerationView() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-6">
-              {!isGenerated ? (
+              {isGenerating ? (
+                <div className="mx-auto max-w-3xl space-y-6">
+                  <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-sm font-semibold text-white">Generating Draft</div>
+                        <p className="mt-1 text-xs text-slate-400">
+                          Applying template logic, filling fields, and normalizing clauses…
+                        </p>
+                      </div>
+                      <div className="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs text-indigo-200">
+                        In progress
+                      </div>
+                    </div>
+                    <div className="mt-6 space-y-3">
+                      <div className="h-5 w-2/3 rounded-full bg-white/10 animate-pulse" />
+                      <div className="h-4 w-full rounded-full bg-white/5 animate-pulse" />
+                      <div className="h-4 w-11/12 rounded-full bg-white/5 animate-pulse" />
+                      <div className="h-4 w-10/12 rounded-full bg-white/5 animate-pulse" />
+                      <div className="h-4 w-9/12 rounded-full bg-white/5 animate-pulse" />
+                    </div>
+                  </div>
+
+                  <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Draft Preview</div>
+                    <div className="mt-5 space-y-3">
+                      {Array.from({ length: 12 }).map((_, index) => (
+                        <div
+                          key={`line-${index}`}
+                          className={`h-3 rounded-full bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse ${
+                            index % 4 === 0 ? "w-11/12" : index % 4 === 1 ? "w-10/12" : index % 4 === 2 ? "w-9/12" : "w-8/12"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-white/10 bg-[#0b1220] px-4 py-3 text-xs text-slate-400">
+                        Clause merge: YC + Firm standard
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-[#0b1220] px-4 py-3 text-xs text-slate-400">
+                        Variables populated: 24/24
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : !isGenerated ? (
                 <div className="flex h-full items-center justify-center">
                   <div className="max-w-md rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
                     <div className="text-lg font-semibold text-white">Ready to draft</div>

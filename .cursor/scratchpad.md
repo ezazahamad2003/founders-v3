@@ -181,7 +181,7 @@
 - 2026-01-22: Executor committed and pushed all document review UI improvements to main (commit `1eed2e9`). Changes include conditional width logic, Executive Summary bullet formatting, Risk Analysis table structure, rehype-raw plugin for HTML rendering, and comprehensive table styling.
 - 2026-02-06: Executor starting new frontend-only demo feature: **Document Generation** (sidebar item → prompts → generated document preview → lawyer-review upsell popup). First milestone is navigation + route rendering without affecting existing chat.
 - 2026-02-06: Executor completed milestone: added sidebar item “📝 Document Generation”, added `/document-generation` route, and updated chat layout to render a placeholder Document Generation screen on that route (chat remains unchanged on `/`). Awaiting user manual check before marking task complete.
-- 2026-02-06: Executor implemented Document Generation UI with template-source links (YC + firm template), prompt, draft preview, and lawyer-review popup flow. Awaiting user manual check before marking this milestone complete.
+- 2026-02-06: Executor added animated “generating draft” state to the Document Generation preview (skeleton text + progress badges) before showing the draft + lawyer-review popup. Awaiting user manual check before marking this milestone complete.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
