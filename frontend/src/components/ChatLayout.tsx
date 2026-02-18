@@ -101,10 +101,13 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     }
     
     // Send the message with the file, explicitly setting contract_review mode
+    // conversationIdOverride: null forces a new conversation even if activeConversationId
+    // is stale in the closure (React batches state updates from startContractReview)
     await sendMessage({ 
       text: reviewMessage, 
       fileIds: [uploadedFile.id],
-      promptModeOverride: "contract_review" 
+      promptModeOverride: "contract_review",
+      conversationIdOverride: null,
     });
     setPendingAttachmentIds([]);
   };

@@ -277,7 +277,7 @@ export function useChat(accessToken: string | null) {
   );
 
   const sendMessage = useCallback(
-    async (options: { text: string; modeOverride?: ChatMode; promptModeOverride?: PromptMode; fileIds?: string[] }) => {
+    async (options: { text: string; modeOverride?: ChatMode; promptModeOverride?: PromptMode; fileIds?: string[]; conversationIdOverride?: string | null }) => {
       if (!tokenReady || !profile) return;
       const trimmed = options.text.trim();
       if (!trimmed) return;
@@ -286,7 +286,9 @@ export function useChat(accessToken: string | null) {
       setShowScopicIntro(false);
 
       const fileIds = options.fileIds ?? [];
-      const conversationId = activeConversationId;
+      const conversationId = options.conversationIdOverride !== undefined
+        ? options.conversationIdOverride
+        : activeConversationId;
       const tempMessage: Message = {
         id: crypto.randomUUID(),
         conversation_id: conversationId ?? "pending",
