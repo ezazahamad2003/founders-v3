@@ -40,7 +40,6 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     isStreaming,
     streamedAssistantText,
     filesById,
-    registerFilesForConversation,
     uploadFile,
     pendingAttachmentIds,
     setPendingAttachmentIds,

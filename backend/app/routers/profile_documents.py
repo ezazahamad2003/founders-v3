@@ -1,7 +1,6 @@
 """Profile documents management endpoints."""
 
 import logging
-from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File

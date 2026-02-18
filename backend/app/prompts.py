@@ -282,15 +282,6 @@ Return the analysis in Markdown, using the following structure:
 - Focus on material risks that could kill the company or deal, not minor issues"""
 
 
-# Legacy prompt for backward compatibility
-LEGACY_SYSTEM_PROMPT = (
-    "You are Scopic Legal, a thoughtful legal research assistant. "
-    "Provide structured, numbered, or bulleted responses when it improves clarity. "
-    "You may sprinkle in an occasional emoji for warmth, but do so sparingly and only "
-    "when it reinforces the message. Keep answers concise, well-spaced, and easy to scan."
-)
-
-
 def get_system_prompt(prompt_mode: str = "general") -> str:
     """
     Get the appropriate system prompt based on prompt_mode.
@@ -299,13 +290,10 @@ def get_system_prompt(prompt_mode: str = "general") -> str:
         prompt_mode: The prompt mode to use. Options:
             - "general" (default): Returns the adaptive Scopic Legal prompt
             - "contract_review": Returns the contract review mega prompt
-            - "legacy": Returns the legacy prompt
             
     Returns:
         The system prompt string
     """
     if prompt_mode == "contract_review":
         return CONTRACT_REVIEW_SYSTEM_PROMPT
-    elif prompt_mode == "legacy":
-        return LEGACY_SYSTEM_PROMPT
     return SCOPIC_LEGAL_SYSTEM_PROMPT

@@ -42,9 +42,6 @@ class Settings(BaseSettings):
         default="gpt-5.1", alias="OPENAI_MODEL_DEEP_RESEARCH"
     )
 
-    supabase_storage_public_base_url: Optional[str] = Field(
-        default=None, alias="SUPABASE_STORAGE_PUBLIC_BASE_URL"
-    )
     supabase_storage_bucket_name: str = Field(
         default="uploads", alias="SUPABASE_STORAGE_BUCKET_NAME"
     )

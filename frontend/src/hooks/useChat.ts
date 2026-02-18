@@ -7,7 +7,6 @@ import {
   FileMeta,
   Message,
   PromptMode,
-  RegisterFileInput,
   UserProfile,
 } from "@/lib/types";
 import {
@@ -16,7 +15,6 @@ import {
   getConversation,
   getMe,
   listConversations,
-  registerConversationFiles,
   streamChat,
   uploadFile as uploadFileApi,
 } from "@/lib/api";
@@ -257,16 +255,6 @@ export function useChat(accessToken: string | null) {
     }
   }, [accessToken, tokenReady, refreshConversations]);
 
-  const registerFilesForConversation = useCallback(
-    async (conversationId: string | null, files: RegisterFileInput[]) => {
-      if (!tokenReady) throw new Error("Missing auth token");
-      const response = await registerConversationFiles(accessToken!, conversationId, files);
-      setConversationFiles((prev) => [...response.files, ...prev]);
-      return response.files;
-    },
-    [accessToken, tokenReady],
-  );
-
   const uploadFile = useCallback(
     async (file: File, conversationId: string | null) => {
       if (!tokenReady) throw new Error("Missing auth token");
@@ -462,7 +450,6 @@ export function useChat(accessToken: string | null) {
     conversationsLoading,
     activeConversationId,
     messages,
-    conversationFiles,
     filesById,
     pendingAttachmentIds,
     setPendingAttachmentIds,
@@ -480,7 +467,6 @@ export function useChat(accessToken: string | null) {
     startNewConversation,
     startContractReview,
     acceptTos: handleAcceptTos,
-    registerFilesForConversation,
     uploadFile,
     sendMessage,
     deleteConversation,

@@ -353,23 +353,33 @@ async def upload_file_to_openai_and_supabase(
             detail="Empty file",
         )
     
-    # Step 1: Upload to OpenAI Files API (only for PDFs)
-    # OpenAI Files API only supports PDF files for chat/vision models
-    openai_file_id = None
-    is_pdf = file.content_type == "application/pdf" or (file.filename and file.filename.lower().endswith(".pdf"))
+    # Step 1: Upload to OpenAI Files API for document types (PDF, DOC, DOCX)
+    # OpenAI Files API supports PDF, DOC, and DOCX files
+    OPENAI_UPLOADABLE_MIMES = {
+        "application/pdf",
+        "application/msword",  # .doc
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",  # .docx
+    }
+    OPENAI_UPLOADABLE_EXTENSIONS = {".pdf", ".doc", ".docx"}
     
-    if is_pdf:
-        logger.info(f"Uploading PDF file to OpenAI Files API: {file.filename}")
+    openai_file_id = None
+    lower_name = (file.filename or "").lower()
+    is_uploadable = (
+        file.content_type in OPENAI_UPLOADABLE_MIMES
+        or any(lower_name.endswith(ext) for ext in OPENAI_UPLOADABLE_EXTENSIONS)
+    )
+    
+    if is_uploadable:
+        logger.info(f"Uploading document to OpenAI Files API: {file.filename} (type: {file.content_type})")
         try:
             client = AsyncOpenAI(api_key=settings.openai_api_key_clean)
             
-            # Create a file-like object for OpenAI
             file_obj = BytesIO(file_content)
             file_obj.name = file.filename or "file"
             
             openai_file = await client.files.create(
-                file=(file.filename or "file", file_obj, "application/pdf"),
-                purpose="assistants",  # Use "assistants" purpose for chat/vision models
+                file=(file.filename or "file", file_obj, file.content_type or "application/octet-stream"),
+                purpose="assistants",
             )
             
             openai_file_id = openai_file.id
@@ -377,11 +387,10 @@ async def upload_file_to_openai_and_supabase(
             
         except Exception as e:
             logger.error(f"Failed to upload to OpenAI Files API: {e}")
-            # Don't fail the entire upload, just skip OpenAI upload
             logger.warning(f"Continuing without OpenAI file upload for {file.filename}")
             openai_file_id = None
     else:
-        logger.info(f"Skipping OpenAI Files API upload for non-PDF file: {file.filename} (type: {file.content_type})")
+        logger.info(f"Skipping OpenAI Files API upload for non-document file: {file.filename} (type: {file.content_type})")
         logger.info(f"File will use text extraction fallback during chat")
     
     # Step 2: Store metadata in DB with openai_file_id

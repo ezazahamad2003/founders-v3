@@ -17,8 +17,6 @@ from app.models import ChatRequest
 from app.openai_client import (
     OpenAIChatResult,
     StreamingChatSession,
-    chat_with_files,
-    chat_with_vision,
     deep_research,
     stream_chat,
     stream_chat_with_files,
@@ -33,6 +31,7 @@ STREAM_MEDIA_TYPE = "text/event-stream"
 DOC_MIME_TYPES = {
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",  # .docx
+    "application/msword",  # .doc (legacy Word format)
     "text/plain",
 }
 

@@ -1,4 +1,4 @@
-import { ChatRequestPayload, ConversationDetailResponse, ConversationSummary, FileMeta, RegisterFileInput, UserProfile } from "./types";
+import { ChatRequestPayload, ConversationDetailResponse, ConversationSummary, FileMeta, UserProfile } from "./types";
 
 // Centralized API base URL configuration
 // Set NEXT_PUBLIC_API_BASE_URL in Vercel environment variables for production
@@ -105,16 +105,6 @@ export function getConversation(token: string, conversationId: string) {
 export function deleteConversation(token: string, conversationId: string) {
   return apiFetch<void>(`/api/conversations/${conversationId}`, token, {
     method: "DELETE",
-  });
-}
-
-export function registerConversationFiles(token: string, conversationId: string | null, files: RegisterFileInput[]) {
-  return apiFetch<{ files: FileMeta[] }>("/api/files/register", token, {
-    method: "POST",
-    body: JSON.stringify({
-      conversation_id: conversationId,
-      files,
-    }),
   });
 }
 

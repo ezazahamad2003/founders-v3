@@ -2,10 +2,7 @@
 Password reset endpoints with email verification code.
 """
 import secrets
-import smtplib
 from datetime import datetime, timedelta
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException

@@ -46,12 +46,6 @@ export interface FileMeta {
   created_at: string;
 }
 
-export interface RegisterFileInput {
-  supabase_path: string;
-  mime_type?: string | null;
-  original_name?: string | null;
-}
-
 export interface ChatRequestPayload {
   conversation_id: string | null;
   message: string;

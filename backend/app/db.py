@@ -1,9 +1,7 @@
 """Database helpers and async SQLAlchemy session management."""
 
 from collections.abc import AsyncIterator
-from typing import Optional
 
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -41,10 +39,4 @@ async def get_db_session() -> AsyncIterator[AsyncSession]:
     """Provide a database session for FastAPI dependencies."""
     async with AsyncSessionFactory() as session:
         yield session
-
-
-async def db_ping(session: AsyncSession) -> Optional[bool]:
-    """Run a lightweight query to ensure the DB connection is alive."""
-    result = await session.execute(text("select 1"))
-    return result.scalar_one_or_none() == 1
 
