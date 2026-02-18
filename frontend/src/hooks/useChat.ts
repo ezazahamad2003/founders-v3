@@ -300,7 +300,11 @@ export function useChat(accessToken: string | null) {
         created_at: new Date().toISOString(),
       };
 
-      setMessages((prev) => [...prev, tempMessage]);
+      if (options.conversationIdOverride === null) {
+        setMessages([tempMessage]);
+      } else {
+        setMessages((prev) => [...prev, tempMessage]);
+      }
       setStreamedAssistantText("");
       streamedTextRef.current = ""; // Reset ref
       setIsStreaming(true);
@@ -327,8 +331,9 @@ export function useChat(accessToken: string | null) {
             onDone: async (payload) => {
               setIsStreaming(false);
               
-              // Update active conversation ID if it was a new conversation
-              const isNewConversation = !activeConversationId && payload.conversation_id;
+              // Use the local conversationId (respects conversationIdOverride)
+              // instead of activeConversationId which may be stale in this closure
+              const isNewConversation = !conversationId && payload.conversation_id;
               if (isNewConversation) {
                 setActiveConversationId(payload.conversation_id);
                 // Track prompt mode for this new conversation (use effective mode)
