@@ -11,6 +11,7 @@ interface MessageListProps {
   profileId?: string | null;
   filesById: Record<string, FileMeta>;
   errorMessage: string | null;
+  onDismissError?: () => void;
   showIntro?: boolean;
   introMarkdown?: string;
   onStartDocumentReview?: () => void;
@@ -24,6 +25,7 @@ export default function MessageList({
   profileId,
   filesById,
   errorMessage,
+  onDismissError,
   showIntro,
   introMarkdown,
   onStartDocumentReview,
@@ -230,8 +232,17 @@ export default function MessageList({
         ) : null}
 
         {errorMessage ? (
-          <div className="rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-            {errorMessage}
+          <div className="flex items-center justify-between rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            <span>{errorMessage}</span>
+            {onDismissError && (
+              <button
+                onClick={onDismissError}
+                className="ml-3 shrink-0 text-red-300 transition hover:text-white"
+                aria-label="Dismiss error"
+              >
+                ✕
+              </button>
+            )}
           </div>
         ) : null}
         

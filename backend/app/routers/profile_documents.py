@@ -34,7 +34,7 @@ async def list_profile_documents(
         logger.error(f"Failed to list profile documents: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to list documents: {str(e)}",
+            detail="Failed to list documents. Please try again.",
         )
 
 
@@ -61,7 +61,7 @@ async def upload_profile_document(
         logger.error(f"Profile document upload failed: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Upload failed: {str(e)}",
+            detail="Upload failed. Please try again.",
         )
 
 
@@ -94,7 +94,7 @@ async def delete_profile_document(
         logger.error(f"Profile document deletion failed: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Deletion failed: {str(e)}",
+            detail="Deletion failed. Please try again.",
         )
 
 
@@ -124,5 +124,5 @@ async def download_profile_document(
         logger.error(f"Failed to generate download URL: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate download URL: {str(e)}",
+            detail="Failed to generate download URL. Please try again.",
         )

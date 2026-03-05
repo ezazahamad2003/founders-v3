@@ -3,9 +3,10 @@
 interface TosModalProps {
   open: boolean;
   onAccept: () => void;
+  onDecline?: () => void;
 }
 
-export default function TosModal({ open, onAccept }: TosModalProps) {
+export default function TosModal({ open, onAccept, onDecline }: TosModalProps) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
@@ -44,6 +45,14 @@ export default function TosModal({ open, onAccept }: TosModalProps) {
         >
           Join Program
         </button>
+        {onDecline && (
+          <button
+            onClick={onDecline}
+            className="mt-3 w-full rounded-2xl py-2 text-sm text-slate-400 transition hover:text-white"
+          >
+            Decline &amp; Sign Out
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 """Profile documents service - manages documents in ProfileDrawer bucket."""
 
 import logging
+import posixpath
 from typing import List, Dict, Any
 from uuid import UUID
 
@@ -106,10 +107,10 @@ async def delete_document(path: str, user_id: UUID, settings: Settings) -> None:
     if not settings.supabase_project_url or not auth_key:
         raise RuntimeError("Supabase configuration missing")
     
-    # Verify the path belongs to the user
     user_folder = str(user_id)
-    if not path.startswith(user_folder):
-        raise ValueError(f"Unauthorized: Document does not belong to user")
+    normalized = posixpath.normpath(path)
+    if not normalized.startswith(user_folder + "/") and normalized != user_folder:
+        raise ValueError("Unauthorized: Document does not belong to user")
     
     base = settings.supabase_project_url.rstrip("/")
     url = f"{base}/storage/v1/object/{PROFILE_BUCKET}"
@@ -136,10 +137,10 @@ async def get_download_url(path: str, user_id: UUID, settings: Settings, expiry_
     if not settings.supabase_project_url or not auth_key:
         raise RuntimeError("Supabase configuration missing")
     
-    # Verify the path belongs to the user
     user_folder = str(user_id)
-    if not path.startswith(user_folder):
-        raise ValueError(f"Unauthorized: Document does not belong to user")
+    normalized = posixpath.normpath(path)
+    if not normalized.startswith(user_folder + "/") and normalized != user_folder:
+        raise ValueError("Unauthorized: Document does not belong to user")
     
     base = settings.supabase_project_url.rstrip("/")
     

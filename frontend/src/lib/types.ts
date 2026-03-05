@@ -60,3 +60,43 @@ export interface ConversationDetailResponse {
   files: FileMeta[];
 }
 
+export type DebateModel = "openai" | "claude" | "synthesis";
+
+export interface DebateTurnMessage {
+  id: string;
+  model: DebateModel;
+  round: number;
+  content: string;
+  isStreaming?: boolean;
+}
+
+export interface DebateConsensusCheck {
+  round: number;
+  percentage: number;
+  reached: boolean;
+}
+
+export interface DebateState {
+  status: "idle" | "running" | "done" | "error";
+  rounds: number;
+  targetConsensus: number;
+  currentRound: number;
+  messages: DebateTurnMessage[];
+  consensusHistory: DebateConsensusCheck[];
+  synthesis: string;
+  finalConsensus: number;
+  errorMessage: string | null;
+}
+
+export interface DebateStreamHandlers {
+  onDebateStart?: (targetConsensus: number) => void;
+  onRoundStart?: (round: number) => void;
+  onModelTurnStart?: (model: DebateModel, round: number) => void;
+  onToken?: (model: DebateModel, delta: string) => void;
+  onModelTurnEnd?: (model: DebateModel, round: number, content: string) => void;
+  onConsensusCheck?: (round: number, percentage: number, reached: boolean) => void;
+  onSynthesisStart?: () => void;
+  onDone?: (roundsCompleted: number, finalConsensus: number, synthesis: string) => void;
+  onError?: (error: Error) => void;
+}
+

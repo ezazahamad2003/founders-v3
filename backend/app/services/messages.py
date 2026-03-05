@@ -108,15 +108,17 @@ async def _link_files(
 ) -> None:
     if not file_ids:
         return
-    for file_id in file_ids:
-        await db.execute(
-            text(
-                """
-                insert into message_files (message_id, file_id)
-                values (:message_id, :file_id)
-                on conflict do nothing
-                """
-            ),
-            {"message_id": message_id, "file_id": file_id},
-        )
+    unique_ids = list(set(file_ids))
+    values_clause = ", ".join(
+        f"(:msg_id, :fid_{i})" for i in range(len(unique_ids))
+    )
+    params: dict = {"msg_id": message_id}
+    params.update({f"fid_{i}": fid for i, fid in enumerate(unique_ids)})
+    await db.execute(
+        text(
+            f"INSERT INTO message_files (message_id, file_id) "
+            f"VALUES {values_clause} ON CONFLICT DO NOTHING"
+        ),
+        params,
+    )
 

@@ -1,34 +1,20 @@
-import { ChatRequestPayload, ConversationDetailResponse, ConversationSummary, FileMeta, UserProfile } from "./types";
+import { ChatRequestPayload, ConversationDetailResponse, ConversationSummary, DebateModel, DebateStreamHandlers, FileMeta, UserProfile } from "./types";
 
-// Centralized API base URL configuration
-// Set NEXT_PUBLIC_API_BASE_URL in Vercel environment variables for production
 const DEFAULT_LOCAL_API_URL = 'http://localhost:8000';
-const PROD_API_URL = 'https://scopic-legal-api-566998539930.us-central1.run.app';
 
-/**
- * Get the API base URL based on environment
- * Priority:
- * 1. NEXT_PUBLIC_API_BASE_URL env var (if set)
- * 2. Production URL if not on localhost
- * 3. Local dev URL (localhost:8000)
- */
 export const getApiBaseUrl = (): string => {
-  // Prefer explicit env var if set
   const fromEnv = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (fromEnv && fromEnv.trim().length > 0) {
     return fromEnv.trim();
   }
 
-  // In browser, detect if we're in production
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    // If NOT localhost/127.0.0.1, assume production
     if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      return PROD_API_URL;
+      console.warn('NEXT_PUBLIC_API_BASE_URL is not set. Backend requests may fail in production.');
     }
   }
 
-  // Default to local development
   return DEFAULT_LOCAL_API_URL;
 };
 
@@ -139,6 +125,75 @@ export async function uploadFile(token: string, file: File, conversationId: stri
   }
 
   return (await response.json()) as FileMeta;
+}
+
+export async function streamDebate(
+  token: string,
+  formData: FormData,
+  handlers: DebateStreamHandlers,
+): Promise<void> {
+  if (!API_BASE_URL) {
+    throw new Error("API base URL is not configured.");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/debate`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+
+  if (!response.ok || !response.body) {
+    const detail = await safeParse(response);
+    throw new Error(detail?.detail ?? response.statusText ?? "Unable to start debate");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      let newlineIndex: number;
+      while ((newlineIndex = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, newlineIndex).trim();
+        buffer = buffer.slice(newlineIndex + 1);
+        if (!line) continue;
+        try {
+          const ev = JSON.parse(line);
+          if (ev.event === "debate_start") {
+            handlers.onDebateStart?.(ev.target_consensus);
+          } else if (ev.event === "round_start") {
+            handlers.onRoundStart?.(ev.round);
+          } else if (ev.event === "model_turn_start") {
+            handlers.onModelTurnStart?.(ev.model as DebateModel, ev.round);
+          } else if (ev.event === "token") {
+            handlers.onToken?.(ev.model as DebateModel, ev.delta ?? "");
+          } else if (ev.event === "model_turn_end") {
+            handlers.onModelTurnEnd?.(ev.model as DebateModel, ev.round, ev.content ?? "");
+          } else if (ev.event === "consensus_check") {
+            handlers.onConsensusCheck?.(ev.round, ev.percentage, ev.reached);
+          } else if (ev.event === "synthesis_start") {
+            handlers.onSynthesisStart?.();
+          } else if (ev.event === "done") {
+            handlers.onDone?.(ev.rounds_completed, ev.final_consensus, ev.synthesis ?? "");
+          } else if (ev.event === "error") {
+            handlers.onError?.(new Error(ev.message ?? "Debate error"));
+          }
+        } catch {
+          console.error("Failed to parse debate stream chunk", line);
+        }
+      }
+    }
+  } catch (error) {
+    handlers.onError?.(error as Error);
+    throw error;
+  } finally {
+    reader.releaseLock();
+  }
 }
 
 export async function streamChat(

@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List, Literal, Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UserProfile(BaseModel):
@@ -80,7 +80,7 @@ class ConversationDetailResponse(BaseModel):
 
 class ChatRequest(BaseModel):
     conversation_id: Optional[UUID] = None
-    message: str
+    message: str = Field(..., max_length=50000)
     file_ids: Optional[List[UUID]] = None
     mode: Literal["auto", "chat", "vision", "files", "deep_research"] = "auto"
     prompt_mode: Optional[Literal["general", "contract_review"]] = "general"

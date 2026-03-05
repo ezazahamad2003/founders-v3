@@ -104,7 +104,8 @@ async def verify_jwt(token: str, settings: Settings) -> Dict[str, Any]:
             token,
             public_key,
             algorithms=[matching_key.get("alg", "RS256")],
-            options={"verify_aud": False},
+            audience="authenticated",
+            options={"verify_aud": True},
         )
     except JWTError as exc:
         raise HTTPException(

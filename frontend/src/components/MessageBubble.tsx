@@ -1,11 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { FileMeta } from "@/lib/types";
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames || []), "iframe", "div", "span", "br"],
+  attributes: {
+    ...defaultSchema.attributes,
+    iframe: ["src", "frameBorder", "allowFullScreen", "style", "width", "height"],
+    div: ["style", "className"],
+    span: ["style", "className"],
+    "*": [...(defaultSchema.attributes?.["*"] || []), "style"],
+  },
+  protocols: {
+    ...defaultSchema.protocols,
+    src: ["https"],
+  },
+};
 
 interface MessageBubbleProps {
   role: "user" | "assistant" | "system";
@@ -16,7 +33,7 @@ interface MessageBubbleProps {
   attachments?: FileMeta[];
 }
 
-export default function MessageBubble({
+function MessageBubble({
   role,
   content,
   timestamp,
@@ -139,7 +156,7 @@ export default function MessageBubble({
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
+            rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
             components={{
               p: ({ children }) => <p>{children}</p>,
               li: ({ children }) => <li>{children}</li>,
@@ -162,4 +179,6 @@ export default function MessageBubble({
     </div>
   );
 }
+
+export default React.memo(MessageBubble);
 

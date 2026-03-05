@@ -44,6 +44,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     pendingAttachmentIds,
     setPendingAttachmentIds,
     errorMessage,
+    clearError,
     deleteConversation,
     showScopicIntro,
     scopicIntroMarkdown,
@@ -155,6 +156,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           onDeleteConversation={deleteConversation}
           profile={profile}
           supabase={supabase}
+          accessToken={accessToken}
           externalTrigger={triggerDocumentReview}
           onExternalTriggerHandled={() => setTriggerDocumentReview(false)}
         />
@@ -187,6 +189,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           profileId={profile?.id}
           filesById={allFilesById}
           errorMessage={errorMessage}
+          onDismissError={clearError}
           showIntro={showScopicIntro && !activeConversationId && messages.length === 0}
           introMarkdown={scopicIntroMarkdown}
           onStartDocumentReview={() => setTriggerDocumentReview(true)}
@@ -216,6 +219,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
       <TosModal
         open={requiresTos}
         onAccept={acceptTos}
+        onDecline={() => supabase.auth.signOut()}
       />
     </div>
   );

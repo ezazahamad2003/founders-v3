@@ -129,6 +129,7 @@ export function useChat(accessToken: string | null) {
     (conversationId: string) => {
       if (!tokenReady || !conversationId) return;
       setShowScopicIntro(false);
+      setErrorMessage(null);
       
       // Handle special welcome conversation
       if (conversationId === WELCOME_CONVERSATION_ID) {
@@ -210,6 +211,7 @@ export function useChat(accessToken: string | null) {
 
   const startNewConversation = useCallback(() => {
     setShowScopicIntro(false);
+    setErrorMessage(null);
     resetConversationState();
     // Welcome conversation stays in sidebar - don't remove it
   }, [resetConversationState]);
@@ -460,6 +462,7 @@ export function useChat(accessToken: string | null) {
     promptMode,
     setPromptMode: changePromptMode,
     errorMessage,
+    clearError: useCallback(() => setErrorMessage(null), []),
     showScopicIntro,
     scopicIntroMarkdown: SCOPIC_INTRO_MARKDOWN,
     refreshConversations,

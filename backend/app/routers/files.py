@@ -45,6 +45,12 @@ async def upload_file(
     This ensures files are available to OpenAI before being stored in Supabase.
     """
     ensure_tos_accepted(current_user)
+
+    MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+    content = await file.read()
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File too large. Maximum size is 25MB.")
+    await file.seek(0)
     
     logger.info(f"Starting file upload for {file.filename}")
     
@@ -61,11 +67,13 @@ async def upload_file(
         logger.info(f"File uploaded successfully: {uploaded_file.id} (OpenAI: {uploaded_file.openai_file_id})")
         return uploaded_file
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"File upload failed: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"File upload failed: {str(e)}",
+            detail="File upload failed. Please try again.",
         )
 
 
@@ -106,6 +114,6 @@ async def delete_file(
         logger.error(f"File deletion failed: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"File deletion failed: {str(e)}",
+            detail="File deletion failed. Please try again.",
         )
 

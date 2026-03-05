@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import ChatLayout from "./ChatLayout";
+import ErrorBoundary from "./ErrorBoundary";
 import LandingPage from "./LandingPage";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -58,11 +59,13 @@ export default function AuthGate() {
   }
 
   return (
-    <ChatLayout
-      accessToken={accessToken}
-      onSignOut={handleSignOut}
-      supabase={supabase}
-    />
+    <ErrorBoundary>
+      <ChatLayout
+        accessToken={accessToken}
+        onSignOut={handleSignOut}
+        supabase={supabase}
+      />
+    </ErrorBoundary>
   );
 }
 

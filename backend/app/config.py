@@ -18,6 +18,8 @@ class Settings(BaseSettings):
 
     openai_api_key: str = Field(..., alias="OPENAI_API_KEY")
     openai_base_url: Optional[str] = Field(default=None, alias="OPENAI_BASE_URL")
+    claude_api_key: str = Field(..., alias="CLAUDE_API_KEY")
+    claude_model: str = Field(default="claude-3-5-sonnet-20241022", alias="CLAUDE_MODEL")
 
     supabase_db_url: str = Field(..., alias="SUPABASE_DB_URL")
     supabase_jwks_url: Optional[str] = Field(default=None, alias="SUPABASE_JWKS_URL")

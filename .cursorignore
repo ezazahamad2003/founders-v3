@@ -1,6 +1,6 @@
-# Folders to exclude from Cursor context
-lawyermvp/
-tests/
+# # Folders to exclude from Cursor context
+# lawyermvp/
+# tests/
 
 # Common excludes
 node_modules/

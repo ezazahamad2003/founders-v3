@@ -439,11 +439,11 @@ async def upload_file_to_openai_and_supabase(
             try:
                 client = AsyncOpenAI(api_key=settings.openai_api_key_clean)
                 await client.files.delete(openai_file_id)
-            except:
+            except Exception:
                 pass
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to store file metadata: {str(e)}",
+            detail="Failed to store file metadata. Please try again.",
         )
     
     # Step 3: Upload to Supabase Storage

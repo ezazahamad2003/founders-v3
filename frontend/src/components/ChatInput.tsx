@@ -199,6 +199,7 @@ export default function ChatInput({
             type="file"
             className="hidden"
             multiple
+            accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif,.webp"
             onChange={handleFileChange}
           />
           <button

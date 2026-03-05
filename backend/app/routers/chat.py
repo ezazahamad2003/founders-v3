@@ -72,32 +72,32 @@ async def chat_endpoint(
     )
 
     # === DEBUG LOGGING: File context tracing ===
-    logger.info(f"[FILE_CONTEXT] === New chat request for conversation {conversation_id} ===")
-    logger.info(f"[FILE_CONTEXT] payload.file_ids from request: {payload.file_ids}")
-    logger.info(f"[FILE_CONTEXT] payload.mode: {payload.mode}, payload.prompt_mode: {payload.prompt_mode}")
-    logger.info(f"[FILE_CONTEXT] History messages count: {len(history)}")
+    logger.debug(f"[FILE_CONTEXT] === New chat request for conversation {conversation_id} ===")
+    logger.debug(f"[FILE_CONTEXT] payload.file_ids from request: {payload.file_ids}")
+    logger.debug(f"[FILE_CONTEXT] payload.mode: {payload.mode}, payload.prompt_mode: {payload.prompt_mode}")
+    logger.debug(f"[FILE_CONTEXT] History messages count: {len(history)}")
 
     # Collect file_ids from current request AND from message history
     # This ensures files uploaded in previous messages remain in context
     all_file_ids = set(payload.file_ids or [])
-    logger.info(f"[FILE_CONTEXT] Initial all_file_ids from request: {all_file_ids}")
+    logger.debug(f"[FILE_CONTEXT] Initial all_file_ids from request: {all_file_ids}")
     
     for msg in history:
-        logger.info(f"[FILE_CONTEXT] Checking history msg role={msg.role}, has_metadata={msg.metadata is not None}")
+        logger.debug(f"[FILE_CONTEXT] Checking history msg role={msg.role}, has_metadata={msg.metadata is not None}")
         if msg.metadata:
-            logger.info(f"[FILE_CONTEXT]   metadata keys: {list(msg.metadata.keys())}")
+            logger.debug(f"[FILE_CONTEXT]   metadata keys: {list(msg.metadata.keys())}")
         if msg.metadata and "input_files" in msg.metadata:
-            logger.info(f"[FILE_CONTEXT]   Found input_files in metadata: {msg.metadata['input_files']}")
+            logger.debug(f"[FILE_CONTEXT]   Found input_files in metadata: {msg.metadata['input_files']}")
             # Extract file_ids from message metadata
             for file_id_str in msg.metadata["input_files"]:
                 try:
                     all_file_ids.add(UUID(file_id_str))
-                    logger.info(f"[FILE_CONTEXT]   Added file_id from history: {file_id_str}")
+                    logger.debug(f"[FILE_CONTEXT]   Added file_id from history: {file_id_str}")
                 except (ValueError, TypeError):
                     logger.warning(f"Invalid file_id in message metadata: {file_id_str}")
                     continue
 
-    logger.info(f"[FILE_CONTEXT] Final all_file_ids (request + history): {all_file_ids}")
+    logger.debug(f"[FILE_CONTEXT] Final all_file_ids (request + history): {all_file_ids}")
 
     validated_files = await files_service.validate_files_belong_to_conversation(
         db=db,
@@ -106,9 +106,9 @@ async def chat_endpoint(
         user_id=current_user.id,
     )
     
-    logger.info(f"[FILE_CONTEXT] Validated files count: {len(validated_files)}")
+    logger.debug(f"[FILE_CONTEXT] Validated files count: {len(validated_files)}")
     for vf in validated_files:
-        logger.info(f"[FILE_CONTEXT]   - {vf.original_name} (mime={vf.mime_type}, id={vf.id})")
+        logger.debug(f"[FILE_CONTEXT]   - {vf.original_name} (mime={vf.mime_type}, id={vf.id})")
 
     await messages_service.insert_user_message(
         db=db,
@@ -135,16 +135,16 @@ async def chat_endpoint(
     doc_files = [f for f in validated_files if f.mime_type in DOC_MIME_TYPES]
 
     # === DEBUG LOGGING: Mode determination ===
-    logger.info(f"[FILE_CONTEXT] effective_mode determined: {effective_mode}")
-    logger.info(f"[FILE_CONTEXT] doc_files count (files with DOC_MIME_TYPES): {len(doc_files)}")
+    logger.debug(f"[FILE_CONTEXT] effective_mode determined: {effective_mode}")
+    logger.debug(f"[FILE_CONTEXT] doc_files count (files with DOC_MIME_TYPES): {len(doc_files)}")
     for df in doc_files:
-        logger.info(f"[FILE_CONTEXT]   doc_file: {df.original_name} (mime={df.mime_type})")
-    logger.info(f"[FILE_CONTEXT] file_urls (images) count: {len(file_urls)}")
+        logger.debug(f"[FILE_CONTEXT]   doc_file: {df.original_name} (mime={df.mime_type})")
+    logger.debug(f"[FILE_CONTEXT] file_urls (images) count: {len(file_urls)}")
 
     response_generator: AsyncIterator[str]
 
     if effective_mode == "deep_research":
-        logger.info(f"[FILE_CONTEXT] >>> Taking DEEP_RESEARCH path")
+        logger.debug(f"[FILE_CONTEXT] >>> Taking DEEP_RESEARCH path")
         # deep_research adds the query separately, so pass only history (without the new user message)
         oa_result = await deep_research(
             query=payload.message,
@@ -160,7 +160,7 @@ async def chat_endpoint(
             settings=settings,
         )
     elif effective_mode == "vision":
-        logger.info(f"[FILE_CONTEXT] >>> Taking VISION path with {len(file_urls)} image URLs - STREAMING")
+        logger.debug(f"[FILE_CONTEXT] >>> Taking VISION path with {len(file_urls)} image URLs - STREAMING")
         try:
             stream_session = await stream_chat_with_vision(
                 messages=openai_messages,
@@ -179,12 +179,12 @@ async def chat_endpoint(
             logger.exception("Failed to create streaming vision session")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to start vision chat: {str(e)}"
+                detail="Failed to start chat. Please try again."
             )
     elif effective_mode == "files":
-        logger.info(f"[FILE_CONTEXT] >>> Taking FILES path with {len(doc_files)} documents - STREAMING")
+        logger.debug(f"[FILE_CONTEXT] >>> Taking FILES path with {len(doc_files)} documents - STREAMING")
         for df in doc_files:
-            logger.info(f"[FILE_CONTEXT]     Passing to stream_chat_with_files: {df.original_name} (openai_file_id={df.openai_file_id})")
+            logger.debug(f"[FILE_CONTEXT]     Passing to stream_chat_with_files: {df.original_name} (openai_file_id={df.openai_file_id})")
         try:
             stream_session = await stream_chat_with_files(
                 messages=openai_messages,
@@ -203,10 +203,10 @@ async def chat_endpoint(
             logger.exception("Failed to create streaming files session")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to start files chat: {str(e)}"
+                detail="Failed to start chat. Please try again."
             )
     else:
-        logger.info(f"[FILE_CONTEXT] >>> Taking STREAMING CHAT path (no files/vision)")
+        logger.debug(f"[FILE_CONTEXT] >>> Taking STREAMING CHAT path (no files/vision)")
         try:
             stream_session = await stream_chat(
                 messages=openai_messages,
@@ -224,7 +224,7 @@ async def chat_endpoint(
             logger.exception("Failed to create streaming session")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to start chat: {str(e)}"
+                detail="Failed to start chat. Please try again."
             )
 
     return StreamingResponse(response_generator, media_type=STREAM_MEDIA_TYPE)

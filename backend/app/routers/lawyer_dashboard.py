@@ -12,6 +12,11 @@ from app.auth import get_current_user
 from app.db import get_db_session
 from app.models import UserProfile
 
+
+def _require_lawyer_or_admin(current_user: UserProfile) -> None:
+    if current_user.role not in {"lawyer", "admin"}:
+        raise HTTPException(status_code=403, detail="FORBIDDEN")
+
 router = APIRouter(prefix="/api/lawyer", tags=["lawyer-dashboard"])
 
 
@@ -81,7 +86,7 @@ async def get_all_users(
     db: AsyncSession = Depends(get_db_session),
 ):
     """Get all users with their statistics."""
-    # TODO: Add role check for lawyer access
+    _require_lawyer_or_admin(current_user)
     
     query = text("""
         SELECT 
@@ -126,7 +131,7 @@ async def get_user_detail(
     db: AsyncSession = Depends(get_db_session),
 ):
     """Get detailed information for a specific user."""
-    # TODO: Add role check for lawyer access
+    _require_lawyer_or_admin(current_user)
     
     # Get user profile
     user_query = text("""
@@ -221,7 +226,7 @@ async def get_conversation_detail(
     db: AsyncSession = Depends(get_db_session),
 ):
     """Get full conversation with all messages."""
-    # TODO: Add role check for lawyer access
+    _require_lawyer_or_admin(current_user)
     
     # Get conversation
     conv_query = text("""

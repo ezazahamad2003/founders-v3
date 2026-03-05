@@ -64,7 +64,7 @@ gcloud run deploy $SERVICE_NAME `
     --memory 1Gi `
     --timeout 300 `
     --env-vars-file env.yaml `
-    --set-secrets "OPENAI_API_KEY=openai-api-key:latest,SUPABASE_DB_URL=supabase-db-url:latest,SUPABASE_JWT_SECRET=supabase-jwt-secret:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key:latest,SUPABASE_ANON_KEY=supabase-anon-key:latest"
+    --set-secrets "OPENAI_API_KEY=openai-api-key:latest,CLAUDE_API_KEY=claude-api-key:latest,SUPABASE_DB_URL=supabase-db-url:latest,SUPABASE_JWT_SECRET=supabase-jwt-secret:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key:latest,SUPABASE_ANON_KEY=supabase-anon-key:latest"
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host ""

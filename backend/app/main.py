@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import chat, conversations, files, health, user, profile_documents, lawyer_dashboard, password_reset
+from app.routers import chat, conversations, debate, files, health, user, profile_documents, lawyer_dashboard, password_reset
 
 
 DEFAULT_LOCAL_ORIGINS = [
@@ -22,25 +22,22 @@ DEFAULT_LOCAL_ORIGINS = [
 def create_app() -> FastAPI:
     """Minimal app factory with router wiring; CORS/middleware will be added later."""
     settings = get_settings()
+    is_production = settings.app_env == "production"
     application = FastAPI(
         title="Scopic Legal API",
         version="0.1.0",
-        docs_url="/docs",
-        redoc_url="/redoc",
+        docs_url=None if is_production else "/docs",
+        redoc_url=None if is_production else "/redoc",
     )
 
     # Configure CORS BEFORE adding routers
     origins = settings.allowed_origins_list()
     if not origins:
         origins = DEFAULT_LOCAL_ORIGINS
-    else:
-        # Always include localhost origins for local development, even in production
-        # Merge configured origins with default localhost origins (avoid duplicates)
+    elif not is_production:
         origins = list(set(origins + DEFAULT_LOCAL_ORIGINS))
 
-    # Add regex pattern for all Vercel URLs (more permissive)
-    # Matches any vercel.app subdomain for founders-v3
-    origin_regex = r"https://.*\.vercel\.app"
+    origin_regex = r"https://foundersllm-v3.*\.vercel\.app"
     
     application.add_middleware(
         CORSMiddleware,
@@ -60,6 +57,7 @@ def create_app() -> FastAPI:
     application.include_router(chat.router)
     application.include_router(lawyer_dashboard.router)
     application.include_router(password_reset.router)
+    application.include_router(debate.router)
 
     # Placeholder attribute to show settings were loaded (use later for logging)
     application.state.app_env = settings.app_env
