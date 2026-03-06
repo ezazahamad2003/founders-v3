@@ -63,6 +63,8 @@ logs/
 *.tmp
 *.bak
 .cache/
+env-deploy-temp.yaml
+org-policy.json
 
 # Jupyter Notebook
 .ipynb_checkpoints

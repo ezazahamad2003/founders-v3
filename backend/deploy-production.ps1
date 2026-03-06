@@ -1,5 +1,5 @@
-# Production Cloud Run Deployment Script with Secret Manager
-# This script deploys the FastAPI backend to Google Cloud Run with proper secret management
+# Production Cloud Run Deployment Script
+# Secrets are read from local .env file (never committed to git)
 
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "Production Cloud Run Deployment" -ForegroundColor Cyan
@@ -9,91 +9,84 @@ Write-Host ""
 # Configuration
 $SERVICE_NAME = "scopic-legal-api"
 $REGION = "us-central1"
-$PROJECT_ID = "founders-v3"
+$PROJECT_ID = "founders-478911"
+$ACCOUNT = "ezazahamadspam@gmail.com"
 
-# Check if gcloud is installed
-Write-Host "Checking for gcloud CLI..." -ForegroundColor Yellow
-$gcloudCheck = Get-Command gcloud -ErrorAction SilentlyContinue
-if ($null -eq $gcloudCheck) {
-    Write-Host "ERROR: gcloud CLI is not installed" -ForegroundColor Red
-    exit 1
+# Check gcloud
+if (-not (Get-Command gcloud -ErrorAction SilentlyContinue)) {
+    Write-Host "ERROR: gcloud CLI is not installed" -ForegroundColor Red; exit 1
 }
-Write-Host "OK: gcloud CLI is installed" -ForegroundColor Green
-Write-Host ""
+Write-Host "OK: gcloud CLI found" -ForegroundColor Green
 
-# Check authentication
-Write-Host "Checking authentication..." -ForegroundColor Yellow
-$authCheck = gcloud auth list --filter=status:ACTIVE --format="value(account)" 2>&1 | Out-String
-$authCheck = $authCheck.Trim()
-if ([string]::IsNullOrWhiteSpace($authCheck)) {
-    Write-Host "ERROR: Not authenticated with gcloud" -ForegroundColor Red
-    exit 1
+# Set correct account + project
+gcloud config set account $ACCOUNT 2>&1 | Out-Null
+gcloud config set project $PROJECT_ID 2>&1 | Out-Null
+
+$authCheck = (gcloud auth print-access-token 2>&1 | Out-String).Trim()
+if ($authCheck -like "*ERROR*") {
+    Write-Host "ERROR: Not authenticated. Run: gcloud auth login $ACCOUNT" -ForegroundColor Red; exit 1
 }
-Write-Host "OK: Authenticated as: $authCheck" -ForegroundColor Green
-Write-Host ""
+Write-Host "OK: Authenticated as $ACCOUNT" -ForegroundColor Green
 
-# Confirm deployment
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Ready to deploy to Cloud Run" -ForegroundColor Cyan
-Write-Host "Service: $SERVICE_NAME" -ForegroundColor White
-Write-Host "Project: $PROJECT_ID" -ForegroundColor White
-Write-Host "Region: $REGION" -ForegroundColor White
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-$confirm = Read-Host "Proceed with deployment? (y/n)"
-if ($confirm -ne "y" -and $confirm -ne "Y") {
-    Write-Host "Deployment cancelled" -ForegroundColor Yellow
-    exit 0
+# Read secrets from .env file
+$envFile = Join-Path $PSScriptRoot ".env"
+if (-not (Test-Path $envFile)) {
+    Write-Host "ERROR: .env file not found at $envFile" -ForegroundColor Red; exit 1
 }
 
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Deploying to Cloud Run..." -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
+$envVars = @{}
+Get-Content $envFile | ForEach-Object {
+    if ($_ -match '^\s*([^#][^=]+)=(.+)$') {
+        $envVars[$matches[1].Trim()] = $matches[2].Trim()
+    }
+}
 
-# Deploy with secrets from Secret Manager
+$secrets = @(
+    "OPENAI_API_KEY=$($envVars['OPENAI_API_KEY'])",
+    "CLAUDE_API_KEY=$($envVars['CLAUDE_API_KEY'])",
+    "SUPABASE_DB_URL=$($envVars['SUPABASE_DB_URL'])",
+    "SUPABASE_JWT_SECRET=$($envVars['SUPABASE_JWT_SECRET'])",
+    "SUPABASE_ANON_KEY=$($envVars['SUPABASE_ANON_KEY'])",
+    "SUPABASE_SERVICE_ROLE_KEY=$($envVars['SUPABASE_SERVICE_ROLE_KEY'])"
+) -join ","
+
+Write-Host "OK: Secrets loaded from .env" -ForegroundColor Green
+Write-Host ""
+Write-Host "Service : $SERVICE_NAME"
+Write-Host "Project : $PROJECT_ID"
+Write-Host "Region  : $REGION"
+Write-Host ""
+$confirm = Read-Host "Deploy? (y/n)"
+if ($confirm -ne "y" -and $confirm -ne "Y") { Write-Host "Cancelled" -ForegroundColor Yellow; exit 0 }
+
+Write-Host ""
+Write-Host "Building and deploying..." -ForegroundColor Cyan
+
 gcloud run deploy $SERVICE_NAME `
     --source . `
     --region $REGION `
+    --project $PROJECT_ID `
     --platform managed `
     --allow-unauthenticated `
     --min-instances 0 `
-    --max-instances 10 `
+    --max-instances 5 `
     --cpu 1 `
     --memory 1Gi `
     --timeout 300 `
     --env-vars-file env.yaml `
-    --set-secrets "OPENAI_API_KEY=openai-api-key:latest,CLAUDE_API_KEY=claude-api-key:latest,SUPABASE_DB_URL=supabase-db-url:latest,SUPABASE_JWT_SECRET=supabase-jwt-secret:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key:latest,SUPABASE_ANON_KEY=supabase-anon-key:latest"
+    --set-env-vars $secrets
 
 if ($LASTEXITCODE -eq 0) {
+    $serviceUrl = (gcloud run services describe $SERVICE_NAME --region $REGION --project $PROJECT_ID --format="value(status.url)" 2>&1).Trim()
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Green
-    Write-Host "SUCCESS: Deployment Complete!" -ForegroundColor Green
+    Write-Host "SUCCESS! Backend live at:" -ForegroundColor Green
+    Write-Host $serviceUrl -ForegroundColor White
     Write-Host "========================================" -ForegroundColor Green
     Write-Host ""
-    
-    # Get the service URL
-    $serviceUrl = gcloud run services describe $SERVICE_NAME --region $REGION --format="value(status.url)" 2>&1
-    
-    Write-Host "Your backend is now live!" -ForegroundColor Cyan
-    Write-Host "URL: $serviceUrl" -ForegroundColor White
-    Write-Host "API Docs: $serviceUrl/docs" -ForegroundColor White
-    Write-Host ""
-    
-    Write-Host "Next steps:" -ForegroundColor Yellow
-    Write-Host "1. Update frontend .env.production with: NEXT_PUBLIC_API_BASE_URL=$serviceUrl" -ForegroundColor White
-    Write-Host "2. Test the API: curl $serviceUrl/health" -ForegroundColor White
-    Write-Host "3. View logs: gcloud run logs tail --service=$SERVICE_NAME --region=$REGION" -ForegroundColor White
-    Write-Host ""
-    
+    Write-Host "Next: update frontend/.env.production with:" -ForegroundColor Yellow
+    Write-Host "NEXT_PUBLIC_API_BASE_URL=$serviceUrl" -ForegroundColor White
 } else {
-    Write-Host ""
-    Write-Host "========================================" -ForegroundColor Red
-    Write-Host "ERROR: Deployment Failed" -ForegroundColor Red
-    Write-Host "========================================" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Check the error messages above" -ForegroundColor Yellow
-    Write-Host "View logs: gcloud run logs read --service=$SERVICE_NAME --region=$REGION --limit=50" -ForegroundColor White
+    Write-Host "ERROR: Deployment failed. Check logs above." -ForegroundColor Red
     exit 1
 }
