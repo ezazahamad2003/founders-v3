@@ -51,8 +51,26 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
         <link rel="shortcut icon" href="/logo.svg" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('scopic_theme');
+                  if (theme === 'light' || theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', theme);
+                  } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                  }
+                } catch (e) {
+                  document.documentElement.setAttribute('data-theme', 'dark');
+                }
+              })();
+            `,
+          }}
+        />
       </head>
-      <body className={`${inter.className} bg-[#05060c]`} suppressHydrationWarning>
+      <body className={`${inter.className} app-bg`} suppressHydrationWarning>
         {children}
       </body>
     </html>

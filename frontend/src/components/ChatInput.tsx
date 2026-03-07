@@ -148,19 +148,19 @@ export default function ChatInput({
     return (
       <div
         key={file.id}
-        className="relative flex w-full items-center gap-3 rounded-3xl border border-white/12 bg-[#0c0f17] px-4 py-3 text-white shadow-lg shadow-black/40 transition"
+        className="app-input-alt app-border app-text relative flex w-full items-center gap-3 rounded-3xl border px-4 py-3 shadow-lg shadow-black/20 transition"
       >
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#ff5b5b]/15 text-xl text-[#ff7474]">
           <PaperClipIcon className="h-5 w-5" />
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-semibold">{file.original_name ?? "Attachment"}</span>
-          <span className="text-xs uppercase tracking-wide text-white/60">{extension}</span>
+                <span className="app-muted text-xs uppercase tracking-wide">{extension}</span>
         </div>
         <button
           type="button"
           onClick={() => onRemoveAttachment(file.id)}
-          className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-sm text-white/70 transition hover:bg-white/20"
+          className="app-muted absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-sm transition hover:bg-white/20 hover:app-text"
         >
           ×
         </button>
@@ -169,7 +169,7 @@ export default function ChatInput({
   };
 
   return (
-    <div className="shrink-0 border-t border-white/5 bg-[#05060c]/90 px-4 py-5 sm:px-6 z-10">
+    <div className="app-bg app-border z-10 shrink-0 border-t px-4 py-5 sm:px-6">
       {/* Contract Review Mode Indicator */}
       {promptMode === "contract_review" && (
         <div className="mx-auto max-w-4xl mb-3 flex items-center justify-center">
@@ -186,7 +186,7 @@ export default function ChatInput({
         </div>
       )}
       
-      <div className="mx-auto max-w-4xl rounded-[32px] border border-white/10 bg-[#16181f] px-5 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.55)]">
+      <div className="app-surface-2 app-border mx-auto max-w-4xl rounded-[32px] border px-5 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
         {pendingAttachments.length ? (
           <div className="mb-3 flex flex-col gap-2">
             {pendingAttachments.map((file) => renderAttachmentCard(file))}
@@ -206,7 +206,7 @@ export default function ChatInput({
             type="button"
             onClick={handleUploadClick}
             disabled={disabledUpload}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#0d0f16] text-white transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-40"
+            className="app-input app-border app-text flex h-11 w-11 items-center justify-center rounded-full border transition hover:app-border-strong disabled:cursor-not-allowed disabled:opacity-40"
             title="Attach documents"
           >
             {isUploading ? (
@@ -222,7 +222,7 @@ export default function ChatInput({
             onKeyDown={handleKeyDown}
             placeholder="Ask anything..."
             rows={1}
-            className="flex-1 resize-none overflow-y-auto rounded-3xl bg-[#0d0f16] px-4 py-3 text-base text-white outline-none placeholder:text-slate-500"
+            className="app-input app-text flex-1 resize-none overflow-y-auto rounded-3xl px-4 py-3 text-base outline-none placeholder:app-subtle"
             style={{ minHeight: "44px", maxHeight: "200px" }}
             disabled={disabled}
           />
@@ -230,7 +230,7 @@ export default function ChatInput({
             <button
               type="submit"
               disabled={disabledSend}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#111] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#111] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white"
             >
               <PaperAirplaneIcon className="h-5 w-5" />
             </button>
@@ -244,7 +244,7 @@ export default function ChatInput({
           </p>
         ) : null}
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+        <div className="app-muted mt-4 flex flex-wrap items-center justify-between gap-3 text-xs">
           <span>
             A reminder that Scopic is an AI assistant providing information, not legal advice. No attorney-client relationship is formed here, and always review outputs with a qualified professional. Your data is private and will be kept confidential pursuant to our{" "}
             <a href="/legal/privacy-policy.html" target="_blank" className="underline hover:text-indigo-400 transition">
@@ -253,13 +253,13 @@ export default function ChatInput({
             .
           </span>
           {modeOptions.length > 1 && (
-            <div className="flex items-center gap-2 text-white">
-              <span className="text-white/60">Mode</span>
+            <div className="app-text flex items-center gap-2">
+              <span className="app-muted">Mode</span>
               <Listbox value={selectedMode} onChange={(option) => onModeChange(option.value)}>
                 <div className="relative">
-                  <Listbox.Button className="flex min-w-[140px] items-center justify-between rounded-2xl border border-white/15 bg-[#0d0f16] px-3 py-1.5 text-sm text-white">
+                  <Listbox.Button className="app-input app-border app-text flex min-w-[140px] items-center justify-between rounded-2xl border px-3 py-1.5 text-sm">
                     {selectedMode.label}
-                    <ChevronUpDownIcon className="ml-2 h-4 w-4 text-white/70" />
+                    <ChevronUpDownIcon className="app-muted ml-2 h-4 w-4" />
                   </Listbox.Button>
                 <Transition
                   as={Fragment}
@@ -267,14 +267,14 @@ export default function ChatInput({
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute right-0 z-20 mt-2 max-h-60 w-full overflow-auto rounded-2xl border border-white/10 bg-[#0f1118] py-1 text-sm text-slate-100 shadow-lg focus:outline-none">
+                  <Listbox.Options className="app-surface app-border app-text absolute right-0 z-20 mt-2 max-h-60 w-full overflow-auto rounded-2xl border py-1 text-sm shadow-lg focus:outline-none">
                     {modeOptions.map((option) => (
                       <Listbox.Option
                         key={option.value}
                         value={option}
                         className={({ active }) =>
                           `flex cursor-pointer items-center justify-between px-3 py-2 ${
-                            active ? "bg-white/10 text-white" : "text-slate-200"
+                            active ? "app-surface-2 app-text" : "app-muted"
                           }`
                         }
                       >

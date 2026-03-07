@@ -126,7 +126,7 @@ export default function MessageList({
   return (
     <div
       ref={scrollRef}
-      className="flex-1 overflow-y-auto scroll-smooth bg-gradient-to-b from-[#05060c] via-[#070812] to-[#05060c] px-8 py-6"
+      className="app-gradient flex-1 overflow-y-auto scroll-smooth px-8 py-6"
     >
       <div className="mx-auto flex max-w-4xl flex-col space-y-4">
         {showIntro && introMarkdown ? (
@@ -142,8 +142,8 @@ export default function MessageList({
         {!showIntro && messages.length === 0 && !isStreaming ? (
           <div className="flex flex-col gap-6 pt-12">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold text-white tracking-tight">How can I help you today?</h2>
-              <p className="mt-2 text-[15px] text-slate-400">Choose a starting point or ask anything</p>
+              <h2 className="text-2xl font-semibold tracking-tight app-text">How can I help you today?</h2>
+              <p className="app-muted mt-2 text-[15px]">Choose a starting point or ask anything</p>
             </div>
             
             <div className="grid gap-3 sm:grid-cols-2">
@@ -160,35 +160,35 @@ export default function MessageList({
                 </p>
               </button>
 
-              <div className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="app-border app-surface-2 flex flex-col gap-2 rounded-2xl border p-4">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">💡</span>
-                  <span className="font-medium text-white">Legal Questions</span>
+                  <span className="app-text font-medium">Legal Questions</span>
                 </div>
-                <p className="text-sm text-slate-400">
+                <p className="app-muted text-sm">
                   Ask about fundraising, employment, contracts, IP, or any startup legal topic
                 </p>
               </div>
             </div>
 
             <div className="mt-4 space-y-2">
-              <p className="text-xs uppercase tracking-wide text-slate-500 font-medium">Trending Questions</p>
+              <p className="app-subtle text-xs font-medium uppercase tracking-wide">Trending Questions</p>
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => onSendMessage?.("Should I incorporate in Delaware or my home state?")}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-left text-[15px] text-slate-300 transition hover:border-white/20 hover:bg-white/10"
+                  className="app-border app-surface-2 app-muted rounded-xl border px-4 py-2.5 text-left text-[15px] transition hover:app-border-strong hover:opacity-95"
                 >
                   &quot;Should I incorporate in Delaware or my home state?&quot;
                 </button>
                 <button
                   onClick={() => onSendMessage?.("What are standard SAFE terms for a pre-seed round?")}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-left text-[15px] text-slate-300 transition hover:border-white/20 hover:bg-white/10"
+                  className="app-border app-surface-2 app-muted rounded-xl border px-4 py-2.5 text-left text-[15px] transition hover:app-border-strong hover:opacity-95"
                 >
                   &quot;What are standard SAFE terms for a pre-seed round?&quot;
                 </button>
                 <button
                   onClick={() => onSendMessage?.("How do I protect my IP before raising capital?")}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-left text-[15px] text-slate-300 transition hover:border-white/20 hover:bg-white/10"
+                  className="app-border app-surface-2 app-muted rounded-xl border px-4 py-2.5 text-left text-[15px] transition hover:app-border-strong hover:opacity-95"
                 >
                   &quot;How do I protect my IP before raising capital?&quot;
                 </button>
@@ -221,13 +221,13 @@ export default function MessageList({
         ) : null}
 
         {isStreaming && !streamingMessage ? (
-          <div className="flex items-center gap-3 rounded-3xl border border-white/10 bg-[#1a1c24] px-6 py-4 text-slate-300 shadow-lg">
+          <div className="app-border app-surface-muted app-muted flex items-center gap-3 rounded-3xl border px-6 py-4 shadow-lg">
             <div className="flex gap-1">
               <span className="inline-block h-2 w-2 animate-bounce rounded-full bg-indigo-400" style={{ animationDelay: "0ms" }} />
               <span className="inline-block h-2 w-2 animate-bounce rounded-full bg-indigo-400" style={{ animationDelay: "150ms" }} />
               <span className="inline-block h-2 w-2 animate-bounce rounded-full bg-indigo-400" style={{ animationDelay: "300ms" }} />
             </div>
-            <span className="text-[15px] text-slate-300">Thinking...</span>
+            <span className="text-[15px]">Thinking...</span>
           </div>
         ) : null}
 

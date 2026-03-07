@@ -25,7 +25,7 @@ export default function ConversationList({
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
-            className="h-12 w-full animate-pulse rounded-2xl bg-white/5"
+            className="app-surface-2 h-12 w-full animate-pulse rounded-2xl"
           />
         ))}
       </div>
@@ -33,7 +33,7 @@ export default function ConversationList({
   }
 
   if (!conversations.length) {
-    return <p className="text-sm text-slate-400">No Legal Queries yet. Start a new Legal Query to begin.</p>;
+    return <p className="app-muted text-sm">No Legal Queries yet. Start a new Legal Query to begin.</p>;
   }
 
   return (
@@ -48,8 +48,8 @@ export default function ConversationList({
               className={clsx(
                 "flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition",
                 isActive
-                  ? "border-white/50 bg-white/10 text-white"
-                  : "border-white/5 bg-white/0 text-slate-200 hover:border-white/20 hover:bg-white/5",
+                  ? "border-[color:var(--app-border-strong)] bg-[var(--app-surface-2)] text-[var(--app-text)]"
+                  : "border-[color:var(--app-border)] bg-transparent text-[var(--app-text-muted)] hover:border-[color:var(--app-border-strong)] hover:bg-[var(--app-surface-2)]",
               )}
             >
               <div className={clsx("flex-1", !isWelcome && "pr-8")}>
@@ -57,7 +57,7 @@ export default function ConversationList({
                   {conversation.title ?? "New chat"}
                 </p>
                 {!isWelcome && (
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="app-subtle mt-1 text-xs">
                     {new Date(conversation.updated_at).toLocaleString()}
                   </p>
                 )}
@@ -73,7 +73,7 @@ export default function ConversationList({
                     onDeleteConversation(conversation.id);
                   }
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl border border-white/10 px-2 py-1 text-xs text-slate-300 transition hover:border-red-400 hover:text-red-300"
+                className="app-border app-muted absolute right-3 top-1/2 -translate-y-1/2 rounded-xl border px-2 py-1 text-xs transition hover:border-red-400 hover:text-red-300"
                 aria-label="Delete conversation"
               >
                 ×

@@ -123,7 +123,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#05060c] text-slate-100">
+      <div className="app-bg app-text flex h-screen overflow-hidden">
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
@@ -171,16 +171,16 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
       </div>
 
       {/* Main chat area with proper flex structure */}
-      <div className="flex h-screen w-full flex-1 flex-col">
+      <div className="flex h-full w-full min-h-0 flex-1 flex-col">
         {/* Header - fixed height */}
-        <div className="flex h-16 shrink-0 items-center justify-end border-b border-white/5 bg-[#05060c] px-4 sm:px-6">
+        <div className="app-bg app-border flex h-16 shrink-0 items-center justify-end border-b px-4 sm:px-6">
           {/* Hamburger Menu Button - Only visible on mobile, positioned absolutely on left */}
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="absolute left-4 flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/5 transition lg:hidden"
+            className="absolute left-4 flex h-10 w-10 items-center justify-center rounded-lg transition hover:bg-white/5 lg:hidden"
             aria-label="Toggle sidebar"
           >
-            <svg className="w-6 h-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-6 w-6 app-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>

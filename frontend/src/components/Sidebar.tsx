@@ -48,13 +48,13 @@ export default function Sidebar({
   }, [externalTrigger, onExternalTriggerHandled]);
 
   return (
-    <aside className="flex h-full w-[var(--sidebar-width)] flex-col overflow-hidden border-r border-white/5 bg-[#0c0f1a]">
-      <div className="border-b border-white/5 px-5 py-6">
+    <aside className="app-surface-3 app-border flex h-full w-[var(--sidebar-width)] flex-col overflow-hidden border-r">
+      <div className="app-border border-b px-5 py-6">
         <div className="text-sm uppercase tracking-[0.3em] text-indigo-400">Scopic Legal</div>
-        <div className="mt-1 text-xs text-slate-400">Private Beta Program</div>
+        <div className="app-muted mt-1 text-xs">Private Beta Program</div>
         <button
           onClick={onNewConversation}
-          className="mt-4 flex w-full items-center justify-center rounded-2xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+          className="app-surface-2 app-text app-border mt-4 flex w-full items-center justify-center rounded-2xl border px-4 py-2 text-sm font-medium transition hover:opacity-90"
         >
           + New Chat
         </button>
@@ -82,10 +82,10 @@ export default function Sidebar({
         />
       </div>
 
-      <div className="border-t border-white/5 px-5 py-4 text-sm text-slate-300">
+      <div className="app-border app-muted border-t px-5 py-4 text-sm">
         <button
           onClick={() => setProfileDrawerOpen(true)}
-          className="flex w-full items-center justify-center rounded-2xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+          className="app-surface-2 app-text app-border flex w-full items-center justify-center rounded-2xl border px-4 py-2 text-sm font-medium transition hover:opacity-90"
         >
           + Document Vault
         </button>

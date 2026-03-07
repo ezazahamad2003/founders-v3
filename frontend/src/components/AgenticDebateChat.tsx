@@ -205,30 +205,30 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
   const latestConsensus = consensusHistory[consensusHistory.length - 1];
 
   return (
-    <div className="flex h-full flex-col bg-[#05060c] p-4 sm:p-6">
-      <div className="mx-auto flex h-full w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0b0e16] text-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-white/5 px-5 py-4 sm:px-6 sm:py-5">
+    <div className="app-bg flex min-h-0 flex-1 flex-col p-4 sm:p-6">
+      <div className="app-surface app-border app-text mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col overflow-hidden rounded-3xl border shadow-2xl">
+        <div className="app-border shrink-0 flex items-center justify-between border-b px-5 py-4 sm:px-6 sm:py-5">
           <div>
             <h2 className="flex items-center gap-2 text-xl font-semibold">
               <span className="text-2xl">⚔️</span> Agentic Debate
             </h2>
-            <p className="mt-0.5 text-sm text-slate-400">
+            <p className="app-muted mt-0.5 text-sm">
               GPT vs Claude — they argue until consensus is reached
             </p>
           </div>
           <button
             onClick={handleBackToChat}
             disabled={phase === "running"}
-            className="rounded-full border border-white/10 px-4 py-2 text-sm text-slate-200 transition hover:border-white/25 disabled:cursor-not-allowed disabled:opacity-50"
+            className="app-border app-muted rounded-full border px-4 py-2 text-sm transition hover:app-border-strong hover:app-text disabled:cursor-not-allowed disabled:opacity-50"
           >
             Back to Chat
           </button>
         </div>
 
         {phase === "setup" && (
-          <div className="space-y-5 overflow-y-auto p-5 sm:p-6">
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:p-6">
             <div>
-              <label className="text-xs uppercase tracking-wide text-slate-500">
+              <label className="app-subtle text-xs uppercase tracking-wide">
                 Debate Topic / Question
               </label>
               <textarea
@@ -236,23 +236,23 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g. Is this NDA clause enforceable? What are the key risks in this contract?"
                 rows={3}
-                className="mt-2 w-full resize-none rounded-2xl border border-white/15 bg-[#0d0f16] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                className="app-input app-text app-border mt-2 w-full resize-none rounded-2xl border px-4 py-3 text-sm placeholder:app-subtle focus:border-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
 
             <div>
-              <label className="text-xs uppercase tracking-wide text-slate-500">
+              <label className="app-subtle text-xs uppercase tracking-wide">
                 Document (Optional — PDF, DOCX, TXT)
               </label>
               {selectedFile ? (
-                <div className="mt-2 flex items-center justify-between rounded-2xl border border-white/15 bg-white/5 px-4 py-3">
+                <div className="app-border app-surface-2 mt-2 flex items-center justify-between rounded-2xl border px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/15 text-indigo-400">
                       📄
                     </div>
                     <div>
                       <p className="text-sm font-medium">{selectedFile.name}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="app-subtle text-xs">
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -267,15 +267,15 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
               ) : (
                 <div
                   className={`mt-2 rounded-2xl border border-dashed p-5 transition ${
-                    isDragging ? "border-indigo-400 bg-indigo-500/15" : "border-white/15 bg-white/5"
+                    isDragging ? "border-indigo-400 bg-indigo-500/15" : "app-border app-surface-2"
                   }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                 >
-                  <label className="flex cursor-pointer flex-col items-center justify-center gap-1 text-center text-sm text-slate-300">
+                  <label className="app-muted flex cursor-pointer flex-col items-center justify-center gap-1 text-center text-sm">
                     <span className="text-base font-medium">Drop document or browse</span>
-                    <span className="text-xs text-slate-500">PDF, DOCX, TXT — up to 25 MB</span>
+                    <span className="app-subtle text-xs">PDF, DOCX, TXT — up to 25 MB</span>
                     <input
                       type="file"
                       className="hidden"
@@ -289,7 +289,7 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
 
             <div>
               <div className="flex items-center justify-between">
-                <label className="text-xs uppercase tracking-wide text-slate-500">Target Consensus</label>
+                <label className="app-subtle text-xs uppercase tracking-wide">Target Consensus</label>
                 <span className="text-sm font-semibold text-indigo-300">{targetConsensus}%</span>
               </div>
               <input
@@ -305,7 +305,7 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
 
             <div>
               <div className="flex items-center justify-between">
-                <label className="text-xs uppercase tracking-wide text-slate-500">Max Debate Rounds</label>
+                <label className="app-subtle text-xs uppercase tracking-wide">Max Debate Rounds</label>
                 <span className="text-sm font-semibold text-slate-300">{maxRounds}</span>
               </div>
               <input
@@ -334,14 +334,14 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
 
         {(phase === "running" || phase === "done") && (
           <div className="flex min-h-0 flex-1 flex-col">
-            <div className="flex items-center justify-between border-b border-white/5 px-5 py-3 sm:px-6">
+            <div className="app-border flex items-center justify-between border-b px-5 py-3 sm:px-6">
               <div className="flex items-center gap-3">
                 {phase === "running" ? (
                   <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                 ) : (
                   <span className="flex h-2 w-2 rounded-full bg-amber-400" />
                 )}
-                <span className="text-sm text-slate-300">
+                <span className="app-muted text-sm">
                   {phase === "running"
                     ? isSynthesizing
                       ? "Generating synthesis…"
@@ -366,14 +366,17 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
                       }}
                     />
                   </div>
-                  <span className="text-xs text-slate-400">
+                  <span className="app-subtle text-xs">
                     {latestConsensus.percentage}% / {targetConsensus}%
                   </span>
                 </div>
               )}
             </div>
 
-            <div ref={debatePanelRef} className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4 sm:px-6">
+            <div
+              ref={debatePanelRef}
+              className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4 pb-6 sm:px-6"
+            >
               {messages.map((msg) => (
                 <div key={msg.id} className={`rounded-2xl border px-5 py-4 ${modelColor(msg.model)}`}>
                   <div className="mb-2 flex items-center justify-between">
@@ -382,7 +385,7 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
                         {modelLabel(msg.model)}
                       </span>
                       {msg.round > 0 ? (
-                        <span className="text-xs text-slate-500">Round {msg.round}</span>
+                        <span className="app-subtle text-xs">Round {msg.round}</span>
                       ) : null}
                     </div>
                     {msg.isStreaming && (
@@ -427,10 +430,10 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
             </div>
 
             {phase === "done" && (
-              <div className="flex justify-end gap-3 border-t border-white/5 px-5 py-4 sm:px-6">
+              <div className="app-border shrink-0 flex justify-end gap-3 border-t px-5 py-4 sm:px-6">
                 <button
                   onClick={handleReset}
-                  className="rounded-full border border-white/10 px-5 py-2 text-sm text-white transition hover:border-white/30"
+                  className="app-border app-text rounded-full border px-5 py-2 text-sm transition hover:app-border-strong"
                 >
                   New Debate
                 </button>

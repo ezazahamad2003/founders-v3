@@ -53,7 +53,7 @@ function MessageBubble({
       : hasTable 
         ? "w-full" // Full container width for tables (document review)
         : "w-full max-w-3xl", // Normal width for regular chat
-    !isOwn && (role === "assistant" ? "bg-[#1a1c24] text-slate-100" : "bg-white/10 text-slate-100"),
+    !isOwn && (role === "assistant" ? "app-surface-muted app-text" : "app-surface-2 app-text"),
   );
 
   const rowClass = clsx(
@@ -79,7 +79,7 @@ function MessageBubble({
           {attachments.map((file) => (
             <div
               key={file.id}
-              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-lg backdrop-blur"
+              className="app-border app-surface-2 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-lg backdrop-blur"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,8 +87,8 @@ function MessageBubble({
                 </svg>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-white">{file.original_name ?? "Document"}</span>
-                <span className="text-xs text-slate-400">Document</span>
+                <span className="app-text text-sm font-medium">{file.original_name ?? "Document"}</span>
+                <span className="app-muted text-xs">Document</span>
               </div>
             </div>
           ))}
@@ -101,21 +101,21 @@ function MessageBubble({
           <button
             type="button"
             onClick={handleCopy}
-            className="absolute right-4 top-3 text-xs text-slate-400 transition hover:text-white"
+            className="app-muted absolute right-4 top-3 text-xs transition hover:app-text"
           >
             {copied ? "Copied" : "Copy"}
           </button>
         ) : null}
         <div
           className={clsx(
-            "prose prose-invert max-w-none text-[15px] leading-[1.7]",
+            "prose max-w-none text-[15px] leading-[1.7]",
             isStreaming && "animate-pulse",
             // Paragraphs
             "[&_p]:mb-4 [&_p:last-child]:mb-0 [&_p]:leading-[1.7]",
             // Headers
-            "[&_h1]:text-xl [&_h1]:font-semibold [&_h1]:mb-4 [&_h1]:mt-6",
-            "[&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-5",
-            "[&_h3]:text-base [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4",
+            "[&_h1]:text-xl [&_h1]:font-semibold [&_h1]:mb-4 [&_h1]:mt-6 [&_h1]:text-[var(--app-text)]",
+            "[&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-5 [&_h2]:text-[var(--app-text)]",
+            "[&_h3]:text-base [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-[var(--app-text)]",
             // Lists - improved spacing and styling
             "[&_ul]:mb-4 [&_ul]:mt-2 [&_ul]:space-y-1.5",
             "[&_ol]:mb-4 [&_ol]:mt-2 [&_ol]:space-y-1.5",
@@ -125,32 +125,32 @@ function MessageBubble({
             "[&_li>ul]:mt-1.5 [&_li>ol]:mt-1.5",
             "[&_li>ul]:mb-1.5 [&_li>ol]:mb-1.5",
             // Inline code
-            "[&_code]:rounded [&_code]:bg-black/50 [&_code]:px-1.5 [&_code]:py-0.5",
+            "[&_code]:rounded [&_code]:bg-black/20 [&_code]:px-1.5 [&_code]:py-0.5",
             "[&_code]:text-[13px] [&_code]:font-mono [&_code]:text-blue-300",
-            "[&_code]:border [&_code]:border-white/10",
+            "[&_code]:border [&_code]:border-[var(--app-border)]",
             // Code blocks
-            "[&_pre]:rounded-xl [&_pre]:bg-[#0d1117] [&_pre]:border [&_pre]:border-white/10",
+            "[&_pre]:rounded-xl [&_pre]:app-input-alt [&_pre]:border [&_pre]:border-[var(--app-border)]",
             "[&_pre]:p-4 [&_pre]:my-4 [&_pre]:overflow-x-auto",
             "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-[13px]",
-            "[&_pre_code]:border-0 [&_pre_code]:text-slate-200",
+            "[&_pre_code]:border-0 [&_pre_code]:text-[var(--app-text-muted)]",
             // Bold and emphasis
-            "[&_strong]:font-semibold [&_strong]:text-white",
-            "[&_em]:italic [&_em]:text-slate-200",
+            "[&_strong]:font-semibold [&_strong]:text-[var(--app-text)]",
+            "[&_em]:italic [&_em]:text-[var(--app-text-muted)]",
             // Links
             "[&_a]:text-blue-400 [&_a]:underline [&_a]:underline-offset-2",
             "[&_a:hover]:text-blue-300",
             // Blockquotes
             "[&_blockquote]:border-l-4 [&_blockquote]:border-indigo-500/50",
-            "[&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-300",
+            "[&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-[var(--app-text-muted)]",
             "[&_blockquote]:my-4",
             // Tables - wider and better formatted
             "[&_table]:w-full [&_table]:my-6 [&_table]:border-collapse",
             "[&_table]:table-fixed",
             "[&_thead]:bg-white/5",
-            "[&_th]:border [&_th]:border-white/20 [&_th]:px-4 [&_th]:py-3",
-            "[&_th]:text-left [&_th]:font-semibold [&_th]:text-sm [&_th]:text-white",
-            "[&_td]:border [&_td]:border-white/10 [&_td]:px-4 [&_td]:py-3",
-            "[&_td]:text-sm [&_td]:text-slate-200 [&_td]:align-top",
+            "[&_th]:border [&_th]:border-[var(--app-border-strong)] [&_th]:px-4 [&_th]:py-3",
+            "[&_th]:text-left [&_th]:font-semibold [&_th]:text-sm [&_th]:text-[var(--app-text)]",
+            "[&_td]:border [&_td]:border-[var(--app-border)] [&_td]:px-4 [&_td]:py-3",
+            "[&_td]:text-sm [&_td]:text-[var(--app-text-muted)] [&_td]:align-top",
             "[&_tr:hover]:bg-white/5",
           )}
         >
