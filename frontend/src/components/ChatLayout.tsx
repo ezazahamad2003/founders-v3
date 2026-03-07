@@ -8,6 +8,7 @@ import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
 import TosModal from "./TosModal";
 import ProfileMenu from "./ProfileMenu";
+import AgenticDebateChat from "./AgenticDebateChat";
 import type { FileMeta } from "@/lib/types";
 
 interface ChatLayoutProps {
@@ -19,6 +20,7 @@ interface ChatLayoutProps {
 export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [triggerDocumentReview, setTriggerDocumentReview] = useState(false);
+  const [showAgenticDebate, setShowAgenticDebate] = useState(false);
   
   const {
     profile,
@@ -141,22 +143,28 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           activeId={activeConversationId}
           loading={conversationsLoading || isProfileLoading}
           onSelectConversation={(id) => {
+            setShowAgenticDebate(false);
             loadConversation(id);
             setIsSidebarOpen(false); // Close sidebar on mobile after selection
           }}
           onNewConversation={() => {
+            setShowAgenticDebate(false);
             startNewConversation();
             setIsSidebarOpen(false);
           }}
           onStartDocumentReview={async (file, clientRole, optionalPrompt) => {
+            setShowAgenticDebate(false);
             await handleStartDocumentReview(file, clientRole, optionalPrompt);
             setIsSidebarOpen(false);
             setTriggerDocumentReview(false);
           }}
+          onStartAgenticDebate={() => {
+            setShowAgenticDebate(true);
+            setIsSidebarOpen(false);
+          }}
           onDeleteConversation={deleteConversation}
           profile={profile}
           supabase={supabase}
-          accessToken={accessToken}
           externalTrigger={triggerDocumentReview}
           onExternalTriggerHandled={() => setTriggerDocumentReview(false)}
         />
@@ -181,39 +189,48 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           <ProfileMenu profile={profile} onSignOut={onSignOut} />
         </div>
         
-        {/* Message area - flex-1 to fill available space, overflow-y-auto for scrolling */}
-        <MessageList
-          messages={messages}
-          streamingMessage={streamedAssistantText}
-          isStreaming={isStreaming}
-          profileId={profile?.id}
-          filesById={allFilesById}
-          errorMessage={errorMessage}
-          onDismissError={clearError}
-          showIntro={showScopicIntro && !activeConversationId && messages.length === 0}
-          introMarkdown={scopicIntroMarkdown}
-          onStartDocumentReview={() => setTriggerDocumentReview(true)}
-          onSendMessage={handleSendMessage}
-        />
+        {showAgenticDebate ? (
+          <AgenticDebateChat
+            accessToken={accessToken}
+            onBackToChat={() => setShowAgenticDebate(false)}
+          />
+        ) : (
+          <>
+            {/* Message area - flex-1 to fill available space, overflow-y-auto for scrolling */}
+            <MessageList
+              messages={messages}
+              streamingMessage={streamedAssistantText}
+              isStreaming={isStreaming}
+              profileId={profile?.id}
+              filesById={allFilesById}
+              errorMessage={errorMessage}
+              onDismissError={clearError}
+              showIntro={showScopicIntro && !activeConversationId && messages.length === 0}
+              introMarkdown={scopicIntroMarkdown}
+              onStartDocumentReview={() => setTriggerDocumentReview(true)}
+              onSendMessage={handleSendMessage}
+            />
 
-        {/* Input area - fixed at bottom, shrink-0 prevents squishing */}
-        <ChatInput
-          disabled={isProfileLoading || requiresTos || activeConversationId === "welcome-onboarding"}
-          mode={mode}
-          onModeChange={setMode}
-          promptMode={promptMode}
-          onPromptModeChange={setPromptMode}
-          onSend={handleSendMessage}
-          isStreaming={isStreaming}
-          conversationId={activeConversationId}
-          supabase={supabase}
-          profileId={profile?.id ?? null}
-          accessToken={accessToken}
-          uploadFile={uploadFile}
-          onFilesRegistered={handleFilesRegistered}
-          pendingAttachments={pendingAttachmentFiles}
-          onRemoveAttachment={handleRemoveAttachment}
-        />
+            {/* Input area - fixed at bottom, shrink-0 prevents squishing */}
+            <ChatInput
+              disabled={isProfileLoading || requiresTos || activeConversationId === "welcome-onboarding"}
+              mode={mode}
+              onModeChange={setMode}
+              promptMode={promptMode}
+              onPromptModeChange={setPromptMode}
+              onSend={handleSendMessage}
+              isStreaming={isStreaming}
+              conversationId={activeConversationId}
+              supabase={supabase}
+              profileId={profile?.id ?? null}
+              accessToken={accessToken}
+              uploadFile={uploadFile}
+              onFilesRegistered={handleFilesRegistered}
+              pendingAttachments={pendingAttachmentFiles}
+              onRemoveAttachment={handleRemoveAttachment}
+            />
+          </>
+        )}
       </div>
 
       <TosModal

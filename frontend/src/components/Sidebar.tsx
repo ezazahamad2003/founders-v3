@@ -6,7 +6,6 @@ import { ConversationSummary, UserProfile } from "@/lib/types";
 import ConversationList from "./ConversationList";
 import ProfileDrawer from "./ProfileDrawer";
 import DocumentReviewModal from "./DocumentReviewModal";
-import AgenticDebateModal from "./AgenticDebateModal";
 
 interface SidebarProps {
   conversations: ConversationSummary[];
@@ -15,10 +14,10 @@ interface SidebarProps {
   onSelectConversation: (conversationId: string) => void;
   onNewConversation: () => void;
   onStartDocumentReview: (file: File, clientRole: string, optionalPrompt: string) => Promise<void>;
+  onStartAgenticDebate: () => void;
   onDeleteConversation: (conversationId: string) => void;
   profile: UserProfile | null;
   supabase: SupabaseClient;
-  accessToken: string;
   externalTrigger?: boolean;
   onExternalTriggerHandled?: () => void;
 }
@@ -30,16 +29,15 @@ export default function Sidebar({
   onSelectConversation,
   onNewConversation,
   onStartDocumentReview,
+  onStartAgenticDebate,
   onDeleteConversation,
   profile,
   supabase,
-  accessToken,
   externalTrigger,
   onExternalTriggerHandled,
 }: SidebarProps) {
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
   const [documentReviewModalOpen, setDocumentReviewModalOpen] = useState(false);
-  const [agenticDebateOpen, setAgenticDebateOpen] = useState(false);
 
   // Handle external trigger to open document review modal
   useEffect(() => {
@@ -67,7 +65,7 @@ export default function Sidebar({
           ⚖️ Document Review
         </button>
         <button
-          onClick={() => setAgenticDebateOpen(true)}
+          onClick={onStartAgenticDebate}
           className="mt-3 flex w-full items-center justify-center rounded-2xl border border-violet-500/40 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 transition hover:border-violet-400 hover:bg-violet-500/20"
         >
           ⚔️ Agentic Debate
@@ -110,11 +108,6 @@ export default function Sidebar({
         open={documentReviewModalOpen}
         onClose={() => setDocumentReviewModalOpen(false)}
         onReview={onStartDocumentReview}
-      />
-      <AgenticDebateModal
-        open={agenticDebateOpen}
-        onClose={() => setAgenticDebateOpen(false)}
-        accessToken={accessToken}
       />
     </aside>
   );
