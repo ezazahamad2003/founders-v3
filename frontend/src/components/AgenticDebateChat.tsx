@@ -8,6 +8,8 @@ import type { DebateConsensusCheck, DebateModel, DebateTurnMessage } from "@/lib
 interface AgenticDebateChatProps {
   accessToken: string;
   onBackToChat: () => void;
+  onDebateSaved?: (conversationId: string) => void;
+  onOpenSavedConversation?: (conversationId: string) => void;
 }
 
 type DebatePhase = "setup" | "running" | "done" | "error";
@@ -17,7 +19,12 @@ function nextId() {
   return `debate-msg-${++_msgCounter}`;
 }
 
-export default function AgenticDebateChat({ accessToken, onBackToChat }: AgenticDebateChatProps) {
+export default function AgenticDebateChat({
+  accessToken,
+  onBackToChat,
+  onDebateSaved,
+  onOpenSavedConversation,
+}: AgenticDebateChatProps) {
   const [phase, setPhase] = useState<DebatePhase>("setup");
 
   // Setup state
@@ -36,6 +43,7 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [finalConsensus, setFinalConsensus] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [savedConversationId, setSavedConversationId] = useState<string | null>(null);
 
   const debatePanelRef = useRef<HTMLDivElement>(null);
 
@@ -62,12 +70,19 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
     setIsSynthesizing(false);
     setFinalConsensus(0);
     setErrorMessage(null);
+    setSavedConversationId(null);
   };
 
   const handleBackToChat = () => {
     if (phase === "running") return;
     handleReset();
     onBackToChat();
+  };
+
+  const handleOpenSavedConversation = () => {
+    if (!savedConversationId || !onOpenSavedConversation) return;
+    handleReset();
+    onOpenSavedConversation(savedConversationId);
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +126,7 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
     setConsensusHistory([]);
     setCurrentRound(0);
     setFinalConsensus(0);
+    setSavedConversationId(null);
 
     const formData = new FormData();
     formData.append("topic", topic.trim());
@@ -163,13 +179,17 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
           ]);
           scrollToBottom();
         },
-        onDone: (_roundsCompleted, fc) => {
+        onDone: (_roundsCompleted, fc, _synthesis, conversationId) => {
           setMessages((prev) =>
             prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)),
           );
           setStreamingModel(null);
           setIsSynthesizing(false);
           setFinalConsensus(fc);
+          if (conversationId) {
+            setSavedConversationId(conversationId);
+            onDebateSaved?.(conversationId);
+          }
           setPhase("done");
           scrollToBottom();
         },
@@ -431,6 +451,14 @@ export default function AgenticDebateChat({ accessToken, onBackToChat }: Agentic
 
             {phase === "done" && (
               <div className="app-border shrink-0 flex justify-end gap-3 border-t px-5 py-4 sm:px-6">
+                {savedConversationId && onOpenSavedConversation && (
+                  <button
+                    onClick={handleOpenSavedConversation}
+                    className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
+                  >
+                    Open in Chat History
+                  </button>
+                )}
                 <button
                   onClick={handleReset}
                   className="app-border app-text rounded-full border px-5 py-2 text-sm transition hover:app-border-strong"

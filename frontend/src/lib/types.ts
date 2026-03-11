@@ -96,7 +96,13 @@ export interface DebateStreamHandlers {
   onModelTurnEnd?: (model: DebateModel, round: number, content: string) => void;
   onConsensusCheck?: (round: number, percentage: number, reached: boolean) => void;
   onSynthesisStart?: () => void;
-  onDone?: (roundsCompleted: number, finalConsensus: number, synthesis: string) => void;
+  onDone?: (
+    roundsCompleted: number,
+    finalConsensus: number,
+    synthesis: string,
+    conversationId?: string,
+    messageId?: string,
+  ) => void;
   onError?: (error: Error) => void;
 }
 

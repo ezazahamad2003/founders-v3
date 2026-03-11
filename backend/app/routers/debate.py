@@ -5,15 +5,20 @@ from __future__ import annotations
 import json
 import logging
 from typing import AsyncIterator, List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from fastapi.responses import StreamingResponse
 from openai import AsyncOpenAI
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import CurrentUser, ensure_tos_accepted, get_current_user
 from app.claude_client import call_claude_non_stream, stream_claude_message
 from app.config import Settings, get_settings
+from app.db import get_db_session
 from app.services.document_text import extract_text_from_bytes
+from app.services import conversations as conversations_service
+from app.services import messages as messages_service
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +61,68 @@ Highlight key agreements, note any remaining nuances, and present actionable ins
 
 def _jl(payload: dict) -> str:
     return json.dumps(payload, ensure_ascii=False) + "\n"
+
+
+def _debate_title(topic: str) -> str:
+    trimmed = (topic or "").strip()
+    if not trimmed:
+        return "Agentic Debate"
+    return f"Agentic Debate: {trimmed[:60]}"
+
+
+def _build_debate_request_message(
+    *,
+    topic: str,
+    target_consensus: int,
+    max_rounds: int,
+    file_name: Optional[str],
+) -> str:
+    lines = [
+        "⚔️ Agentic Debate Request",
+        "",
+        f"Topic: {topic or 'Uploaded document'}",
+        f"Target consensus: {target_consensus}%",
+        f"Max rounds: {max_rounds}",
+    ]
+    if file_name:
+        lines.append(f"Document: {file_name}")
+    return "\n".join(lines)
+
+
+def _build_debate_record_message(
+    *,
+    topic: str,
+    target_consensus: int,
+    final_consensus: int,
+    rounds_completed: int,
+    consensus_history: List[dict],
+    debate_turns: List[dict],
+    synthesis_text: str,
+) -> str:
+    lines: List[str] = [
+        "## ⚔️ Agentic Debate",
+        "",
+        f"**Topic:** {topic or 'Uploaded document'}",
+        f"**Target consensus:** {target_consensus}%",
+        f"**Final consensus:** {final_consensus}%",
+        f"**Rounds completed:** {rounds_completed}",
+        "",
+        "### Consensus Progress",
+    ]
+
+    for item in consensus_history:
+        suffix = " (target reached)" if item.get("reached") else ""
+        lines.append(f"- Round {item.get('round')}: {item.get('percentage')}%{suffix}")
+
+    lines.extend(["", "### Debate Transcript", ""])
+    for turn in debate_turns:
+        model_name = "GPT" if turn.get("model") == "openai" else "Claude"
+        lines.append(f"#### Round {turn.get('round')} — {model_name}")
+        lines.append(turn.get("content", "").strip() or "_No output_")
+        lines.append("")
+
+    lines.extend(["### Unified Synthesis", "", synthesis_text.strip() or "_No synthesis generated._"])
+    return "\n".join(lines).strip()
 
 
 def _get_openai_client(settings: Settings) -> AsyncOpenAI:
@@ -130,6 +197,9 @@ async def _debate_generator(
     target_consensus: int,
     max_rounds: int,
     settings: Settings,
+    db: AsyncSession,
+    current_user: CurrentUser,
+    conversation_id: UUID,
 ) -> AsyncIterator[str]:
     context_block = (
         f"\n\nDocument context:\n{doc_context[:8000]}" if doc_context else ""
@@ -144,6 +214,8 @@ async def _debate_generator(
     claude_latest = ""
     consensus = 0
     rounds_completed = 0
+    consensus_history: List[dict] = []
+    debate_turns: List[dict] = []
 
     yield _jl({"event": "debate_start", "target_consensus": target_consensus})
 
@@ -177,6 +249,7 @@ async def _debate_generator(
             return
 
         openai_messages.append({"role": "assistant", "content": openai_latest})
+        debate_turns.append({"round": round_num, "model": "openai", "content": openai_latest})
         yield _jl({"event": "model_turn_end", "model": "openai", "round": round_num, "content": openai_latest})
 
         # ── Claude turn ──────────────────────────────────────────────
@@ -213,6 +286,7 @@ async def _debate_generator(
             return
 
         claude_messages.append({"role": "assistant", "content": claude_latest})
+        debate_turns.append({"round": round_num, "model": "claude", "content": claude_latest})
         yield _jl({"event": "model_turn_end", "model": "claude", "round": round_num, "content": claude_latest})
 
         # ── Consensus check ──────────────────────────────────────────
@@ -224,6 +298,9 @@ async def _debate_generator(
 
         rounds_completed = round_num
         reached = consensus >= target_consensus
+        consensus_history.append(
+            {"round": round_num, "percentage": consensus, "reached": reached}
+        )
         yield _jl({"event": "consensus_check", "round": round_num, "percentage": consensus, "reached": reached})
 
         if reached:
@@ -255,11 +332,45 @@ async def _debate_generator(
         yield _jl({"event": "error", "message": f"Synthesis failed: {e}"})
         return
 
+    try:
+        debate_record = _build_debate_record_message(
+            topic=topic,
+            target_consensus=target_consensus,
+            final_consensus=consensus,
+            rounds_completed=rounds_completed,
+            consensus_history=consensus_history,
+            debate_turns=debate_turns,
+            synthesis_text=synthesis_text,
+        )
+        assistant_message = await messages_service.insert_assistant_message(
+            db=db,
+            conversation_id=conversation_id,
+            content=debate_record,
+            model="agentic_debate",
+            metadata={
+                "type": "agentic_debate",
+                "topic": topic,
+                "target_consensus": target_consensus,
+                "final_consensus": consensus,
+                "rounds_completed": rounds_completed,
+                "consensus_history": consensus_history,
+                "requested_by": str(current_user.id),
+            },
+            file_ids=None,
+        )
+        await conversations_service.touch_conversation_updated_at(db, conversation_id)
+    except Exception as e:
+        logger.error("Failed to persist debate conversation: %s", e)
+        yield _jl({"event": "error", "message": f"Failed to save debate: {e}"})
+        return
+
     yield _jl({
         "event": "done",
         "rounds_completed": rounds_completed,
         "final_consensus": consensus,
         "synthesis": synthesis_text,
+        "conversation_id": str(conversation_id),
+        "message_id": str(assistant_message.id),
     })
 
 
@@ -273,6 +384,7 @@ async def debate_endpoint(
     file: Optional[UploadFile] = File(default=None),
     current_user: CurrentUser = Depends(get_current_user),
     settings: Settings = Depends(get_settings),
+    db: AsyncSession = Depends(get_db_session),
 ):
     """
     Run an agentic debate between OpenAI (GPT) and Claude on a topic or document.
@@ -316,12 +428,37 @@ async def debate_endpoint(
         len(doc_context),
     )
 
+    title_seed = topic or (file.filename if file else "") or "Agentic Debate"
+    conversation_row = await conversations_service.get_or_create_conversation_for_message(
+        db=db,
+        current_user=current_user,
+        maybe_conversation_id=None,
+        initial_message=_debate_title(title_seed),
+    )
+    conversation_id: UUID = conversation_row["id"]
+
+    await messages_service.insert_user_message(
+        db=db,
+        conversation_id=conversation_id,
+        user_id=current_user.id,
+        content=_build_debate_request_message(
+            topic=topic,
+            target_consensus=target_consensus,
+            max_rounds=max_rounds,
+            file_name=file.filename if file else None,
+        ),
+    )
+    await conversations_service.touch_conversation_updated_at(db, conversation_id)
+
     generator = _debate_generator(
         topic=topic,
         doc_context=doc_context,
         target_consensus=target_consensus,
         max_rounds=max_rounds,
         settings=settings,
+        db=db,
+        current_user=current_user,
+        conversation_id=conversation_id,
     )
 
     return StreamingResponse(generator, media_type=STREAM_MEDIA_TYPE)

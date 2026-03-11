@@ -179,7 +179,13 @@ export async function streamDebate(
           } else if (ev.event === "synthesis_start") {
             handlers.onSynthesisStart?.();
           } else if (ev.event === "done") {
-            handlers.onDone?.(ev.rounds_completed, ev.final_consensus, ev.synthesis ?? "");
+            handlers.onDone?.(
+              ev.rounds_completed,
+              ev.final_consensus,
+              ev.synthesis ?? "",
+              ev.conversation_id,
+              ev.message_id,
+            );
           } else if (ev.event === "error") {
             handlers.onError?.(new Error(ev.message ?? "Debate error"));
           }

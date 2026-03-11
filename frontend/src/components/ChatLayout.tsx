@@ -50,6 +50,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     deleteConversation,
     showScopicIntro,
     scopicIntroMarkdown,
+    refreshConversations,
   } = useChat(accessToken);
 
   const [pendingAttachments, setPendingAttachments] = useState<FileMeta[]>([]);
@@ -193,6 +194,14 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           <AgenticDebateChat
             accessToken={accessToken}
             onBackToChat={() => setShowAgenticDebate(false)}
+            onDebateSaved={() => {
+              refreshConversations();
+            }}
+            onOpenSavedConversation={(conversationId) => {
+              setShowAgenticDebate(false);
+              refreshConversations();
+              loadConversation(conversationId);
+            }}
           />
         ) : (
           <>
