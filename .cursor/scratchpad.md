@@ -108,7 +108,7 @@
 - [ ] tests-evals-runner-file-input (Q1–Q5 × 5 files × with/without system prompt)
 - [ ] lawyermvp-merge-profile-and-query-docs
 - [x] enable-rls-all-tables
-- [ ] profile-page-and-vault-integration
+- [x] profile-page-and-vault-integration
 
 # Current Status / Progress Tracking
 - 2025-11-21: Executor mode engaged, preparing to start **bootstrap-structure**.
@@ -195,6 +195,10 @@
   - **Phase 4 (UX/Quality)**: ErrorBoundary component wrapping ChatLayout, dismissable error banner with auto-clear on navigation, TOS decline/sign-out button, next.config security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy), JWKS audience verification enabled.
 - 2026-03-11: Executor pushed commit `feb5334` to `main` and deployed backend revision `scopic-legal-api-00006-mdm` to Cloud Run (`scopic-v1`, `us-central1`). Agentic Debate now persists as normal conversations/messages so debate sessions appear in founder chat history and are queryable by admin/lawyer dashboard views. Verified public health endpoint: `{"status":"ok","db":"ok"}` at `https://scopic-legal-api-666739563419.us-central1.run.app`.
 - 2026-03-13: Executor started `profile-page-and-vault-integration`: implemented backend schema/API updates for profile (`website`, `profile_image_path`, editable `PATCH /api/me`) and wired frontend navigation (`Profile` menu action + sidebar Document Vault redirect) with a new `/profile` page under active implementation.
+- 2026-03-14: Executor completed `profile-page-and-vault-integration`: added `/profile` page with editable full name/company/website, profile image upload, and integrated document vault management; updated dropdown with `Profile` action; switched sidebar `+ Document Vault` CTA to open `/profile`.
+- 2026-03-14: Validation completed for profile work: backend `python -m compileall app` passed; frontend `npm run lint` passed (existing warning remains in `LandingPage.tsx`); frontend `npm run build` passed.
+- 2026-03-14: Executor pushed commits `408123f` and `1791905` to `main` and deployed frontend to Vercel production URL `https://frontend-seven-henna-41.vercel.app` (deployment build succeeded and `/profile` route is live).
+- 2026-03-14: Executor added backend compatibility fallback for staged rollouts (APIs continue to work even if DB migration 004 is not yet applied, returning nulls for new columns until migration lands).
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
@@ -209,6 +213,7 @@
 - For `lawyermvp-merge-profile-and-query-docs`: I will implement new `lawyermvp` API routes that use `SUPABASE_SERVICE_ROLE_KEY` to (a) list profile-library objects (from likely bucket names) and (b) create signed URLs so the admin can view them. Then I’ll update the `lawyermvp` dashboard/user pages to merge counts and display both “Query attachments” and “Profile uploads”.
 - Note: backend `FileMeta` includes `openai_file_id`, but `frontend/src/lib/types.ts` `FileMeta` currently ignores it. That’s OK for UI, but it can be useful to expose later for debugging whether PDFs are using OpenAI Files API vs text-extraction fallback.
 - Document Review homepage copy updated per request; please confirm language is acceptable.
+- 2026-03-14: Backend production deploy is currently blocked in this shell context: `gcloud run deploy scopic-legal-api --project founders-478911` fails with `FAILED_PRECONDITION` because billing is not enabled on that project. Also, direct migration attempt via `backend/.env` DB URL failed with `asyncpg.exceptions.InternalServerError: Tenant or user not found`. Need user confirmation of the correct production GCP project/service and valid production Supabase DB connection (or run migration `backend/db/migrations/004_add_profile_website_and_image.sql` directly in Supabase SQL editor).
 
 # Lessons
 - Include debugging-friendly info in program output/logs.
