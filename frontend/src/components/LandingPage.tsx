@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -96,10 +97,11 @@ export default function LandingPage() {
             <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-indigo-500/30 rounded-full blur-3xl animate-pulse" />
             <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse delay-1000" />
           </div>
-          <img
+          <Image
             src="/images/image.png"
             alt="Legal documents"
-            className="w-full h-full object-cover opacity-10"
+            fill
+            className="object-cover opacity-10"
           />
         </div>
 
