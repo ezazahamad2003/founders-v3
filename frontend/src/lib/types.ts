@@ -7,6 +7,24 @@ export interface UserProfile {
   email?: string | null;
   role: string;
   accepted_tos_at: string | null;
+  full_name?: string | null;
+  company_name?: string | null;
+  website?: string | null;
+  profile_image_path?: string | null;
+}
+
+export interface UpdateUserProfilePayload {
+  full_name?: string | null;
+  company_name?: string | null;
+  website?: string | null;
+  profile_image_path?: string | null;
+}
+
+export interface ProfileDocument {
+  path: string;
+  name: string;
+  size: number;
+  updatedAt?: string | null;
 }
 
 export interface ConversationSummary {

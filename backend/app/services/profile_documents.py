@@ -2,6 +2,8 @@
 
 import logging
 import posixpath
+import re
+import time
 from typing import List, Dict, Any
 from uuid import UUID
 
@@ -13,6 +15,18 @@ from app.config import Settings
 logger = logging.getLogger(__name__)
 
 PROFILE_BUCKET = "ProfileDrawer"
+
+
+def _normalize_uploaded_name(filename: str | None) -> str:
+    raw = (filename or "document").strip()
+    if not raw:
+        raw = "document"
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "-", raw).strip("-")
+    return safe or "document"
+
+
+def _display_name(stored_name: str) -> str:
+    return re.sub(r"^\d{13}-", "", stored_name)
 
 
 async def list_documents(user_id: UUID, settings: Settings) -> List[Dict[str, Any]]:
@@ -53,7 +67,7 @@ async def list_documents(user_id: UUID, settings: Settings) -> List[Dict[str, An
             if item.get("name"):  # Skip folders
                 documents.append({
                     "path": f"{user_folder}/{item['name']}",
-                    "name": item["name"],
+                    "name": _display_name(item["name"]),
                     "size": item.get("metadata", {}).get("size", 0),
                     "updatedAt": item.get("updated_at"),
                 })
@@ -74,7 +88,9 @@ async def upload_document(file: UploadFile, user_id: UUID, settings: Settings) -
     
     base = settings.supabase_project_url.rstrip("/")
     user_folder = str(user_id)
-    file_path = f"{user_folder}/{file.filename}"
+    safe_name = _normalize_uploaded_name(file.filename)
+    stored_name = f"{int(time.time() * 1000)}-{safe_name}"
+    file_path = f"{user_folder}/{stored_name}"
     
     # Upload to Supabase Storage
     url = f"{base}/storage/v1/object/{PROFILE_BUCKET}/{file_path}"
@@ -96,7 +112,7 @@ async def upload_document(file: UploadFile, user_id: UUID, settings: Settings) -
         
         return {
             "path": file_path,
-            "name": file.filename,
+            "name": _display_name(stored_name),
             "size": len(file_content),
         }
 

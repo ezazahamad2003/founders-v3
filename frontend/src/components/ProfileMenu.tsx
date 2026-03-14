@@ -7,10 +7,11 @@ import { ThemeMode, useTheme } from "@/hooks/useTheme";
 
 interface ProfileMenuProps {
   profile: UserProfile | null;
+  onOpenProfile: () => void;
   onSignOut: () => void | Promise<void>;
 }
 
-export default function ProfileMenu({ profile, onSignOut }: ProfileMenuProps) {
+export default function ProfileMenu({ profile, onOpenProfile, onSignOut }: ProfileMenuProps) {
   const { theme, setTheme } = useTheme();
 
   const getInitials = (email: string | null | undefined) => {
@@ -61,6 +62,18 @@ export default function ProfileMenu({ profile, onSignOut }: ProfileMenuProps) {
             </div>
           </div>
           <div className="py-1">
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  onClick={onOpenProfile}
+                  className={`${
+                    active ? "app-surface-2 app-text" : "app-muted"
+                  } group flex w-full items-center px-4 py-2 text-sm transition`}
+                >
+                  Profile
+                </button>
+              )}
+            </Menu.Item>
             <Menu.Item>
               {({ active }) => (
                 <button

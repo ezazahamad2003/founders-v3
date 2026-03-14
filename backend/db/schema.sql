@@ -11,6 +11,8 @@ create table if not exists profiles (
   email text,
   full_name text,
   company_name text,
+  website text,
+  profile_image_path text,
   referral_source text,
   role text default 'client',
   accepted_tos_at timestamptz,

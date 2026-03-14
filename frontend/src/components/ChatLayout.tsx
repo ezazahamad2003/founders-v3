@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 import { useChat } from "@/hooks/useChat";
 import Sidebar from "./Sidebar";
 import MessageList from "./MessageList";
@@ -18,6 +19,7 @@ interface ChatLayoutProps {
 }
 
 export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLayoutProps) {
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [triggerDocumentReview, setTriggerDocumentReview] = useState(false);
   const [showAgenticDebate, setShowAgenticDebate] = useState(false);
@@ -164,8 +166,6 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
             setIsSidebarOpen(false);
           }}
           onDeleteConversation={deleteConversation}
-          profile={profile}
-          supabase={supabase}
           externalTrigger={triggerDocumentReview}
           onExternalTriggerHandled={() => setTriggerDocumentReview(false)}
         />
@@ -187,7 +187,11 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           </button>
 
           {/* Profile Menu - always in right corner */}
-          <ProfileMenu profile={profile} onSignOut={onSignOut} />
+          <ProfileMenu
+            profile={profile}
+            onOpenProfile={() => router.push("/profile")}
+            onSignOut={onSignOut}
+          />
         </div>
         
         {showAgenticDebate ? (

@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { ConversationSummary, UserProfile } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { ConversationSummary } from "@/lib/types";
 import ConversationList from "./ConversationList";
-import ProfileDrawer from "./ProfileDrawer";
 import DocumentReviewModal from "./DocumentReviewModal";
 
 interface SidebarProps {
@@ -16,8 +15,6 @@ interface SidebarProps {
   onStartDocumentReview: (file: File, clientRole: string, optionalPrompt: string) => Promise<void>;
   onStartAgenticDebate: () => void;
   onDeleteConversation: (conversationId: string) => void;
-  profile: UserProfile | null;
-  supabase: SupabaseClient;
   externalTrigger?: boolean;
   onExternalTriggerHandled?: () => void;
 }
@@ -31,12 +28,10 @@ export default function Sidebar({
   onStartDocumentReview,
   onStartAgenticDebate,
   onDeleteConversation,
-  profile,
-  supabase,
   externalTrigger,
   onExternalTriggerHandled,
 }: SidebarProps) {
-  const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
+  const router = useRouter();
   const [documentReviewModalOpen, setDocumentReviewModalOpen] = useState(false);
 
   // Handle external trigger to open document review modal
@@ -84,7 +79,7 @@ export default function Sidebar({
 
       <div className="app-border app-muted border-t px-5 py-4 text-sm">
         <button
-          onClick={() => setProfileDrawerOpen(true)}
+          onClick={() => router.push("/profile")}
           className="app-surface-2 app-text app-border flex w-full items-center justify-center rounded-2xl border px-4 py-2 text-sm font-medium transition hover:opacity-90"
         >
           + Document Vault
@@ -98,12 +93,6 @@ export default function Sidebar({
           Book a Meeting
         </a>
       </div>
-      <ProfileDrawer
-        open={profileDrawerOpen}
-        onClose={() => setProfileDrawerOpen(false)}
-        profile={profile}
-        supabase={supabase}
-      />
       <DocumentReviewModal
         open={documentReviewModalOpen}
         onClose={() => setDocumentReviewModalOpen(false)}

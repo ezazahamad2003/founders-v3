@@ -1,4 +1,14 @@
-import { ChatRequestPayload, ConversationDetailResponse, ConversationSummary, DebateModel, DebateStreamHandlers, FileMeta, UserProfile } from "./types";
+import {
+  ChatRequestPayload,
+  ConversationDetailResponse,
+  ConversationSummary,
+  DebateModel,
+  DebateStreamHandlers,
+  FileMeta,
+  ProfileDocument,
+  UpdateUserProfilePayload,
+  UserProfile,
+} from "./types";
 
 const DEFAULT_LOCAL_API_URL = 'http://localhost:8000';
 
@@ -76,8 +86,56 @@ export function getMe(token: string) {
   return apiFetch<UserProfile>("/api/me", token);
 }
 
+export function updateMe(token: string, payload: UpdateUserProfilePayload) {
+  return apiFetch<UserProfile>("/api/me", token, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export function acceptTos(token: string) {
   return apiFetch<UserProfile>("/api/accept-tos", token, { method: "POST", body: "{}" });
+}
+
+export function listProfileDocuments(token: string) {
+  return apiFetch<{ documents: ProfileDocument[] }>("/api/profile/documents", token);
+}
+
+export function getProfileDocumentDownloadUrl(token: string, path: string) {
+  const params = new URLSearchParams({ path });
+  return apiFetch<{ url: string }>(`/api/profile/documents/download?${params.toString()}`, token);
+}
+
+export function deleteProfileDocument(token: string, path: string) {
+  const params = new URLSearchParams({ path });
+  return apiFetch<{ message: string }>(`/api/profile/documents?${params.toString()}`, token, {
+    method: "DELETE",
+  });
+}
+
+export async function uploadProfileDocument(token: string, file: File): Promise<ProfileDocument> {
+  if (!API_BASE_URL) {
+    throw new Error("API base URL is not configured.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${API_BASE_URL}/api/profile/documents/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const detail = await safeParse(response);
+    const errorMessage = detail?.detail ?? response.statusText;
+    throw new Error(errorMessage || "Document upload failed");
+  }
+
+  return (await response.json()) as ProfileDocument;
 }
 
 export function listConversations(token: string) {

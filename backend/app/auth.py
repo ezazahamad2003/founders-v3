@@ -33,6 +33,10 @@ class CurrentUser(BaseModel):
     email: Optional[str] = None
     role: str = "client"
     accepted_tos_at: Optional[datetime] = None
+    full_name: Optional[str] = None
+    company_name: Optional[str] = None
+    website: Optional[str] = None
+    profile_image_path: Optional[str] = None
 
 
 async def _fetch_jwks(settings: Settings) -> Dict[str, Any]:
@@ -122,7 +126,7 @@ async def _get_profile(
     result = await db.execute(
         text(
             """
-            select id, email, role, accepted_tos_at
+            select id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
             from profiles
             where id = :id
             """
@@ -141,24 +145,30 @@ async def _create_profile(
     """Create or update a profile, extracting metadata from JWT claims."""
     full_name = None
     company_name = None
+    website = None
+    profile_image_path = None
     referral_source = None
     
     if user_metadata:
         full_name = user_metadata.get("full_name")
         company_name = user_metadata.get("company_name")
+        website = user_metadata.get("website")
+        profile_image_path = user_metadata.get("profile_image_path") or user_metadata.get("avatar_url")
         referral_source = user_metadata.get("referral_source")
     
     result = await db.execute(
         text(
             """
-            insert into profiles (id, email, full_name, company_name, referral_source, role)
-            values (:id, :email, :full_name, :company_name, :referral_source, 'client')
+            insert into profiles (id, email, full_name, company_name, website, profile_image_path, referral_source, role)
+            values (:id, :email, :full_name, :company_name, :website, :profile_image_path, :referral_source, 'client')
             on conflict (id) do update set 
                 email = excluded.email,
                 full_name = coalesce(excluded.full_name, profiles.full_name),
                 company_name = coalesce(excluded.company_name, profiles.company_name),
+                website = coalesce(excluded.website, profiles.website),
+                profile_image_path = coalesce(excluded.profile_image_path, profiles.profile_image_path),
                 referral_source = coalesce(excluded.referral_source, profiles.referral_source)
-            returning id, email, role, accepted_tos_at
+            returning id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
             """
         ),
         {
@@ -166,6 +176,8 @@ async def _create_profile(
             "email": email,
             "full_name": full_name,
             "company_name": company_name,
+            "website": website,
+            "profile_image_path": profile_image_path,
             "referral_source": referral_source,
         },
     )
@@ -231,6 +243,10 @@ async def get_current_user(
         email=profile.get("email"),
         role=profile.get("role", "client"),
         accepted_tos_at=profile.get("accepted_tos_at"),
+        full_name=profile.get("full_name"),
+        company_name=profile.get("company_name"),
+        website=profile.get("website"),
+        profile_image_path=profile.get("profile_image_path"),
     )
 
 

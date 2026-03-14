@@ -2,9 +2,10 @@
 
 from datetime import datetime
 from typing import List, Literal, Optional
+from urllib.parse import urlparse
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class UserProfile(BaseModel):
@@ -12,6 +13,10 @@ class UserProfile(BaseModel):
     email: Optional[str]
     role: str
     accepted_tos_at: Optional[datetime]
+    full_name: Optional[str] = None
+    company_name: Optional[str] = None
+    website: Optional[str] = None
+    profile_image_path: Optional[str] = None
 
 
 class FileMeta(BaseModel):
@@ -94,4 +99,36 @@ class AcceptTosRequest(BaseModel):
     """Placeholder for future metadata."""
 
     pass
+
+
+class UpdateProfileRequest(BaseModel):
+    full_name: Optional[str] = Field(default=None, max_length=200)
+    company_name: Optional[str] = Field(default=None, max_length=200)
+    website: Optional[str] = Field(default=None, max_length=500)
+    profile_image_path: Optional[str] = Field(default=None, max_length=500)
+
+    @field_validator("full_name", "company_name", "website", "profile_image_path", mode="before")
+    @classmethod
+    def _strip_or_none(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        if isinstance(value, str):
+            normalized = value.strip()
+            return normalized or None
+        return value
+
+    @field_validator("website")
+    @classmethod
+    def _normalize_website(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+
+        candidate = value
+        if "://" not in candidate:
+            candidate = f"https://{candidate}"
+
+        parsed = urlparse(candidate)
+        if not parsed.scheme or not parsed.netloc:
+            raise ValueError("website must be a valid URL")
+        return candidate
 

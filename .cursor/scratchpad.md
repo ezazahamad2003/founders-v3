@@ -8,6 +8,7 @@
 - 2025-11-24: File-content extraction via OpenAI API appears to return hallucinated summaries rather than actual text from uploaded files; need to determine whether frontend upload, backend parsing, or OpenAI call is misconfigured.
 - 2025-12-10: User wants all “Book a Meeting” CTAs to use the new Google booking page and ideally have `scopiclegal.com/meeting` redirect there after retiring HubSpot.
 - 2025-12-17: After signup + accepting Terms of Use, the chat page should show a first-time onboarding “Scopic Intro” message (title + body) instructing the user how to start, and then the user can click “+ New Legal Query” to begin. This onboarding should only appear for new users.
+- 2026-03-13: Add a Profile entry in the top-right account dropdown that opens a dedicated profile page. The page must allow editing full name, company name, website, and profile image, and include the Document Vault on the same page; implement required DB/backend/frontend updates and deploy to production.
 
 # Key Challenges and Analysis
 - Enforce conversation/file ownership while keeping the DB/API fast enough for ChatGPT-like latency.
@@ -76,6 +77,7 @@
 15. **new-user-onboarding-implementation** — Implement onboarding UI on chat page for first-time users only, and hide it once the user starts their first real query. *Success:* New signup sees onboarding; returning user does not; onboarding never reappears after first query (even after logout/login); no regressions to chat/send/stream.
 16. **tos-copy-alignment (optional)** — Update Terms acceptance modal copy to remove “observe your behavior” phrasing and align with the new non-intrusive legal disclaimer language. *Success:* Modal copy matches updated legal guidance and is approved.
 17. **tests-evals-runner-file-input (plan+impl)** — Extend `tests/run_eval.py` to load each file in `tests/public/`, extract text, and prepend it to each question prompt; update `tests/questions.txt` to the new Q1–Q5 set; save outputs as two files (with/without system prompt) each containing 25 answers labeled by file + question. *Success:* One command generates `outputs/with_prompt.*` and `outputs/without_prompt.*` with 25 answers each, clearly grouped by file and question, and logs progress without crashing on large DOCX files.
+18. **profile-page-and-vault-integration** — Add backend profile fields/API updates (website + profile image path + editable `/api/me`) and frontend UX (dropdown profile button + `/profile` page + document vault actions). *Success:* Authenticated users can open Profile from the dropdown, save full name/company/website, upload a profile image, and manage vault files from the same page.
 
 ### Acceptance criteria for **new-user-onboarding-implementation**
 - Fresh user signs up → logs in → accepts Terms → lands in chat and sees “Scopic Intro” onboarding card immediately.
@@ -106,6 +108,7 @@
 - [ ] tests-evals-runner-file-input (Q1–Q5 × 5 files × with/without system prompt)
 - [ ] lawyermvp-merge-profile-and-query-docs
 - [x] enable-rls-all-tables
+- [ ] profile-page-and-vault-integration
 
 # Current Status / Progress Tracking
 - 2025-11-21: Executor mode engaged, preparing to start **bootstrap-structure**.
@@ -190,6 +193,8 @@
   - **Phase 2 (High Security)**: Path traversal fix (posixpath.normpath), error detail leak elimination (all routers), message length validation (50k chars), file upload size limit (25MB), frontend file type restriction, health check with DB probe, bare except fix.
   - **Phase 3 (Performance)**: Batch INSERT for _link_files, DB connection pool settings (pool_size=10, max_overflow=20, pool_pre_ping, pool_recycle), debug logging downgraded, React.memo on MessageBubble, duplicate Tailwind directives removed, framer-motion uninstalled.
   - **Phase 4 (UX/Quality)**: ErrorBoundary component wrapping ChatLayout, dismissable error banner with auto-clear on navigation, TOS decline/sign-out button, next.config security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy), JWKS audience verification enabled.
+- 2026-03-11: Executor pushed commit `feb5334` to `main` and deployed backend revision `scopic-legal-api-00006-mdm` to Cloud Run (`scopic-v1`, `us-central1`). Agentic Debate now persists as normal conversations/messages so debate sessions appear in founder chat history and are queryable by admin/lawyer dashboard views. Verified public health endpoint: `{"status":"ok","db":"ok"}` at `https://scopic-legal-api-666739563419.us-central1.run.app`.
+- 2026-03-13: Executor started `profile-page-and-vault-integration`: implemented backend schema/API updates for profile (`website`, `profile_image_path`, editable `PATCH /api/me`) and wired frontend navigation (`Profile` menu action + sidebar Document Vault redirect) with a new `/profile` page under active implementation.
 
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
@@ -219,4 +224,5 @@
 - When enabling Supabase RLS: direct Postgres connections (asyncpg/SQLAlchemy) use the `postgres` role and bypass RLS entirely. PostgREST (Supabase JS client) respects RLS. Service role key also bypasses RLS. Never expose `SUPABASE_SERVICE_ROLE_KEY` to the browser — keep it in server-side API routes only.
 - LawyerMVP's `api.ts` was refactored to call Next.js API routes (which use `supabase-admin.ts` with service_role) instead of querying Supabase directly from `"use client"` components. This is the correct pattern for admin dashboards.
 - Never store short-lived verification codes (password reset, OTP) in a module-level Python dict. Use a DB table with `expires_at` and `attempts` columns instead — codes survive process restarts and multi-instance deployments. Store codes as SHA-256 hashes (hashlib stdlib) rather than plaintext.
+- For Cloud Run production deploys, do not merge `backend/.env` blindly into the deploy env file: local-only values like `APP_ENV=local`, localhost `ALLOWED_ORIGINS`, and pooler `SUPABASE_DB_URL` can break production. Base deploy envs on the last known-good production revision/config instead.
 
