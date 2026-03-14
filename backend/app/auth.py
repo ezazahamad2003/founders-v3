@@ -123,16 +123,33 @@ async def _get_profile(
     db: AsyncSession,
     user_id: UUID,
 ) -> Optional[Dict[str, Any]]:
-    result = await db.execute(
-        text(
-            """
-            select id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
-            from profiles
-            where id = :id
-            """
-        ),
-        {"id": user_id},
-    )
+    try:
+        result = await db.execute(
+            text(
+                """
+                select id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
+                from profiles
+                where id = :id
+                """
+            ),
+            {"id": user_id},
+        )
+    except Exception as exc:
+        # Backward compatibility while migration 004 rolls out.
+        if "website" in str(exc).lower() or "profile_image_path" in str(exc).lower():
+            result = await db.execute(
+                text(
+                    """
+                    select id, email, role, accepted_tos_at, full_name, company_name,
+                           null::text as website, null::text as profile_image_path
+                    from profiles
+                    where id = :id
+                    """
+                ),
+                {"id": user_id},
+            )
+        else:
+            raise
     return result.mappings().one_or_none()
 
 
@@ -156,31 +173,59 @@ async def _create_profile(
         profile_image_path = user_metadata.get("profile_image_path") or user_metadata.get("avatar_url")
         referral_source = user_metadata.get("referral_source")
     
-    result = await db.execute(
-        text(
-            """
-            insert into profiles (id, email, full_name, company_name, website, profile_image_path, referral_source, role)
-            values (:id, :email, :full_name, :company_name, :website, :profile_image_path, :referral_source, 'client')
-            on conflict (id) do update set 
-                email = excluded.email,
-                full_name = coalesce(excluded.full_name, profiles.full_name),
-                company_name = coalesce(excluded.company_name, profiles.company_name),
-                website = coalesce(excluded.website, profiles.website),
-                profile_image_path = coalesce(excluded.profile_image_path, profiles.profile_image_path),
-                referral_source = coalesce(excluded.referral_source, profiles.referral_source)
-            returning id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
-            """
-        ),
-        {
-            "id": user_id,
-            "email": email,
-            "full_name": full_name,
-            "company_name": company_name,
-            "website": website,
-            "profile_image_path": profile_image_path,
-            "referral_source": referral_source,
-        },
-    )
+    try:
+        result = await db.execute(
+            text(
+                """
+                insert into profiles (id, email, full_name, company_name, website, profile_image_path, referral_source, role)
+                values (:id, :email, :full_name, :company_name, :website, :profile_image_path, :referral_source, 'client')
+                on conflict (id) do update set 
+                    email = excluded.email,
+                    full_name = coalesce(excluded.full_name, profiles.full_name),
+                    company_name = coalesce(excluded.company_name, profiles.company_name),
+                    website = coalesce(excluded.website, profiles.website),
+                    profile_image_path = coalesce(excluded.profile_image_path, profiles.profile_image_path),
+                    referral_source = coalesce(excluded.referral_source, profiles.referral_source)
+                returning id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
+                """
+            ),
+            {
+                "id": user_id,
+                "email": email,
+                "full_name": full_name,
+                "company_name": company_name,
+                "website": website,
+                "profile_image_path": profile_image_path,
+                "referral_source": referral_source,
+            },
+        )
+    except Exception as exc:
+        # Backward compatibility while migration 004 rolls out.
+        if "website" in str(exc).lower() or "profile_image_path" in str(exc).lower():
+            result = await db.execute(
+                text(
+                    """
+                    insert into profiles (id, email, full_name, company_name, referral_source, role)
+                    values (:id, :email, :full_name, :company_name, :referral_source, 'client')
+                    on conflict (id) do update set 
+                        email = excluded.email,
+                        full_name = coalesce(excluded.full_name, profiles.full_name),
+                        company_name = coalesce(excluded.company_name, profiles.company_name),
+                        referral_source = coalesce(excluded.referral_source, profiles.referral_source)
+                    returning id, email, role, accepted_tos_at, full_name, company_name,
+                              null::text as website, null::text as profile_image_path
+                    """
+                ),
+                {
+                    "id": user_id,
+                    "email": email,
+                    "full_name": full_name,
+                    "company_name": company_name,
+                    "referral_source": referral_source,
+                },
+            )
+        else:
+            raise
     await db.commit()
     return result.mappings().one()
 

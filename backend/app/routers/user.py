@@ -31,17 +31,35 @@ async def accept_tos(
     db: AsyncSession = Depends(get_db_session),
 ) -> MeResponse:
     """Mark that the current user accepted the TOS and return updated profile."""
-    result = await db.execute(
-        text(
-            """
-            update profiles
-            set accepted_tos_at = now()
-            where id = :id
-            returning id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
-            """
-        ),
-        {"id": current_user.id},
-    )
+    try:
+        result = await db.execute(
+            text(
+                """
+                update profiles
+                set accepted_tos_at = now()
+                where id = :id
+                returning id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
+                """
+            ),
+            {"id": current_user.id},
+        )
+    except Exception as exc:
+        # Backward compatibility while migration 004 rolls out.
+        if "website" in str(exc).lower() or "profile_image_path" in str(exc).lower():
+            result = await db.execute(
+                text(
+                    """
+                    update profiles
+                    set accepted_tos_at = now()
+                    where id = :id
+                    returning id, email, role, accepted_tos_at, full_name, company_name,
+                              null::text as website, null::text as profile_image_path
+                    """
+                ),
+                {"id": current_user.id},
+            )
+        else:
+            raise
     row = result.mappings().one()
     await db.commit()
 
@@ -68,31 +86,53 @@ async def update_me(
     """Update editable profile fields for the current user."""
     fields_set = payload.model_fields_set
 
-    result = await db.execute(
-        text(
-            """
-            update profiles
-            set
-                full_name = case when :update_full_name then :full_name else full_name end,
-                company_name = case when :update_company_name then :company_name else company_name end,
-                website = case when :update_website then :website else website end,
-                profile_image_path = case when :update_profile_image_path then :profile_image_path else profile_image_path end
-            where id = :id
-            returning id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
-            """
-        ),
-        {
-            "id": current_user.id,
-            "update_full_name": "full_name" in fields_set,
-            "full_name": payload.full_name,
-            "update_company_name": "company_name" in fields_set,
-            "company_name": payload.company_name,
-            "update_website": "website" in fields_set,
-            "website": payload.website,
-            "update_profile_image_path": "profile_image_path" in fields_set,
-            "profile_image_path": payload.profile_image_path,
-        },
-    )
+    query_params = {
+        "id": current_user.id,
+        "update_full_name": "full_name" in fields_set,
+        "full_name": payload.full_name,
+        "update_company_name": "company_name" in fields_set,
+        "company_name": payload.company_name,
+        "update_website": "website" in fields_set,
+        "website": payload.website,
+        "update_profile_image_path": "profile_image_path" in fields_set,
+        "profile_image_path": payload.profile_image_path,
+    }
+
+    try:
+        result = await db.execute(
+            text(
+                """
+                update profiles
+                set
+                    full_name = case when :update_full_name then :full_name else full_name end,
+                    company_name = case when :update_company_name then :company_name else company_name end,
+                    website = case when :update_website then :website else website end,
+                    profile_image_path = case when :update_profile_image_path then :profile_image_path else profile_image_path end
+                where id = :id
+                returning id, email, role, accepted_tos_at, full_name, company_name, website, profile_image_path
+                """
+            ),
+            query_params,
+        )
+    except Exception as exc:
+        # Backward compatibility while migration 004 rolls out.
+        if "website" in str(exc).lower() or "profile_image_path" in str(exc).lower():
+            result = await db.execute(
+                text(
+                    """
+                    update profiles
+                    set
+                        full_name = case when :update_full_name then :full_name else full_name end,
+                        company_name = case when :update_company_name then :company_name else company_name end
+                    where id = :id
+                    returning id, email, role, accepted_tos_at, full_name, company_name,
+                              null::text as website, null::text as profile_image_path
+                    """
+                ),
+                query_params,
+            )
+        else:
+            raise
     row = result.mappings().one()
     await db.commit()
 
