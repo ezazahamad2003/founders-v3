@@ -42,8 +42,10 @@ Write-Host "OK: Current project: $currentProject" -ForegroundColor Green
 Write-Host ""
 
 # Configuration
-$SERVICE_NAME = "founders-backend"
+$SERVICE_NAME = "scopic-legal-api"
 $REGION = "us-central1"
+$PROJECT_ID = "scopic-v1"
+$ACCOUNT = "ezaz@scopiclegal.com"
 $MEMORY = "1Gi"
 $CPU = "1"
 $MIN_INSTANCES = "0"
