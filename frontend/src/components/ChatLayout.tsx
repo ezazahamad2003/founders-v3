@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useChat } from "@/hooks/useChat";
+import { getProfileDocumentDownloadUrl } from "@/lib/api";
 import Sidebar from "./Sidebar";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
@@ -23,6 +24,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [triggerDocumentReview, setTriggerDocumentReview] = useState(false);
   const [showAgenticDebate, setShowAgenticDebate] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   
   const {
     profile,
@@ -54,6 +56,16 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
     scopicIntroMarkdown,
     refreshConversations,
   } = useChat(accessToken);
+
+  useEffect(() => {
+    if (!profile?.profile_image_path || !accessToken) {
+      setProfileImageUrl(null);
+      return;
+    }
+    getProfileDocumentDownloadUrl(accessToken, profile.profile_image_path)
+      .then((r) => setProfileImageUrl(r.url))
+      .catch(() => setProfileImageUrl(null));
+  }, [profile?.profile_image_path, accessToken]);
 
   const [pendingAttachments, setPendingAttachments] = useState<FileMeta[]>([]);
 
@@ -189,6 +201,7 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
           {/* Profile Menu - always in right corner */}
           <ProfileMenu
             profile={profile}
+            profileImageUrl={profileImageUrl}
             onOpenProfile={() => router.push("/profile")}
             onSignOut={onSignOut}
           />

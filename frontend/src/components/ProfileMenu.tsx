@@ -1,29 +1,35 @@
 "use client";
 
 import { Fragment } from "react";
+import Image from "next/image";
 import { Menu, Transition } from "@headlessui/react";
 import { UserProfile } from "@/lib/types";
 import { ThemeMode, useTheme } from "@/hooks/useTheme";
 
 interface ProfileMenuProps {
   profile: UserProfile | null;
+  profileImageUrl?: string | null;
   onOpenProfile: () => void;
   onSignOut: () => void | Promise<void>;
 }
 
-export default function ProfileMenu({ profile, onOpenProfile, onSignOut }: ProfileMenuProps) {
+export default function ProfileMenu({ profile, profileImageUrl, onOpenProfile, onSignOut }: ProfileMenuProps) {
   const { theme, setTheme } = useTheme();
 
-  const getInitials = (email: string | null | undefined) => {
-    if (!email) return "?";
-    const parts = email.split("@")[0];
-    if (parts.length >= 2) {
-      return parts.substring(0, 2).toUpperCase();
+  const getInitials = (profile: UserProfile | null) => {
+    const name = profile?.full_name;
+    if (name) {
+      const parts = name.trim().split(/\s+/);
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return parts[0].substring(0, 2).toUpperCase();
     }
-    return parts.substring(0, 1).toUpperCase();
+    const email = profile?.email;
+    if (!email) return "?";
+    const local = email.split("@")[0];
+    return local.substring(0, 2).toUpperCase();
   };
 
-  const initials = getInitials(profile?.email);
+  const initials = getInitials(profile);
   const themeOptionClass = (option: ThemeMode) =>
     `rounded-xl border px-3 py-1.5 text-xs font-medium transition ${
       theme === option
@@ -33,8 +39,18 @@ export default function ProfileMenu({ profile, onOpenProfile, onSignOut }: Profi
 
   return (
     <Menu as="div" className="relative z-50">
-      <Menu.Button className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-sm font-semibold text-indigo-300 ring-2 ring-indigo-500/30 transition hover:bg-indigo-500/30 hover:ring-indigo-400/50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-[var(--app-bg)]">
-        {initials}
+      <Menu.Button className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-indigo-500/20 text-sm font-semibold text-indigo-300 ring-2 ring-indigo-500/30 transition hover:bg-indigo-500/30 hover:ring-indigo-400/50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-[var(--app-bg)]">
+        {profileImageUrl ? (
+          <Image
+            src={profileImageUrl}
+            alt={initials}
+            width={40}
+            height={40}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          initials
+        )}
       </Menu.Button>
       <Transition
         as={Fragment}
