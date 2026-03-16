@@ -80,7 +80,7 @@ export default function LegalRiskAlertModal({ onDismiss }: LegalRiskAlertModalPr
                   <span className="font-semibold text-white">Section 7(b) (Indemnity)</span>{" "}
                   and the annual contract value here is above{" "}
                   <span className="font-semibold text-white">$50,000</span>.
-                  {" "}Are you sure you don&apos;t want to loop in Myron for this?
+                  {" "}Are you sure you don&apos;t want to loop in your lawyer for this?
                 </p>
               </div>
             </div>
@@ -90,16 +90,16 @@ export default function LegalRiskAlertModal({ onDismiss }: LegalRiskAlertModalPr
 
             {/* Body */}
             <p className="text-sm text-slate-400 leading-relaxed mb-5">
-              If so, I can relay the full details and get a quote, but based on my understanding, Myron could probably provide you a{" "}
+              If so, I can relay the full details and get a quote, but based on my understanding, your lawyer could probably provide you a{" "}
               <a
-                href="mailto:myron@scopiclegal.com?subject=Material Issues List Request&body=Hi Myron, I would like a Material Issues List for $500 for my document review."
+                href="mailto:myron@scopiclegal.com?subject=Material Issues List Request&body=Hi, I would like a Material Issues List for $500 for my document review."
                 className="font-medium text-indigo-400 underline-offset-2 decoration-indigo-400/30 underline hover:text-indigo-300 hover:decoration-indigo-300 transition-colors duration-150"
               >
                 Material Issues List for $500
               </a>{" "}
               or{" "}
               <a
-                href="mailto:myron@scopiclegal.com?subject=Full Negotiation Request&body=Hi Myron, I would like you to complete the Full Negotiation for $3,000 for my document review."
+                href="mailto:myron@scopiclegal.com?subject=Full Negotiation Request&body=Hi, I would like you to complete the Full Negotiation for $3,000 for my document review."
                 className="font-medium text-indigo-400 underline-offset-2 decoration-indigo-400/30 underline hover:text-indigo-300 hover:decoration-indigo-300 transition-colors duration-150"
               >
                 complete the Full Negotiation for $3,000
@@ -109,7 +109,7 @@ export default function LegalRiskAlertModal({ onDismiss }: LegalRiskAlertModalPr
 
             {/* Footer */}
             <p className="text-sm text-slate-500 leading-relaxed">
-              Click on the foregoing links if you want me to loop in Myron, or otherwise you can disregard this Guardrail by clicking here:{" "}
+              Click on the foregoing links if you want me to loop in your lawyer, or otherwise you can disregard this Guardrail by clicking here:{" "}
               <button
                 onClick={handleDismiss}
                 className="text-slate-400 underline underline-offset-2 decoration-slate-500/50 hover:text-slate-200 hover:decoration-slate-300/60 transition-colors duration-150"
