@@ -5,14 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Session } from "@supabase/supabase-js";
 import {
-  deleteProfileDocument,
   getMe,
   getProfileDocumentDownloadUrl,
-  listProfileDocuments,
   updateMe,
   uploadProfileDocument,
 } from "@/lib/api";
-import { ProfileDocument, UserProfile } from "@/lib/types";
+import { UserProfile } from "@/lib/types";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 
 type ProfileFormState = {
@@ -27,12 +25,6 @@ const emptyFormState: ProfileFormState = {
   website: "",
 };
 
-const formatBytes = (size: number) => {
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-};
-
 export default function ProfilePage() {
   const supabase = supabaseBrowserClient();
   const [session, setSession] = useState<Session | null>(null);
@@ -41,14 +33,10 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [formState, setFormState] = useState<ProfileFormState>(emptyFormState);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
-  const [documents, setDocuments] = useState<ProfileDocument[]>([]);
 
   const [isProfileLoading, setIsProfileLoading] = useState(false);
-  const [isDocumentsLoading, setIsDocumentsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [isUploadingDocuments, setIsUploadingDocuments] = useState(false);
-  const [busyDocumentPath, setBusyDocumentPath] = useState<string | null>(null);
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -110,31 +98,20 @@ export default function ProfilePage() {
     [refreshProfileImage],
   );
 
-  const refreshDocuments = useCallback(async (token: string) => {
-    setIsDocumentsLoading(true);
-    try {
-      const response = await listProfileDocuments(token);
-      setDocuments(response.documents ?? []);
-    } finally {
-      setIsDocumentsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     if (!accessToken) {
       setProfile(null);
       setFormState(emptyFormState);
       setProfileImageUrl(null);
-      setDocuments([]);
       return;
     }
 
     setErrorMessage(null);
     setSuccessMessage(null);
-    Promise.all([refreshProfile(accessToken), refreshDocuments(accessToken)]).catch((error) => {
+    refreshProfile(accessToken).catch((error) => {
       setErrorMessage((error as Error).message || "Failed to load your profile.");
     });
-  }, [accessToken, refreshDocuments, refreshProfile]);
+  }, [accessToken, refreshProfile]);
 
   const handleFormInputChange = (field: keyof ProfileFormState, value: string) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
@@ -185,73 +162,11 @@ export default function ProfilePage() {
       const updated = await updateMe(accessToken, { profile_image_path: uploaded.path });
       setProfile(updated);
       await refreshProfileImage(accessToken, uploaded.path);
-      await refreshDocuments(accessToken);
       setSuccessMessage("Profile image updated.");
     } catch (error) {
       setErrorMessage((error as Error).message || "Failed to upload profile image.");
     } finally {
       setIsUploadingImage(false);
-    }
-  };
-
-  const handleDocumentsUpload = async (files: FileList | null) => {
-    if (!accessToken || !files || files.length === 0) return;
-
-    setIsUploadingDocuments(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    try {
-      for (const file of Array.from(files)) {
-        await uploadProfileDocument(accessToken, file);
-      }
-      await refreshDocuments(accessToken);
-      setSuccessMessage("Document vault updated.");
-    } catch (error) {
-      setErrorMessage((error as Error).message || "Failed to upload document.");
-    } finally {
-      setIsUploadingDocuments(false);
-    }
-  };
-
-  const handleDownloadDocument = async (doc: ProfileDocument) => {
-    if (!accessToken) return;
-    setBusyDocumentPath(doc.path);
-    setErrorMessage(null);
-
-    try {
-      const response = await getProfileDocumentDownloadUrl(accessToken, doc.path);
-      window.open(response.url, "_blank", "noopener");
-    } catch (error) {
-      setErrorMessage((error as Error).message || "Failed to open document.");
-    } finally {
-      setBusyDocumentPath(null);
-    }
-  };
-
-  const handleDeleteDocument = async (doc: ProfileDocument) => {
-    if (!accessToken) return;
-    if (!window.confirm(`Delete "${doc.name}"?`)) return;
-
-    setBusyDocumentPath(doc.path);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    try {
-      await deleteProfileDocument(accessToken, doc.path);
-
-      if (profile?.profile_image_path === doc.path) {
-        const updated = await updateMe(accessToken, { profile_image_path: null });
-        setProfile(updated);
-        setProfileImageUrl(null);
-      }
-
-      await refreshDocuments(accessToken);
-      setSuccessMessage("Document deleted.");
-    } catch (error) {
-      setErrorMessage((error as Error).message || "Failed to delete document.");
-    } finally {
-      setBusyDocumentPath(null);
     }
   };
 
@@ -299,7 +214,7 @@ export default function ProfilePage() {
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold">Profile</h1>
-            <p className="mt-1 text-sm app-muted">Update your personal details and manage your document vault.</p>
+            <p className="mt-1 text-sm app-muted">Update your personal details and profile image.</p>
           </div>
           <Link
             href="/"
@@ -422,69 +337,6 @@ export default function ProfilePage() {
           </section>
         </div>
 
-        <section id="document-vault" className="app-surface app-border mt-6 rounded-3xl border p-6">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <h2 className="text-lg font-semibold">Document Vault</h2>
-              <p className="mt-1 text-sm app-muted">
-                Upload legal documents, contracts, and reference files you want in your personal vault.
-              </p>
-            </div>
-            <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-indigo-500/40 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20">
-              {isUploadingDocuments ? "Uploading…" : "Upload Documents"}
-              <input
-                type="file"
-                multiple
-                className="hidden"
-                disabled={isUploadingDocuments}
-                onChange={async (event) => {
-                  await handleDocumentsUpload(event.target.files);
-                  event.target.value = "";
-                }}
-              />
-            </label>
-          </div>
-
-          <div className="mt-5 overflow-hidden rounded-2xl border app-border">
-            {isDocumentsLoading ? (
-              <div className="p-4 text-sm app-muted">Loading document vault…</div>
-            ) : documents.length === 0 ? (
-              <div className="p-4 text-sm app-muted">No documents uploaded yet.</div>
-            ) : (
-              <div className="divide-y divide-[color:var(--app-border)]">
-                {documents.map((doc) => (
-                  <div key={doc.path} className="flex flex-wrap items-center justify-between gap-3 p-4">
-                    <div>
-                      <p className="text-sm font-medium app-text">{doc.name}</p>
-                      <p className="mt-0.5 text-xs app-muted">
-                        {formatBytes(doc.size)}{" "}
-                        {doc.updatedAt ? `· ${new Date(doc.updatedAt).toLocaleString()}` : ""}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleDownloadDocument(doc)}
-                        disabled={busyDocumentPath === doc.path}
-                        className="rounded-lg border app-border app-surface-2 px-3 py-1.5 text-xs font-medium app-text transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        View
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteDocument(doc)}
-                        disabled={busyDocumentPath === doc.path}
-                        className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:border-red-500/60 hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
       </div>
     </div>
   );

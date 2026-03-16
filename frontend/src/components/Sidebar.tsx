@@ -79,7 +79,7 @@ export default function Sidebar({
 
       <div className="app-border app-muted border-t px-5 py-4 text-sm">
         <button
-          onClick={() => router.push("/profile")}
+          onClick={() => router.push("/document-vault")}
           className="app-surface-2 app-text app-border flex w-full items-center justify-center rounded-2xl border px-4 py-2 text-sm font-medium transition hover:opacity-90"
         >
           + Document Vault
