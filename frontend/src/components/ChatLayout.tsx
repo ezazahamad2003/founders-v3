@@ -11,6 +11,7 @@ import ChatInput from "./ChatInput";
 import TosModal from "./TosModal";
 import ProfileMenu from "./ProfileMenu";
 import AgenticDebateChat from "./AgenticDebateChat";
+import LegalRiskAlertModal from "./LegalRiskAlertModal";
 import type { FileMeta } from "@/lib/types";
 
 interface ChatLayoutProps {
@@ -25,6 +26,8 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
   const [triggerDocumentReview, setTriggerDocumentReview] = useState(false);
   const [showAgenticDebate, setShowAgenticDebate] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [legalRiskPending, setLegalRiskPending] = useState(false);
+  const [showLegalRiskAlert, setShowLegalRiskAlert] = useState(false);
   
   const {
     profile,
@@ -67,6 +70,14 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
       .catch(() => setProfileImageUrl(null));
   }, [profile?.profile_image_path, accessToken]);
 
+  // Show the legal risk alert once streaming begins (so it overlays the live output)
+  useEffect(() => {
+    if (isStreaming && legalRiskPending) {
+      setShowLegalRiskAlert(true);
+      setLegalRiskPending(false);
+    }
+  }, [isStreaming, legalRiskPending]);
+
   const [pendingAttachments, setPendingAttachments] = useState<FileMeta[]>([]);
 
   const pendingAttachmentFiles = useMemo(
@@ -100,6 +111,11 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
   };
 
   const handleStartDocumentReview = async (file: File, clientRole: string, optionalPrompt: string) => {
+    // Flag high-risk demo scenario — alert will show once streaming begins
+    if (clientRole.toLowerCase().includes("paul client inc")) {
+      setLegalRiskPending(true);
+    }
+
     // Start a new conversation in contract review mode
     startContractReview();
     
@@ -264,6 +280,10 @@ export default function ChatLayout({ accessToken, supabase, onSignOut }: ChatLay
         onAccept={acceptTos}
         onDecline={() => supabase.auth.signOut()}
       />
+
+      {showLegalRiskAlert && (
+        <LegalRiskAlertModal onDismiss={() => setShowLegalRiskAlert(false)} />
+      )}
     </div>
   );
 }
