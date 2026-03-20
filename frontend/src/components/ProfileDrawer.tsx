@@ -27,9 +27,9 @@ export default function ProfileDrawer({ open, onClose, supabase, profile }: Prof
   const [isDragging, setIsDragging] = useState(false);
 
   // Supabase bucket for user profile documents (separate from chat attachments)
-  // Set NEXT_PUBLIC_SUPABASE_PROFILE_BUCKET in .env or defaults to "profiledrawer"
+  // Must match backend and document-vault - case-sensitive (ProfileDrawer)
   const profileBucket =
-    process.env.NEXT_PUBLIC_SUPABASE_PROFILE_BUCKET?.trim() || "profiledrawer";
+    process.env.NEXT_PUBLIC_SUPABASE_PROFILE_BUCKET?.trim() || "ProfileDrawer";
 
   const folderPrefix = useMemo(() => {
     if (!profile?.id) return null;

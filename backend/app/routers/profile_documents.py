@@ -31,7 +31,7 @@ async def list_profile_documents(
         )
         return {"documents": documents}
     except Exception as e:
-        logger.error(f"Failed to list profile documents: {e}")
+        logger.error(f"Failed to list profile documents: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to list documents. Please try again.",
