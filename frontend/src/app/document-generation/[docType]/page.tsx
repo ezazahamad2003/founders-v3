@@ -103,6 +103,7 @@ export default function DocGenPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const docContentRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
 
   // ── Auth ──────────────────────────────────────────────────────────────────
@@ -292,14 +293,91 @@ export default function DocGenPage() {
     navigator.clipboard.writeText(generatedDoc);
   };
 
-  const downloadDoc = () => {
-    const blob = new Blob([generatedDoc], { type: "text/plain;charset=utf-8" });
+  const getDocHtml = () => {
+    return docContentRef.current?.innerHTML ?? `<pre>${generatedDoc}</pre>`;
+  };
+
+  const downloadAsWord = () => {
+    const innerHtml = getDocHtml();
+    const wordHtml = `
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="utf-8">
+  <title>${meta?.title ?? docType}</title>
+  <!--[if gte mso 9]>
+  <xml><w:WordDocument><w:View>Print</w:View><w:Zoom>90</w:Zoom></w:WordDocument></xml>
+  <![endif]-->
+  <style>
+    @page { margin: 1in; }
+    body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.6; color: #000; }
+    h1 { font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 12pt; text-transform: uppercase; }
+    h2 { font-size: 13pt; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; text-transform: uppercase; }
+    h3 { font-size: 12pt; font-weight: bold; margin-top: 12pt; margin-bottom: 4pt; }
+    p { margin: 6pt 0; text-align: justify; }
+    strong { font-weight: bold; }
+    em { font-style: italic; }
+    ul, ol { margin: 6pt 0 6pt 24pt; }
+    li { margin: 3pt 0; }
+    table { border-collapse: collapse; width: 100%; margin: 12pt 0; }
+    th, td { border: 1pt solid #000; padding: 4pt 8pt; font-size: 10pt; }
+    th { background-color: #f0f0f0; font-weight: bold; }
+    hr { border: none; border-top: 1pt solid #000; margin: 12pt 0; }
+  </style>
+</head>
+<body>${innerHtml}</body>
+</html>`;
+    const blob = new Blob(["\ufeff", wordHtml], {
+      type: "application/msword;charset=utf-8",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${docType}-${Date.now()}.txt`;
+    a.download = `${docType}.doc`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const downloadAsPdf = () => {
+    const innerHtml = getDocHtml();
+    const printWindow = window.open("", "_blank", "width=900,height=700");
+    if (!printWindow) return;
+    printWindow.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${meta?.title ?? docType}</title>
+  <style>
+    @page { margin: 1in; size: letter; }
+    * { box-sizing: border-box; }
+    body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.6; color: #000; margin: 0; padding: 0; }
+    h1 { font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 12pt; text-transform: uppercase; }
+    h2 { font-size: 13pt; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; text-transform: uppercase; }
+    h3 { font-size: 12pt; font-weight: bold; margin-top: 12pt; margin-bottom: 4pt; }
+    p { margin: 6pt 0; text-align: justify; }
+    strong { font-weight: bold; }
+    em { font-style: italic; }
+    ul, ol { margin: 6pt 0 6pt 24pt; }
+    li { margin: 3pt 0; }
+    table { border-collapse: collapse; width: 100%; margin: 12pt 0; }
+    th, td { border: 1pt solid #000; padding: 4pt 8pt; font-size: 10pt; }
+    th { background-color: #f0f0f0; font-weight: bold; }
+    hr { border: none; border-top: 1pt solid #000; margin: 12pt 0; }
+    pre, code { font-family: monospace; font-size: 10pt; }
+    @media print { body { margin: 0; } }
+  </style>
+</head>
+<body>${innerHtml}</body>
+</html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 400);
   };
 
   // ── Handle Enter key ──────────────────────────────────────────────────────
@@ -521,17 +599,23 @@ export default function DocGenPage() {
                     Copy
                   </button>
                   <button
-                    onClick={downloadDoc}
+                    onClick={downloadAsWord}
+                    className="rounded-lg border border-blue-500/40 bg-blue-500/10 px-3 py-1.5 text-xs text-blue-300 transition hover:bg-blue-500/20"
+                  >
+                    ⬇ Word (.doc)
+                  </button>
+                  <button
+                    onClick={downloadAsPdf}
                     className="rounded-lg border border-indigo-500/40 bg-indigo-500/10 px-3 py-1.5 text-xs text-indigo-300 transition hover:bg-indigo-500/20"
                   >
-                    Download
+                    ⬇ PDF
                   </button>
                 </div>
               )}
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-6">
-              <div className="prose prose-sm prose-invert max-w-none">
+              <div ref={docContentRef} className="prose prose-sm prose-invert max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {generatedDoc}
                 </ReactMarkdown>
