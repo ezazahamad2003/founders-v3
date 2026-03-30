@@ -63,7 +63,7 @@ async def _stream_openai(messages: list, settings: Settings, max_tokens: int | N
             model=model,
             messages=messages,
             stream=True,
-            max_tokens=token_limit,
+            max_completion_tokens=token_limit,
         )
         async for chunk in stream:
             delta = chunk.choices[0].delta if chunk.choices else None
