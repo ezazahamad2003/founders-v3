@@ -127,7 +127,7 @@ export default function LandingPage() {
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-400 rounded-full flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-slate-300">Early access to GPT 5.2-powered AI platform</span>
+                  <span className="text-sm sm:text-base text-slate-300">Early access to GPT 5.4-powered AI platform</span>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-400 rounded-full flex-shrink-0" />

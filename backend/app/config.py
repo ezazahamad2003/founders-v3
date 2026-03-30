@@ -36,12 +36,12 @@ class Settings(BaseSettings):
     max_history_messages: int = Field(default=30, alias="MAX_HISTORY_MESSAGES")
     max_output_tokens: int = Field(default=4096, alias="MAX_OUTPUT_TOKENS")
 
-    openai_model_chat: str = Field(default="gpt-5.1", alias="OPENAI_MODEL_CHAT")
+    openai_model_chat: str = Field(default="gpt-5.4", alias="OPENAI_MODEL_CHAT")
     openai_model_vision: str = Field(
-        default="gpt-5.1", alias="OPENAI_MODEL_VISION"
+        default="gpt-5.4", alias="OPENAI_MODEL_VISION"
     )
     openai_model_deep_research: str = Field(
-        default="gpt-5.1", alias="OPENAI_MODEL_DEEP_RESEARCH"
+        default="gpt-5.4", alias="OPENAI_MODEL_DEEP_RESEARCH"
     )
 
     supabase_storage_bucket_name: str = Field(
