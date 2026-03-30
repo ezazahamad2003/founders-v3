@@ -65,6 +65,12 @@ export default function Sidebar({
         >
           ⚔️ Agentic Debate
         </button>
+        <button
+          onClick={() => router.push("/document-generation")}
+          className="mt-3 flex w-full items-center justify-center rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-300 transition hover:border-emerald-400 hover:bg-emerald-500/20"
+        >
+          ✨ Doc Generation
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-4">

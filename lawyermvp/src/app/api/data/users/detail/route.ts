@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
 
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
-      .select('id, email, full_name, company_name, role, created_at')
+      .select('id, email, full_name, company_name, website, profile_image_path, role, created_at')
       .eq('id', userId)
       .single();
 
@@ -66,6 +66,8 @@ export async function POST(request: NextRequest) {
       email: profile.email,
       full_name: profile.full_name,
       company_name: profile.company_name,
+      website: profile.website ?? null,
+      profile_image_path: profile.profile_image_path ?? null,
       role: profile.role,
       created_at: profile.created_at,
       total_conversations: conversationList.length,

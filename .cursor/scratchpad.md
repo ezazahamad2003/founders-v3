@@ -85,6 +85,8 @@
 - After the user creates a new query and later revisits the site, the default view is a fresh new chat (no active conversation selected), while the `Scopic Intro` conversation remains in the sidebar unless they delete it.
 - Existing/older users are unchanged (no auto-created intro) unless we explicitly opt-in to backfill later.
 
+- 2026-03-30: Doc Generation feature — 10 legal document types, GPT-style Q&A to gather context, then mega-prompt document generation using gpt-5.4. Backend: `/api/docgen/chat` (Q&A) + `/api/docgen/generate` (generation, streaming). Frontend: sidebar button → `/document-generation` 10-card gallery → `/document-generation/[docType]` chat+generate page.
+
 # Project Status Board
 - [x] bootstrap-structure
 - [x] core-infra-modules
@@ -200,6 +202,11 @@
 - 2026-03-14: Executor pushed commits `408123f` and `1791905` to `main` and deployed frontend to Vercel production URL `https://frontend-seven-henna-41.vercel.app` (deployment build succeeded and `/profile` route is live).
 - 2026-03-14: Executor added backend compatibility fallback for staged rollouts (APIs continue to work even if DB migration 004 is not yet applied, returning nulls for new columns until migration lands).
 
+# Current Status / Progress Tracking (cont.)
+- 2026-03-20: Executor fixed Document Vault issues: (1) bucket name default changed from `profiledrawer` to `ProfileDrawer` to match backend and Supabase (case-sensitive); (2) fixed `new FileList()` bug (invalid constructor) when file picker is cancelled; (3) listFolder now throws on Supabase error so real failures are surfaced; (4) added console.error logging for debugging; (5) aligned ProfileDrawer component default bucket. User to verify.
+- 2026-03-20: ROOT CAUSE of document vault 500: The deployed document-vault/page.tsx still called the backend API (listProfileDocuments, uploadProfileDocument, etc.) instead of Supabase JS client. Our local refactoring (switching to Supabase JS client) was never committed. Fixed by committing all 4 changed files (frontend page, ProfileDrawer, backend service/router) and pushing to main (commit 7e71837). Vercel auto-deploy will pick this up.
+- 2026-03-20: Backend GET /api/profile/documents returning 500: Refactored `list_documents` with defensive error handling (try/except around response.json(), handle non-list responses), extracted `_parse_list_response` helper, improved path normalization for Supabase Storage API response format, added exc_info to router logging. Deploy backend to verify.
+
 # Executor's Feedback or Assistance Requests
 - Supabase Storage insert policies still blocking uploads; advised user to keep only one `to public` policy with `auth.role()='authenticated'` but waiting on confirmation.
 - Attempting `pip install -r backend/requirements.txt` on Windows/Python 3.13 fails while compiling `asyncpg==0.29.0`; installed only `pypdf`/`pytest`/`pytest-asyncio` ad-hoc to keep tests running. Need guidance if we should pin Python 3.12 or swap to `psycopg` to avoid wheel issues.
@@ -230,4 +237,5 @@
 - LawyerMVP's `api.ts` was refactored to call Next.js API routes (which use `supabase-admin.ts` with service_role) instead of querying Supabase directly from `"use client"` components. This is the correct pattern for admin dashboards.
 - Never store short-lived verification codes (password reset, OTP) in a module-level Python dict. Use a DB table with `expires_at` and `attempts` columns instead — codes survive process restarts and multi-instance deployments. Store codes as SHA-256 hashes (hashlib stdlib) rather than plaintext.
 - For Cloud Run production deploys, do not merge `backend/.env` blindly into the deploy env file: local-only values like `APP_ENV=local`, localhost `ALLOWED_ORIGINS`, and pooler `SUPABASE_DB_URL` can break production. Base deploy envs on the last known-good production revision/config instead.
+- Supabase Storage bucket names are case-sensitive. Document vault, ProfileDrawer, and backend must all use the same bucket name (e.g. `ProfileDrawer`). Default fallback was `profiledrawer` (lowercase) which can fail if the bucket is `ProfileDrawer`.
 

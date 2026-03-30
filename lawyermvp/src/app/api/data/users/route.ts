@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const { data: profiles, error: profileError } = await supabaseAdmin
       .from('profiles')
-      .select('id, email, full_name, referral_source, role')
+      .select('id, email, full_name, company_name, website, profile_image_path, referral_source, role')
       .eq('role', 'client');
 
     if (profileError) {
@@ -61,6 +61,9 @@ export async function GET() {
           user_id: profile.id,
           email: profile.email,
           full_name: profile.full_name,
+          company_name: profile.company_name ?? null,
+          website: profile.website ?? null,
+          profile_image_path: profile.profile_image_path ?? null,
           referral_source: profile.referral_source ?? null,
           total_conversations: convCount || 0,
           total_messages: msgCount,

@@ -55,3 +55,4 @@ build/
 .supabase/
 storage/
 
+.vercel

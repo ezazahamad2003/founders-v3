@@ -1,0 +1,509 @@
+
+
+
+
+This is a copy of a conversation between ChatGPT & Anonymous.
+
+Report conversation
+Uploaded a file
+I'm a startup founder and have an investor who's willing to invest with a convertible note.  I found this note purchase agreement template online so can you use that to create a note purchase agreement for me?  I'm based in New York and so is the investor
+
+Below is a New York–adapted Convertible Promissory Note Purchase Agreement based on your template 
+Note-Purchase-Agreement
+
+, revised to:
+
+Apply to a New York corporation
+
+Be governed by New York law
+
+Reference U.S. federal and New York securities laws
+
+Include standard U.S. private placement / Regulation D language
+
+Remove Canadian securities references
+
+Keep the structure of your template intact
+
+You should absolutely have a New York startup attorney review this before signing.
+
+CONVERTIBLE PROMISSORY NOTE PURCHASE AGREEMENT
+This Convertible Promissory Note Purchase Agreement (the “Agreement”) is made as of __________, 2026 (the “Effective Date”), by and between:
+
+[COMPANY NAME], Inc., a corporation organized under the laws of the State of New York (the “Company”), and
+
+[INVESTOR NAME], an individual residing in the State of New York (the “Purchaser”).
+
+RECITAL
+To provide the Company with additional capital to conduct its business, the Purchaser is willing to loan to the Company the principal amount set forth below, subject to the terms and conditions of this Agreement.
+
+AGREEMENT
+1. Amount and Terms of the Loan
+1.1 The Loan
+Subject to the terms of this Agreement, at the Closing (as defined below), the Purchaser agrees to lend to the Company the principal amount of:
+
+$[__________] (the “Loan Amount”)
+
+against the issuance and delivery by the Company of a Convertible Promissory Note in substantially the form attached hereto as Exhibit A (the “Note”).
+
+1.2 Ranking
+If additional notes are issued, all Notes issued pursuant to this Agreement shall rank pari passu with each other.
+
+2. Closing and Delivery
+2.1 Closing
+The closing of the sale and purchase of the Note (the “Closing”) shall take place on the Effective Date or on such other date as mutually agreed (the “Closing Date”).
+
+2.2 Delivery
+At the Closing:
+
+The Purchaser shall deliver the Loan Amount to the Company by wire transfer.
+
+The Company shall issue and deliver the Note to the Purchaser.
+
+3. Representations and Warranties of the Company
+The Company represents and warrants to the Purchaser as of the Closing:
+
+3.1 Organization and Good Standing
+The Company is a corporation duly organized, validly existing, and in good standing under the laws of the State of New York.
+
+3.2 Corporate Power
+The Company has full corporate power and authority to:
+
+Execute and deliver this Agreement and the Note (collectively, the “Loan Documents”)
+
+Perform its obligations hereunder
+
+Issue the securities issuable upon conversion (the “Conversion Securities”)
+
+3.3 Authorization
+All corporate action required for authorization of:
+
+This Agreement
+
+The issuance of the Note
+
+The reservation and issuance of Conversion Securities
+
+has been or will be taken prior to issuance.
+
+This Agreement and the Note constitute valid and binding obligations of the Company, enforceable in accordance with their terms, subject to:
+
+Bankruptcy
+
+Insolvency
+
+Fraudulent transfer
+
+General equitable principles
+
+3.4 No Conflicts
+The execution and delivery of the Loan Documents do not violate:
+
+The Company’s Certificate of Incorporation
+
+Bylaws
+
+Any material contract
+
+Any applicable law
+
+3.5 Compliance with Laws
+The Company is not in violation of any applicable federal, state, or local law that would have a material adverse effect on the Company.
+
+3.6 Securities Law Compliance
+Subject to the accuracy of the Purchaser’s representations, the offer and sale of the Note is exempt from registration under:
+
+The Securities Act of 1933, as amended
+
+Applicable New York State securities laws
+
+The Company intends to rely on Regulation D and/or Section 4(a)(2) of the Securities Act.
+
+3.7 Use of Proceeds
+The Company shall use the proceeds for working capital and general corporate purposes.
+
+4. Representations and Warranties of the Purchaser
+The Purchaser represents and warrants:
+
+4.1 Authorization
+Purchaser has full power and authority to enter into this Agreement.
+
+4.2 Investment Intent
+The Note is being acquired:
+
+For investment
+
+For Purchaser’s own account
+
+Not with a view to distribution or resale
+
+4.3 Accredited Investor
+Purchaser is an “accredited investor” as defined in Rule 501(a) under the Securities Act of 1933.
+
+4.4 Private Offering
+Purchaser understands:
+
+The Note has not been registered under the Securities Act
+
+It must be held indefinitely unless registered or exempt
+
+There is no public market for the Note
+
+4.5 Legends
+The Note and any Conversion Securities may bear a legend substantially in the following form:
+
+THE SECURITIES REPRESENTED HEREBY HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933 OR APPLICABLE STATE SECURITIES LAWS AND MAY NOT BE OFFERED OR SOLD EXCEPT PURSUANT TO AN EFFECTIVE REGISTRATION STATEMENT OR AN APPLICABLE EXEMPTION.
+
+5. Miscellaneous
+5.1 Governing Law
+This Agreement shall be governed by and construed in accordance with the laws of the State of New York, without regard to conflict of law principles.
+
+5.2 Binding Effect
+This Agreement shall be binding upon and inure to the benefit of the parties and their permitted successors and assigns.
+
+5.3 Amendments
+This Agreement may be amended only in writing signed by:
+
+The Company, and
+
+The holder of the outstanding Note (or majority of holders, if multiple)
+
+5.4 Expenses
+Each party shall bear its own legal and transaction expenses.
+
+5.5 Entire Agreement
+This Agreement and the Note constitute the entire agreement between the parties regarding the subject matter.
+
+5.6 Counterparts
+This Agreement may be executed in counterparts and via electronic signature.
+
+SIGNATURES
+COMPANY:
+
+[COMPANY NAME], Inc.
+
+By: ___________________________
+Name:
+Title:
+Address:
+
+PURCHASER:
+
+[INVESTOR NAME]
+
+Signature: ___________________________
+Address:
+
+EXHIBIT A
+FORM OF CONVERTIBLE PROMISSORY NOTE
+(This is typically a separate document. Below is a standard early-stage convertible note structure.)
+
+CONVERTIBLE PROMISSORY NOTE
+Principal Amount: $__________
+Issue Date: __________
+Maturity Date: __________ (typically 18–24 months)
+
+FOR VALUE RECEIVED, [COMPANY NAME], Inc., a New York corporation, promises to pay to [INVESTOR NAME] the principal amount above, together with interest at ___% per annum.
+
+1. Maturity
+Unless earlier converted, the outstanding principal and accrued interest shall be due and payable on the Maturity Date.
+
+2. Qualified Financing Conversion
+Upon the closing of an equity financing raising at least $________ (a “Qualified Financing”), the Note shall automatically convert into the securities issued in such financing at:
+
+A ___% discount to the price per share, OR
+
+A valuation cap of $________,
+
+whichever results in a lower conversion price.
+
+3. Change of Control
+In the event of a merger, sale, or change of control, the holder may elect to:
+
+Receive repayment of principal plus accrued interest, OR
+
+Convert into common stock at the valuation cap.
+
+4. Optional Prepayment
+The Note may not be prepaid without the consent of the holder.
+
+5. Governing Law
+This Note shall be governed by the laws of the State of New York.
+
+Important Founder Notes
+Because you're in New York:
+
+NY usury laws can apply if interest exceeds 16% (civil) or 25% (criminal).
+
+Convertible features generally avoid usury issues if structured properly.
+
+Most NY startups now use:
+
+YC-style SAFE, or
+
+Standard Silicon Valley-style convertible note forms
+
+If you'd like, I can:
+
+Convert this into a more market-standard U.S. VC-style convertible note
+
+Draft a SAFE instead
+
+Add board approval language
+
+Add a most favored nation clause
+
+Add pro rata rights
+
+Customize this for your specific terms (discount, cap, maturity, etc.)
+
+
+Sources
+
+Sure, market-standard would be better, but not a SAFE because this investor only asked for a convertible note.  Also, I don't know what most favored nation clause is or what pro rata rights are, but if you think they should be included, please add them
+
+Great — I’ll draft this in a market-standard U.S. early-stage convertible note format (closer to what NYC/Silicon Valley startups actually use), not a SAFE.
+
+I will:
+
+Keep it New York corporation / NY governing law
+
+Use Reg D / 4(a)(2) private placement language
+
+Include:
+
+✅ Valuation Cap
+
+✅ Discount
+
+✅ Qualified Financing conversion
+
+✅ Change of Control protection
+
+✅ Most Favored Nation (MFN) clause
+
+✅ Pro rata rights
+
+✅ Standard investor protections
+
+Keep it clean and founder-reasonable (not overly investor-heavy)
+
+After the draft, I’ll briefly explain MFN and pro rata in plain English.
+
+CONVERTIBLE PROMISSORY NOTE PURCHASE AGREEMENT
+This Convertible Promissory Note Purchase Agreement (the “Agreement”) is made as of __________, 2026 (the “Effective Date”), by and between:
+
+[COMPANY NAME], Inc., a New York corporation (the “Company”),
+and
+[INVESTOR NAME], an individual residing in New York (the “Purchaser”).
+
+1. Purchase and Sale of Note
+1.1 Purchase of Note
+Subject to the terms of this Agreement, at the Closing (as defined below), the Purchaser agrees to purchase from the Company, and the Company agrees to issue and sell to the Purchaser, a Convertible Promissory Note in the principal amount of:
+
+$[__________] (the “Principal Amount”)
+
+in substantially the form attached as Exhibit A (the “Note”).
+
+1.2 Closing
+The closing (the “Closing”) shall occur on the Effective Date or such other date as mutually agreed. At Closing:
+
+Purchaser shall wire the Principal Amount to the Company.
+
+Company shall deliver the executed Note to Purchaser.
+
+2. Representations and Warranties of the Company
+The Company represents and warrants:
+
+2.1 Organization
+The Company is duly incorporated, validly existing, and in good standing under the laws of the State of New York.
+
+2.2 Authorization
+The execution, delivery, and performance of this Agreement and the Note have been duly authorized by all necessary corporate action.
+
+2.3 Valid Issuance
+The Note, when issued, will constitute a valid and binding obligation of the Company, enforceable under New York law (subject to bankruptcy and equitable principles).
+
+2.4 Securities Law Compliance
+The offer and sale of the Note is being made pursuant to an exemption from registration under:
+
+The Securities Act of 1933, as amended
+
+Applicable New York securities laws
+
+The Company intends to rely on Section 4(a)(2) and/or Regulation D.
+
+3. Representations and Warranties of the Purchaser
+Purchaser represents:
+
+3.1 Accredited Investor
+Purchaser is an “accredited investor” under Rule 501(a) of Regulation D.
+
+3.2 Investment Intent
+The Note is being acquired for investment and not with a view to resale.
+
+3.3 Restricted Securities
+Purchaser understands the Note has not been registered and may not be resold absent registration or exemption.
+
+4. Miscellaneous
+4.1 Governing Law
+This Agreement shall be governed by the laws of the State of New York, without regard to conflict of law principles.
+
+4.2 Amendments
+This Agreement may be amended only by written agreement signed by the Company and holders of a majority of outstanding principal under all notes issued pursuant hereto.
+
+4.3 Expenses
+Each party shall bear its own legal expenses.
+
+EXHIBIT A
+CONVERTIBLE PROMISSORY NOTE
+Principal Amount: $__________
+Issue Date: __________
+Maturity Date: __________ (18–24 months typical)
+Interest Rate: ___% per annum (5–8% typical; stay under NY usury limits)
+
+1. Payment
+Unless earlier converted, the outstanding principal and accrued interest shall be due and payable on the Maturity Date.
+
+Interest accrues but does not compound.
+
+2. Automatic Conversion Upon Qualified Financing
+If the Company closes a bona fide equity financing raising at least:
+
+$[__________] (a “Qualified Financing”),
+
+then this Note shall automatically convert into the same securities issued in that financing at a conversion price equal to the lower of:
+
+The price per share in the Qualified Financing multiplied by (1 – ___% discount), OR
+
+The price per share based on a pre-money valuation cap of $[__________]
+
+(the “Valuation Cap”).
+
+Accrued interest converts with principal.
+
+3. Optional Conversion Upon Non-Qualified Financing
+If the Company completes an equity financing that does not meet the Qualified Financing threshold, the holder may elect to convert at the discount and valuation cap described above.
+
+4. Change of Control
+If a Change of Control (merger, sale of substantially all assets, etc.) occurs before conversion, the holder may elect to receive:
+
+Repayment of principal plus accrued interest, OR
+
+Conversion into common stock at the Valuation Cap price immediately prior to closing.
+
+5. Maturity
+If the Note has not converted prior to the Maturity Date, the holder may elect:
+
+Repayment of principal plus accrued interest, OR
+
+Conversion into common stock at the Valuation Cap price.
+
+(Founder-friendly approach: make conversion optional, not automatic, at maturity.)
+
+6. Most Favored Nation (MFN)
+If the Company issues any subsequent convertible promissory note prior to conversion of this Note that contains terms more favorable than this Note, the holder shall have the right to amend this Note to include such more favorable terms.
+
+(This excludes differences solely in principal amount.)
+
+7. Pro Rata Rights
+Upon conversion of this Note in a Qualified Financing, the holder shall have the right to purchase its pro rata share of securities issued in the Qualified Financing and in the next equity financing, so as to maintain its percentage ownership of the Company on a fully diluted basis.
+
+Participation is subject to standard investor eligibility requirements.
+
+8. No Prepayment
+The Company may not prepay this Note without the consent of the holder.
+
+9. Subordination
+This Note shall be unsecured and subordinated to any future bank or venture debt approved by the Board.
+
+10. Transfer Restrictions
+This Note may not be transferred without Company consent, except to affiliates.
+
+11. Governing Law
+This Note shall be governed by the laws of the State of New York.
+
+Plain-English Explanation (Important)
+Most Favored Nation (MFN)
+If you later give another investor better note terms (lower cap, higher discount, etc.), this investor can upgrade to those better terms.
+
+Why include it?
+
+Early investors expect fairness.
+
+Prevents renegotiation drama later.
+
+Market standard in NYC/SF.
+
+Pro Rata Rights
+If your investor converts into equity, they can invest more in the priced round to maintain their ownership percentage.
+
+Example:
+If they own 5% after conversion, they can buy enough shares in the Series A to stay at 5%.
+
+Why include it?
+
+Serious angels expect it.
+
+It signals confidence.
+
+It does not hurt you early stage.
+
+Founder Strategy Notes (Very Important)
+For a first NYC angel note, market norms are roughly:
+
+Interest: 5–8%
+
+Maturity: 18–24 months
+
+Discount: 15–20%
+
+Valuation Cap:
+
+Pre-product: $3M–6M
+
+Post-traction: $6M–12M+
+
+If you'd like, tell me:
+
+Amount being invested
+
+Stage of company
+
+Whether you have revenue
+
+Target Series A timing
+
+I can suggest a cap/discount combo that protects you while still being attractive.
+
+Also, if you'd like, I can now:
+
+Convert this into a clean Word-ready final document
+
+Make it slightly more founder-protective
+
+Or make it slightly more investor-friendly depending on your leverage
+
+
+I'd like to keep it neutral, and if it's already neutral, can you create a Word-ready document
+
+Your Word-ready document is complete:
+
+Download here:
+Download the Convertible Promissory Note Purchase Agreement (NY)
+
+If you'd like, I can now:
+
+Insert your specific terms (amount, cap, discount, interest, maturity)
+
+Add company address and signature blocks formatted cleanly
+
+Tighten language slightly to match NYC venture attorney drafting style
+
+Or add board consent language as a separate one-page attachment (recommended before signing)
+
+Just send the deal terms and I’ll finalize it cleanly. 
+
+
+
+

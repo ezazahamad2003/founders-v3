@@ -260,6 +260,107 @@ export async function streamDebate(
   }
 }
 
+export interface DocType {
+  slug: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface DocgenChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export function listDocTypes(token: string) {
+  return apiFetch<DocType[]>("/api/docgen/docs", token);
+}
+
+export async function streamDocgenChat(
+  token: string,
+  docType: string,
+  messages: DocgenChatMessage[],
+  handlers: { onToken?: (delta: string) => void; onDone?: () => void; onError?: (err: Error) => void },
+): Promise<void> {
+  if (!API_BASE_URL) throw new Error("API base URL is not configured.");
+
+  const response = await fetch(`${API_BASE_URL}/api/docgen/chat`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ doc_type: docType, messages }),
+  });
+
+  if (!response.ok || !response.body) {
+    const detail = await safeParse(response);
+    throw new Error(detail?.detail ?? response.statusText ?? "Unable to start docgen chat");
+  }
+
+  await _readStream(response, handlers);
+}
+
+export async function streamDocgenGenerate(
+  token: string,
+  docType: string,
+  context: string,
+  handlers: { onToken?: (delta: string) => void; onDone?: () => void; onError?: (err: Error) => void },
+): Promise<void> {
+  if (!API_BASE_URL) throw new Error("API base URL is not configured.");
+
+  const response = await fetch(`${API_BASE_URL}/api/docgen/generate`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ doc_type: docType, context }),
+  });
+
+  if (!response.ok || !response.body) {
+    const detail = await safeParse(response);
+    throw new Error(detail?.detail ?? response.statusText ?? "Unable to generate document");
+  }
+
+  await _readStream(response, handlers);
+}
+
+async function _readStream(
+  response: Response,
+  handlers: { onToken?: (delta: string) => void; onDone?: () => void; onError?: (err: Error) => void },
+): Promise<void> {
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      let newlineIndex: number;
+      while ((newlineIndex = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, newlineIndex).trim();
+        buffer = buffer.slice(newlineIndex + 1);
+        if (!line) continue;
+        try {
+          const event = JSON.parse(line);
+          if (event.event === "token") {
+            handlers.onToken?.(event.delta ?? "");
+          } else if (event.event === "done") {
+            handlers.onDone?.();
+          } else if (event.event === "error") {
+            handlers.onError?.(new Error(event.message ?? "Stream error"));
+          }
+        } catch {
+          console.error("Failed to parse docgen stream chunk", line);
+        }
+      }
+    }
+  } catch (error) {
+    handlers.onError?.(error as Error);
+    throw error;
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 export async function streamChat(
   token: string,
   payload: ChatRequestPayload,

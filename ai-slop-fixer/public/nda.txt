@@ -1,0 +1,532 @@
+
+
+
+
+This is a copy of a conversation between ChatGPT & Anonymous.
+
+Report conversation
+I'd like to prepare a NDA for a technology service provider that I'm looking to hire.  I'm an early stage startup based in Ontario, so could you please draft one that is based on market standards and best practices?
+
+Absolutely! Since you’re an early-stage startup in Ontario, the NDA should comply with Canadian law (specifically Ontario’s contractual law) and reflect typical market standards for technology service providers. Here’s a comprehensive draft you can adapt:
+
+NON-DISCLOSURE AGREEMENT (NDA)
+
+This Non-Disclosure Agreement (“Agreement”) is entered into as of [Date] (“Effective Date”) by and between:
+
+Disclosing Party: [Your Company Name], an Ontario corporation with its principal place of business at [Address] (“Disclosing Party”); and
+
+Receiving Party: [Service Provider Name], a [jurisdiction] corporation with its principal place of business at [Address] (“Receiving Party”).
+
+RECITALS
+
+WHEREAS, the Disclosing Party possesses certain confidential and proprietary information related to its technology, business plans, and operations;
+
+WHEREAS, the Receiving Party may receive such information in connection with discussions regarding potential business collaboration or service provision;
+
+NOW, THEREFORE, the parties agree as follows:
+
+1. Definition of Confidential Information
+For purposes of this Agreement, “Confidential Information” means all information disclosed by the Disclosing Party, whether in written, oral, electronic, or other form, including but not limited to:
+
+business plans, strategies, financial information;
+
+technology, software, source code, algorithms, processes, and designs;
+
+client lists, supplier information, and other proprietary business information;
+
+any information marked as confidential or that a reasonable person would understand to be confidential.
+
+Confidential Information does not include information that:
+
+is or becomes publicly available without breach of this Agreement;
+
+is lawfully obtained from a third party without restriction;
+
+is independently developed by the Receiving Party without reference to the Disclosing Party’s Confidential Information.
+
+2. Obligations of Receiving Party
+The Receiving Party shall:
+a) Maintain all Confidential Information in strict confidence;
+b) Use Confidential Information solely for the purpose of evaluating or performing services for the Disclosing Party;
+c) Not disclose Confidential Information to any third party without the prior written consent of the Disclosing Party;
+d) Take all reasonable precautions to prevent unauthorized access to the Confidential Information.
+
+3. Term
+This Agreement shall commence on the Effective Date and continue for a period of [2 years] from the date of disclosure of the Confidential Information, unless terminated earlier by mutual written consent.
+
+The confidentiality obligations shall survive the termination of this Agreement for [3 years].
+
+4. Return or Destruction of Materials
+Upon request of the Disclosing Party, the Receiving Party shall promptly return or destroy all materials containing Confidential Information, including copies, notes, or summaries.
+
+5. No License or Ownership
+Nothing in this Agreement grants any license, rights, or ownership in any intellectual property of the Disclosing Party. All Confidential Information remains the exclusive property of the Disclosing Party.
+
+6. Remedies
+The Receiving Party acknowledges that unauthorized disclosure may cause irreparable harm to the Disclosing Party. In addition to any other remedies available at law or equity, the Disclosing Party may seek injunctive relief to prevent such disclosure.
+
+7. Governing Law
+This Agreement shall be governed by and construed in accordance with the laws of the Province of Ontario and the federal laws of Canada applicable therein. The parties submit to the exclusive jurisdiction of the courts of Ontario for any disputes arising under this Agreement.
+
+8. Miscellaneous
+a) Entire Agreement: This Agreement constitutes the entire agreement between the parties regarding the subject matter.
+b) Amendments: Any amendment must be in writing and signed by both parties.
+c) Severability: If any provision is found invalid, the remainder shall remain in effect.
+d) Waiver: Failure to enforce any provision does not constitute a waiver of future enforcement.
+
+IN WITNESS WHEREOF, the parties have executed this Non-Disclosure Agreement as of the Effective Date.
+
+[Your Company Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+[Service Provider Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+✅ Best Practices Reflected:
+
+Clear definition of confidential information
+
+Exclusions for publicly known or independently developed info
+
+Use and non-disclosure obligations
+
+Survival clause for confidentiality
+
+Return/destruction clause
+
+Governing law tailored to Ontario
+
+If you want, I can also draft a shorter, startup-friendly version that’s just 1–2 pages but still enforceable under Ontario law—often easier for early-stage tech service providers to sign without delays.
+
+Do you want me to prepare that version as well?
+
+
+Yes, shorter please.  I don't want them to hesitate to sign, but I also want to protect myself
+
+Got it! Here’s a concise, startup-friendly NDA—just 1–2 pages, clear and easy to sign, while still protecting your confidential information:
+
+SHORT-FORM NON-DISCLOSURE AGREEMENT (NDA)
+
+Effective Date: [Date]
+
+Parties:
+
+Disclosing Party: [Your Company Name], Ontario corporation, [Address]
+
+Receiving Party: [Service Provider Name], [jurisdiction] corporation, [Address]
+
+1. Confidential Information
+“Confidential Information” means all non-public information disclosed by the Disclosing Party, including business plans, technology, software, client information, and other proprietary information, whether written, electronic, or oral.
+
+Exclusions: Information is not confidential if it:
+
+Is publicly available without breach of this NDA;
+
+Was lawfully obtained from a third party;
+
+Is independently developed by the Receiving Party without using the Disclosing Party’s information.
+
+2. Obligations
+The Receiving Party agrees to:
+
+Keep all Confidential Information strictly confidential;
+
+Use it only to evaluate or provide services for the Disclosing Party;
+
+Not share it with anyone else without written permission;
+
+Take reasonable steps to prevent unauthorized disclosure.
+
+3. Return of Materials
+Upon request, the Receiving Party will return or destroy all Confidential Information and any copies.
+
+4. No Ownership
+This NDA does not grant any rights, ownership, or license to the Receiving Party in the Disclosing Party’s intellectual property.
+
+5. Term
+This NDA applies from the Effective Date and continues for 2 years. Obligations of confidentiality survive for 3 years after disclosure.
+
+6. Governing Law
+This NDA is governed by the laws of Ontario, Canada. Parties agree to submit to the courts of Ontario for any disputes.
+
+IN WITNESS WHEREOF, the parties have executed this NDA:
+
+[Your Company Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+[Service Provider Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+This version is short, simple, and startup-friendly, while still covering:
+
+Key definitions of confidential info
+
+Obligations of use and non-disclosure
+
+Return/destruction of materials
+
+Survival and governing law
+
+If you want, I can also add a short “Mutual NDA” clause, so both your startup and the service provider are protected, which sometimes speeds up signing. That’s often handy for tech collaborations. Do you want me to do that?
+
+
+Yes, can you make it mutual.  Also what about the IP.  I want to make sure that's protected
+
+Absolutely! Here’s a short, mutual NDA tailored for your startup, with clear IP protection language. It keeps the agreement simple for signing but ensures your technology and intellectual property are protected.
+
+MUTUAL NON-DISCLOSURE AGREEMENT (NDA)
+
+Effective Date: [Date]
+
+Parties:
+
+Party A: [Your Company Name], Ontario corporation, [Address]
+
+Party B: [Service Provider Name], [jurisdiction] corporation, [Address]
+
+1. Confidential Information
+“Confidential Information” means any non-public information disclosed by either party relating to its business, technology, software, processes, clients, finances, or other proprietary information, whether in written, electronic, or oral form.
+
+Exclusions: Information is not confidential if it:
+
+Is or becomes publicly available without breach;
+
+Was lawfully obtained from a third party;
+
+Is independently developed without using the other party’s Confidential Information.
+
+2. Obligations
+Each party agrees to:
+
+Keep all Confidential Information strictly confidential;
+
+Use it only for evaluating or performing the services under discussion;
+
+Not disclose it to anyone else without prior written permission;
+
+Take reasonable steps to prevent unauthorized disclosure.
+
+3. Intellectual Property
+Each party retains all rights, title, and interest in its own pre-existing intellectual property.
+
+No license or ownership in the other party’s intellectual property is granted by this NDA.
+
+Any intellectual property developed jointly or by one party while performing services for the other shall be governed by a separate agreement, unless explicitly agreed in writing.
+
+4. Return of Materials
+Upon request, each party shall return or destroy all materials containing the other party’s Confidential Information.
+
+5. Term
+This NDA applies from the Effective Date for 2 years. Confidentiality obligations survive for 3 years after disclosure.
+
+6. Governing Law
+This NDA is governed by the laws of Ontario, Canada, and the parties submit to the courts of Ontario for any disputes.
+
+IN WITNESS WHEREOF, the parties have executed this NDA:
+
+[Your Company Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+[Service Provider Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+✅ Why this version works for you:
+
+Mutual: Protects both parties’ confidential info.
+
+IP protection: Clarifies pre-existing IP ownership and that no license is implied.
+
+Short & simple: 1–2 pages for fast signing.
+
+Survival & governing law: Ensures enforceability in Ontario.
+
+If you want, I can also add a short “work-for-hire / deliverables IP clause” specifically to ensure that anything the service provider builds for your startup automatically belongs to your company. That’s very important for tech development projects.
+
+Do you want me to add that?
+
+
+Yes 
+
+Perfect! Here’s the updated mutual NDA with a clear “Work-for-Hire / Deliverables IP” clause so anything the service provider creates for you belongs to your startup. It’s still concise and startup-friendly:
+
+MUTUAL NON-DISCLOSURE AND INTELLECTUAL PROPERTY AGREEMENT (NDA)
+
+Effective Date: [Date]
+
+Parties:
+
+Party A: [Your Company Name], Ontario corporation, [Address]
+
+Party B: [Service Provider Name], [jurisdiction] corporation, [Address]
+
+1. Confidential Information
+“Confidential Information” means any non-public information disclosed by either party relating to its business, technology, software, processes, clients, finances, or other proprietary information, whether in written, electronic, or oral form.
+
+Exclusions: Information is not confidential if it:
+
+Is or becomes publicly available without breach;
+
+Was lawfully obtained from a third party;
+
+Is independently developed without using the other party’s Confidential Information.
+
+2. Obligations
+Each party agrees to:
+
+Keep all Confidential Information strictly confidential;
+
+Use it only for evaluating or performing the services under discussion;
+
+Not disclose it to anyone else without prior written permission;
+
+Take reasonable steps to prevent unauthorized disclosure.
+
+3. Intellectual Property
+Each party retains all rights, title, and interest in its own pre-existing intellectual property.
+
+Deliverables / Work-for-Hire: Any work, code, designs, inventions, or other deliverables created by the Receiving Party for the Disclosing Party under the services agreement shall be the exclusive property of the Disclosing Party, and the Receiving Party assigns all rights, title, and interest to the Disclosing Party.
+
+No license or ownership in the other party’s intellectual property is granted by this NDA, except as expressly stated for the deliverables.
+
+4. Return of Materials
+Upon request, each party shall return or destroy all materials containing the other party’s Confidential Information.
+
+5. Term
+This NDA applies from the Effective Date for 2 years. Confidentiality obligations survive for 3 years after disclosure.
+
+6. Governing Law
+This NDA is governed by the laws of Ontario, Canada, and the parties submit to the courts of Ontario for any disputes.
+
+IN WITNESS WHEREOF, the parties have executed this NDA:
+
+[Your Company Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+[Service Provider Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+✅ Key protections now included:
+
+Mutual confidentiality (so the provider can share their own confidential info too).
+
+Explicit ownership of all deliverables to your startup.
+
+Clear IP rights for pre-existing vs. created work.
+
+Short, 1–2 page format for quick signing.
+
+If you want, I can also highlight a tiny “residual knowledge” clause, which protects the provider from claims if they incidentally remember general skills or ideas from your project—this can help avoid hesitation in signing while still protecting your IP.
+
+Do you want me to add that?
+
+
+Sure that's fine.  But the main thing is that I want very strong IP protection
+
+Perfect! Since your main priority is strong IP protection, we can tighten the NDA specifically around ownership and rights to anything the service provider creates, while keeping it concise. Here’s a startup-friendly, mutual NDA with strong IP clauses:
+
+MUTUAL NON-DISCLOSURE AND INTELLECTUAL PROPERTY AGREEMENT (NDA)
+
+Effective Date: [Date]
+
+Parties:
+
+Party A: [Your Company Name], Ontario corporation, [Address]
+
+Party B: [Service Provider Name], [jurisdiction] corporation, [Address]
+
+1. Confidential Information
+“Confidential Information” means any non-public information disclosed by either party relating to business, technology, software, processes, clients, finances, or other proprietary information, whether written, electronic, or oral.
+
+Exclusions: Information is not confidential if it:
+
+Is publicly available without breach;
+
+Was lawfully obtained from a third party;
+
+Is independently developed without using the other party’s Confidential Information.
+
+2. Obligations
+Each party agrees to:
+
+Keep all Confidential Information strictly confidential;
+
+Use it only for evaluating or performing services under discussion;
+
+Not disclose it without prior written consent;
+
+Take reasonable steps to prevent unauthorized disclosure.
+
+3. Intellectual Property
+3.1 Pre-Existing IP: Each party retains all rights, title, and interest in intellectual property it owned or developed before this NDA.
+
+3.2 Deliverables / Work-for-Hire:
+
+All work, inventions, designs, software, documentation, or other deliverables created by a party for the other party under any services arrangement (the “Deliverables”) are the exclusive property of the receiving party (i.e., your startup).
+
+The creating party assigns all rights, title, and interest in the Deliverables to the receiving party, including all intellectual property rights worldwide.
+
+The creating party agrees to execute any documents reasonably necessary to confirm, perfect, or enforce this ownership.
+
+3.3 Moral Rights: The creating party waives any moral rights in the Deliverables to the extent permitted by law.
+
+3.4 Residual Knowledge: The creating party may retain general knowledge, skills, and experience gained, but may not use or disclose any Confidential Information or Deliverables in future projects.
+
+3.5 No License: Except as expressly stated, no license or rights to the other party’s IP are granted.
+
+4. Return of Materials
+Upon request, each party shall return or destroy all materials containing the other party’s Confidential Information.
+
+5. Term
+This NDA applies from the Effective Date for 2 years. Confidentiality and IP obligations survive indefinitely for IP and 3 years for other Confidential Information.
+
+6. Governing Law
+This NDA is governed by the laws of Ontario, Canada, and the parties submit to the courts of Ontario for any disputes.
+
+IN WITNESS WHEREOF, the parties have executed this NDA:
+
+[Your Company Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+[Service Provider Name]
+By: ___________________________
+Name: [Name]
+Title: [Title]
+
+✅ Why this is strong IP protection:
+
+All deliverables automatically belong to your startup.
+
+Full assignment of rights and moral rights waiver prevents claims by the provider.
+
+Residual knowledge clause protects your proprietary methods/ideas.
+
+No implied license—prevents the provider from reusing your code or designs.
+
+Clear distinction between pre-existing IP and deliverables.
+
+If you want, I can also draft an ultra-tight “IP protection addendum” you can attach to the NDA that explicitly lists code, designs, and inventions so there’s zero ambiguity. This is often used by VC-backed startups and makes IP ownership bulletproof.
+
+Do you want me to prepare that addendum?
+
+
+No that's okay.  I also don't want it to be overkill.
+
+Perfect—that makes sense. The version we have now is concise, startup-friendly, and strong enough to protect your IP without scaring off a service provider. It covers:
+
+Mutual confidentiality
+
+Clear ownership of all deliverables (work-for-hire)
+
+Pre-existing IP protection
+
+Waiver of moral rights and residual knowledge clause
+
+No implied licenses
+
+This is exactly the balance most early-stage tech startups in Ontario use: strong IP protection without making the agreement intimidating or legally overcomplicated.
+
+You’re ready to use it as-is with your service provider.
+
+If you like, I can also prepare a simple signing-ready version in a Word or PDF format with placeholders for names, dates, and signatures to make it even easier to execute. This usually speeds up onboarding.
+
+Do you want me to do that?
+
+
+Yes
+
+Great! I can create a clean, signing-ready version of your NDA with placeholders so you can just fill in names, dates, and signatures. Here’s how it would look in a Word/PDF-ready format:
+
+MUTUAL NON-DISCLOSURE AND INTELLECTUAL PROPERTY AGREEMENT (NDA)
+Effective Date: ___________________________
+
+Parties:
+
+Party A: ___________________________ (Your Company Name), Ontario corporation, ___________________________ (Address)
+
+Party B: ___________________________ (Service Provider Name), ___________________________ (jurisdiction) corporation, ___________________________ (Address)
+
+1. Confidential Information
+“Confidential Information” means any non-public information disclosed by either party relating to business, technology, software, processes, clients, finances, or other proprietary information, whether written, electronic, or oral.
+
+Exclusions: Information is not confidential if it:
+
+Is publicly available without breach;
+
+Was lawfully obtained from a third party;
+
+Is independently developed without using the other party’s Confidential Information.
+
+2. Obligations
+Each party agrees to:
+
+Keep all Confidential Information strictly confidential;
+
+Use it only for evaluating or performing services under discussion;
+
+Not disclose it without prior written consent;
+
+Take reasonable steps to prevent unauthorized disclosure.
+
+3. Intellectual Property
+3.1 Pre-Existing IP: Each party retains all rights, title, and interest in intellectual property it owned or developed before this NDA.
+
+3.2 Deliverables / Work-for-Hire:
+
+All work, inventions, designs, software, documentation, or other deliverables created by a party for the other under any services arrangement (the “Deliverables”) are the exclusive property of the receiving party.
+
+The creating party assigns all rights, title, and interest in the Deliverables, including all IP rights worldwide, and agrees to execute documents reasonably necessary to confirm this ownership.
+
+3.3 Moral Rights: The creating party waives any moral rights in the Deliverables to the extent permitted by law.
+
+3.4 Residual Knowledge: The creating party may retain general knowledge, skills, and experience gained, but may not use or disclose any Confidential Information or Deliverables in future projects.
+
+3.5 No License: Except as expressly stated, no license or rights to the other party’s IP are granted.
+
+4. Return of Materials
+Upon request, each party shall return or destroy all materials containing the other party’s Confidential Information.
+
+5. Term
+This NDA applies from the Effective Date for 2 years. Confidentiality obligations survive 3 years, and IP obligations survive indefinitely.
+
+6. Governing Law
+This NDA is governed by the laws of Ontario, Canada. The parties submit to the courts of Ontario for any disputes.
+
+IN WITNESS WHEREOF, the parties have executed this NDA:
+
+[Your Company Name]
+By: ___________________________
+Name: _________________________
+Title: __________________________
+
+[Service Provider Name]
+By: ___________________________
+Name: _________________________
+Title: __________________________
+
+This version is ready to drop into Word or PDF with fill-in-the-blank fields, making it easy for signing either digitally or on paper.
+
+I can also make a version with actual fillable fields formatted for e-signature platforms like DocuSign or Adobe Sign, so you don’t have to manually edit anything.
+
+Do you want me to do that next?
+
+
+
+

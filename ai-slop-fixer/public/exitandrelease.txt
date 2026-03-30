@@ -1,0 +1,364 @@
+
+
+
+
+This is a copy of a conversation between ChatGPT & Anonymous.
+
+Report conversation
+One of my co-founders is leaving my startup. We've already signed a simple purchase agreement to buy back the departing co-founders shares, but I just wanted to check if there is any other document we should get them to sign before they leave. If so, can you please draft something that is based on market standards and best practices? Our startup is based in Ontario.
+
+I can help you draft a strong “Exit/Separation Agreement” based on market standards and best practices for a departing co‑founder in an Ontario startup — but first I need to be clear:
+⚠️ I’m not a lawyer, and this is not legal advice. This draft is a template for discussion with a qualified Ontario corporate lawyer who can tailor it to your specific facts, shareholder agreement, employment relationship, and applicable laws.
+
+Why you might need more than a purchase agreement
+Even after a purchase agreement for equity, most startups also use a Separation Agreement (sometimes called a “Release and Settlement Agreement” or “Termination and Release Agreement”) with these common components:
+
+Mutual release of claims → prevents future litigation
+
+Confidentiality/Non‑disclosure reaffirmation → covers proprietary info after departure
+
+Intellectual Property Assignment → clarifies that all IP created by the founder belongs to the company
+
+Non‑solicitation/Non‑competition provisions (if applicable & enforceable)
+
+Return of Company Property
+
+Transition obligations (knowledge transfer, timelines)
+
+Survival clauses (what obligations survive termination)
+
+Because Ontario contract law and employment standards can impact enforceability (especially restrictive covenants), it’s best to run this by counsel.
+
+📄 Founder Separation and Release Agreement — Template (Ontario)
+This Founder Separation and Release Agreement (the “Agreement”) is made as of [Date] between:
+
+[Company Name], an Ontario corporation with its principal place of business at [address] (“Company”),
+and
+
+[Departing Founder Name] of [address] (“Founder”).
+
+1. Background
+A. The Founder has been a co‑founder and shareholder of the Company.
+B. The Company and Founder have entered into a Purchase Agreement dated [date] pursuant to which the Founder sold certain shares to the Company.
+C. The Parties now wish to finalize the Founder’s departure, including mutual releases and post‑departure obligations.
+
+2. Definitions
+In this Agreement, unless the context requires otherwise:
+
+“Confidential Information” means all non‑public information of the Company;
+
+“Intellectual Property” means all inventions, designs, know‑how, workflows, code, models, processes, ideas, and proprietary materials created by Founder relating to the Company’s business.
+
+3. Separation
+3.1 Effective Date of Separation: The Founder’s separation from all roles (director, officer, employee, consultant) is [Date].
+
+3.2 The Founder confirms they have received all compensation due through the Effective Date.
+
+4. Mutual Release
+In consideration of the agreements herein, each Party releases the other from all claims, demands, obligations, and causes of action of any kind arising before the Effective Date, including those relating to employment, equity, fiduciary duties, or corporate roles.
+
+The release does not apply to obligations that expressly survive this Agreement.
+
+5. Confidentiality
+5.1 The Founder acknowledges ongoing obligations under any existing confidentiality or IP agreements.
+
+5.2 The Founder agrees not to disclose, use, or exploit the Company’s Confidential Information at any time.
+
+6. Intellectual Property
+6.1 The Founder confirms that all Intellectual Property created during involvement with the Company has been assigned to the Company.
+
+6.2 To the extent any IP was not previously assigned, the Founder irrevocably assigns it now.
+
+7. Non‑Solicitation and Non‑Competition (if applicable)
+Note: enforceability of restrictive covenants in Ontario is case‑specific and should be reviewed by counsel.
+
+7.1 For a period of [duration] after the Effective Date, the Founder will not:
+(a) solicit Company employees or contractors;
+(b) solicit Company customers or clients.
+
+7.2 [Optional Non‑Competition clause — tailored by counsel]
+
+8. Return of Property
+The Founder agrees to return all Company property by [date], including devices, documents, keys, and credentials.
+
+9. Transition Assistance
+The Founder will reasonably assist in transferring knowledge and responsibilities to Company representatives through [date/period].
+
+10. Survival
+Clauses 4, 5, 6, 7, 8, 9, and this Section survive termination.
+
+11. Governing Law
+This Agreement is governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein.
+
+12. Entire Agreement
+This Agreement (together with the Purchase Agreement and any confidentiality/IP agreements) constitutes the entire understanding between the Parties.
+
+Signatures
+COMPANY
+By: _______________________
+Name: _____________________
+Title: ____________________
+Date: _____________________
+
+FOUNDER
+
+[Founder Name]
+Date: _____________________
+
+📌 Best Practices Checklist
+✔ Confirm this Separation Agreement refers to — and is consistent with — any existing:
+
+Stock‑holders’ agreement
+
+Voting agreements
+
+IP assignment agreements
+
+Employment or contractor agreements
+
+✔ Have both parties represented by independent counsel.
+✔ Ensure restrictive covenants are reasonable in scope, duration, and geography.
+✔ Maintain written consents from the board or shareholders if required by corporate documents.
+
+If you want, I can also help with…
+🔹 A checklist of Ontario legal issues to review
+🔹 A version formatted for printing
+🔹 A companion board resolution / consent document
+
+Just tell me what you’d like next.
+
+Would you like this adapted to:
+
+Include a Severance/Consideration clause (e.g., extra payment for release),
+
+Include specific restrictive covenants, or
+
+Be styled for use with a contractor vs. employee founder?
+
+
+They haven't asked for payment, but they'll also be stepping down as CFO.  Does that change any of the drafting.  I want this to be short so it doesn't discourage the person from signing, but also want to protect myself because I'm planning to raise money in the near future.  Also he's already signed a NDA and IP assignment so I don't think we need that, but let me know if we do
+
+Got it — that context helps a lot. Since:
+
+The departing co-founder isn’t asking for additional payment,
+
+They’re stepping down from CFO and all operational roles,
+
+They’ve already signed an NDA and IP assignment,
+
+You want the document to be short and non-discouraging, but still protective for fundraising,
+
+…we can simplify the draft significantly. Essentially, the document becomes a “Founder Exit & Release Agreement” that:
+
+Confirms their resignation from all roles (CFO, director, officer).
+
+Confirms the equity buyback is complete (referencing the existing purchase agreement).
+
+Provides a mutual release of claims.
+
+Reaffirms any existing NDA/IP obligations (so you have a paper trail without restating all details).
+
+Covers return of company property.
+
+Optionally, a non-solicit clause, which is usually enforceable and helps for investors.
+
+Because they’ve already signed NDA and IP assignments, you don’t need to repeat those obligations, but it’s wise to reference them so it’s clear they still apply.
+
+Here’s a short, market-standard template for Ontario startups:
+
+Founder Exit & Release Agreement (Ontario) — Short Form
+This Agreement is made as of [Date] between:
+
+[Company Name], an Ontario corporation (“Company”), and
+
+[Founder Name] of [Address] (“Founder”).
+
+1. Resignation
+The Founder resigns from all positions with the Company, including CFO, director, and officer roles, effective [Date].
+
+2. Equity Buyback
+The Parties acknowledge that the Founder’s shares have been repurchased under the Purchase Agreement dated [Date], and no further payments are owed.
+
+3. Mutual Release
+Each Party releases the other from all claims, demands, or obligations arising prior to the Effective Date, including claims related to equity, employment, fiduciary duties, or corporate roles, except obligations that expressly survive this Agreement.
+
+4. Reference to Existing NDA and IP Agreements
+The Founder acknowledges that all obligations under previously signed NDA and IP assignment agreements remain in effect.
+
+5. Return of Property
+The Founder agrees to return all Company property (documents, devices, keys, accounts) by [Date].
+
+6. Non-Solicitation
+For 12 months following the Effective Date, the Founder will not solicit employees, contractors, or clients of the Company.
+
+7. Governing Law
+This Agreement is governed by the laws of the Province of Ontario.
+
+Signatures
+
+COMPANY
+By: _______________________
+Name: _____________________
+Title: ____________________
+Date: _____________________
+
+FOUNDER
+
+[Founder Name]
+Date: _____________________
+
+✅ Notes / Best Practices:
+
+Keep it 1–2 pages max — short and simple encourages signing.
+
+Reference existing NDA/IP instead of re-stating obligations.
+
+Non-solicitation clause is optional but helpful for fundraising.
+
+Investors generally like to see a clear paper trail of clean exits.
+
+Make sure to retain board consent or resolution for their resignation if your corporate documents require it.
+
+If you want, I can draft a version that’s literally one page, fully formatted for signing, with minimal legalese, so it’s easy to hand to your co-founder without scaring them off.
+
+Do you want me to do that?
+
+
+Actually I want them to still think it came from a lawyer, so you can have some legalese.  Can you make a final version that I can export to Word?
+
+Perfect — I can draft a professional “lawyer‑style” Founder Exit & Release Agreement with enough legal language to look formal, while keeping it concise and investor‑friendly. I’ll make it clean so you can copy it straight into Word.
+
+Here’s the final version:
+
+FOUNDER EXIT & RELEASE AGREEMENT
+This Founder Exit & Release Agreement (the “Agreement”) is made as of [Date] by and between:
+
+[Company Name], an Ontario corporation with its principal place of business at [Address] (the “Company”), and
+
+[Founder Name], of [Address] (the “Founder”).
+
+1. Resignation
+The Founder hereby resigns from all positions held with the Company, including Chief Financial Officer, director, and officer roles, effective as of [Date] (the “Effective Date”).
+
+2. Equity Buyback
+The Parties acknowledge that the Founder’s shares in the Company have been repurchased pursuant to the Share Purchase Agreement dated [Date] (the “Purchase Agreement”), and that no further payments or obligations exist under or in connection with such shares.
+
+3. Mutual Release
+Subject to the exceptions set forth herein, each Party, on behalf of itself and its affiliates, heirs, executors, administrators, successors, and assigns, hereby fully releases and forever discharges the other Party from any and all claims, demands, causes of action, liabilities, or obligations of any kind, whether known or unknown, arising prior to the Effective Date, including but not limited to claims relating to employment, equity, fiduciary duties, or corporate governance.
+
+4. Existing Obligations
+The Founder acknowledges and agrees that all obligations under any previously executed Non‑Disclosure, Confidentiality, or Intellectual Property Assignment Agreements with the Company remain in full force and effect.
+
+5. Return of Company Property
+The Founder agrees to return all Company property, including but not limited to documents, electronic files, devices, keys, passwords, and any other materials belonging to the Company, no later than [Date].
+
+6. Non‑Solicitation
+For a period of 12 months following the Effective Date, the Founder shall not, directly or indirectly, solicit, recruit, or induce any employee, contractor, or client of the Company to terminate or modify their relationship with the Company.
+
+7. Governing Law
+This Agreement shall be governed by, and construed in accordance with, the laws of the Province of Ontario and the federal laws of Canada applicable therein.
+
+8. Entire Agreement
+This Agreement, together with the Purchase Agreement and any previously executed NDA or IP assignment agreements, constitutes the entire understanding between the Parties with respect to the subject matter hereof and supersedes any prior agreements or understandings, written or oral, relating thereto.
+
+9. Counterparts
+This Agreement may be executed in counterparts, each of which shall be deemed an original and all of which together shall constitute one and the same instrument. Signatures delivered by electronic means shall be deemed originals.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+COMPANY
+By: _______________________________
+Name: _____________________________
+Title: ____________________________
+Date: _____________________________
+
+FOUNDER
+By: _______________________________
+[Founder Name]
+Date: _____________________________
+
+This version:
+
+Uses lawyer-style formal language (e.g., “fully releases and forever discharges,” “heirs, executors, administrators, successors, and assigns”).
+
+Is concise (1–2 pages) and references the Purchase Agreement, NDA, and IP assignments.
+
+Includes a non-solicitation clause, which is common for investors.
+
+Ready to copy into Word and format for signatures.
+
+If you want, I can also create a Word-ready version with proper spacing, bold headings, and signature lines so it’s literally ready to send for execution.
+
+Do you want me to do that next?
+
+
+Yes
+
+Perfect! Here’s a Word-ready version with proper formatting, bold headings, spacing, and signature lines. You can copy this straight into Word, adjust fonts if you like, and it’s ready for execution.
+
+FOUNDER EXIT & RELEASE AGREEMENT
+This Founder Exit & Release Agreement (the “Agreement”) is made as of [Date] by and between:
+
+[Company Name], an Ontario corporation with its principal place of business at [Address] (the “Company”), and
+
+[Founder Name], of [Address] (the “Founder”).
+
+1. Resignation
+The Founder hereby resigns from all positions held with the Company, including Chief Financial Officer, director, and officer roles, effective as of [Date] (the “Effective Date”).
+
+2. Equity Buyback
+The Parties acknowledge that the Founder’s shares in the Company have been repurchased pursuant to the Share Purchase Agreement dated [Date] (the “Purchase Agreement”), and that no further payments or obligations exist under or in connection with such shares.
+
+3. Mutual Release
+Subject to the exceptions set forth herein, each Party, on behalf of itself and its affiliates, heirs, executors, administrators, successors, and assigns, hereby fully releases and forever discharges the other Party from any and all claims, demands, causes of action, liabilities, or obligations of any kind, whether known or unknown, arising prior to the Effective Date, including but not limited to claims relating to employment, equity, fiduciary duties, or corporate governance.
+
+4. Existing Obligations
+The Founder acknowledges and agrees that all obligations under any previously executed Non‑Disclosure, Confidentiality, or Intellectual Property Assignment Agreements with the Company remain in full force and effect.
+
+5. Return of Company Property
+The Founder agrees to return all Company property, including but not limited to documents, electronic files, devices, keys, passwords, and any other materials belonging to the Company, no later than [Date].
+
+6. Non‑Solicitation
+For a period of 12 months following the Effective Date, the Founder shall not, directly or indirectly, solicit, recruit, or induce any employee, contractor, or client of the Company to terminate or modify their relationship with the Company.
+
+7. Governing Law
+This Agreement shall be governed by, and construed in accordance with, the laws of the Province of Ontario and the federal laws of Canada applicable therein.
+
+8. Entire Agreement
+This Agreement, together with the Purchase Agreement and any previously executed NDA or IP assignment agreements, constitutes the entire understanding between the Parties with respect to the subject matter hereof and supersedes any prior agreements or understandings, written or oral, relating thereto.
+
+9. Counterparts
+This Agreement may be executed in counterparts, each of which shall be deemed an original and all of which together shall constitute one and the same instrument. Signatures delivered by electronic means shall be deemed originals.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+COMPANY
+
+By: _______________________________
+Name: _____________________________
+Title: ____________________________
+Date: _____________________________
+
+FOUNDER
+
+By: _______________________________
+[Founder Name]
+Date: _____________________________
+
+✅ Tip for Word formatting:
+
+Use 12pt Times New Roman or Calibri.
+
+Add page breaks if it goes to a second page.
+
+Bold the section headings as above.
+
+Consider leaving a blank line between sections for readability.
+
+If you want, I can also add a small “board acknowledgement” section at the end, which investors often like to see when a founder exits — it keeps it fully “investor-ready.”
+
+Do you want me to add that?
+
+
+
+

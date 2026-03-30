@@ -2,6 +2,9 @@ export interface UserStats {
   user_id: string;
   email: string | null;
   full_name: string | null;
+  company_name: string | null;
+  website: string | null;
+  profile_image_path: string | null;
   referral_source: string | null;
   total_conversations: number;
   total_messages: number;
@@ -38,6 +41,8 @@ export interface UserDetail {
   email: string | null;
   full_name: string | null;
   company_name: string | null;
+  website: string | null;
+  profile_image_path: string | null;
   role: string;
   created_at: string;
   total_conversations: number;
@@ -156,6 +161,11 @@ export async function getProfileDocuments(userId: string): Promise<ProfileDocume
     console.error('Error listing profile documents:', error);
     return [];
   }
+}
+
+export async function getProfileImageUrl(profile_image_path: string | null | undefined): Promise<string | null> {
+  if (!profile_image_path) return null;
+  return getProfileDocViewUrl("ProfileDrawer", profile_image_path);
 }
 
 export async function getProfileDocViewUrl(bucket: string, path: string): Promise<string | null> {
