@@ -16,9 +16,9 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-mono-landing",
 });
 
-const siteTitle = "Scopic | Legal AI workspace";
+const siteTitle = "Scopic";
 const siteDescription =
-  "Agentic frameworks for self-serve legal operations—automated research, drafting, and workflows for modern legal teams.";
+  "A local-first AI workspace for lawyers — your documents stay on your machine.";
 const siteUrl = "https://scopiclegal.com";
 const ogImage = "/images/image.png?v=2";
 
