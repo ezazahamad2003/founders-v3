@@ -1,299 +1,374 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useRef, useState } from "react";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+
+const GITHUB_URL = "https://github.com/ezazahamad2003/scopic";
+const CALENDAR_URL = "https://calendar.app.google/WLR4JQz4XeKhAj9c8";
+const LICENSE_URL = "https://github.com/ezazahamad2003/scopic/blob/main/LICENSE";
+
+const VALUE_TILES = [
+  {
+    eyebrow: "Document-grounded chat",
+    body: "Ask legal questions with context from uploaded agreements and prior conversation history.",
+  },
+  {
+    eyebrow: "Document review",
+    body: "Structured risk analysis with executive summaries and severity-rated findings across your files.",
+  },
+  {
+    eyebrow: "Agentic workflows",
+    body: "Research, drafting, and multi-agent debate modes powered by frontier models.",
+  },
+] as const;
+
+function externalLinkProps() {
+  return {
+    target: "_blank" as const,
+    rel: "noopener noreferrer" as const,
+  };
+}
+
+function formatAuthError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("already registered") || lower.includes("already been registered")) {
+    return "An account with this email already exists. Sign in instead.";
+  }
+  if (lower.includes("password") && (lower.includes("weak") || lower.includes("least"))) {
+    return "Password must be at least 8 characters.";
+  }
+  if (lower.includes("invalid login credentials")) {
+    return "Invalid email or password.";
+  }
+  if (lower.includes("network") || lower.includes("fetch")) {
+    return "Network error. Check your connection and try again.";
+  }
+  return message;
+}
 
 export default function LandingPage() {
-  const router = useRouter();
-  const [isSignUp, setIsSignUp] = useState(false); // Default to sign-in
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    companyName: "",
-    referralSource: "",
-  });
+  const signupRef = useRef<HTMLElement>(null);
+  const [mode, setMode] = useState<"signup" | "signin">("signup");
+  const [name, setName] = useState("");
+  const [lawFirmName, setLawFirmName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const scrollToSignup = () => {
+    signupRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLoading(true);
     setError(null);
 
-    try {
-      const supabase = supabaseBrowserClient();
-      if (!supabase) {
-        setError("Authentication service unavailable");
-        setLoading(false);
-        return;
-      }
+    const supabase = supabaseBrowserClient();
+    if (!supabase) {
+      setError("Authentication service unavailable.");
+      setLoading(false);
+      return;
+    }
 
-      if (isSignUp) {
-        // Sign Up
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      if (mode === "signup") {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
           options: {
             data: {
-              full_name: formData.fullName,
-              company_name: formData.companyName,
-              referral_source: formData.referralSource,
+              name: name.trim(),
+              law_firm_name: lawFirmName.trim(),
+              full_name: name.trim(),
+              company_name: lawFirmName.trim(),
             },
           },
         });
 
         if (signUpError) {
-          setError(signUpError.message);
+          setError(formatAuthError(signUpError.message));
+          setLoading(false);
+          return;
+        }
+
+        if (data.user && data.session) {
+          const { error: profileError } = await supabase.from("profiles").insert({
+            id: data.user.id,
+            email: email.trim(),
+            full_name: name.trim(),
+            company_name: lawFirmName.trim(),
+          });
+
+          if (profileError && !profileError.message.toLowerCase().includes("duplicate")) {
+            console.error("Profile insert failed:", profileError.message);
+          }
+        } else if (data.user && !data.session) {
+          setError(
+            "Account created but email confirmation is required. Ask an admin to disable confirmations for immediate access."
+          );
           setLoading(false);
           return;
         }
       } else {
-        // Sign In
         const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: formData.email,
-          password: formData.password,
+          email: email.trim(),
+          password,
         });
 
         if (signInError) {
-          setError(signInError.message);
+          setError(formatAuthError(signInError.message));
           setLoading(false);
           return;
         }
       }
-
-      setSuccess(true);
-      
-      // Only redirect for sign-in, not sign-up (user needs to verify email first)
-      if (!isSignUp) {
-        setTimeout(() => {
-          router.push("/");
-        }, 2000);
-      }
-    } catch (err) {
-      setError("An unexpected error occurred");
+    } catch {
+      setError("Network error. Check your connection and try again.");
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const inputClassName =
+    "block w-full border border-ink/30 bg-ivory px-3 py-2.5 font-mono text-[13px] text-ink placeholder:text-ink/40 focus:border-ink focus:outline-none focus:ring-1 focus:ring-saffron-400";
 
   return (
-    <div className="min-h-screen w-full bg-[#05060c] flex flex-col lg:flex-row overflow-x-hidden">
-      {/* Left Side - Hero Content */}
-      <div className="flex-1 relative flex items-center justify-center min-h-[50vh] lg:min-h-screen p-6 sm:p-8 lg:p-12">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-purple-600/20 to-[#05060c] z-10" />
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-indigo-500/30 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse delay-1000" />
+    <div className="min-h-screen bg-ivory text-ink">
+      <div className="mx-auto flex min-h-screen max-w-[960px] flex-col px-6 py-8 sm:px-8">
+        {/* Top bar */}
+        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-ink/15 pb-6">
+          <div className="flex items-center gap-3">
+            <span className="inline-block size-3 bg-saffron-400" aria-hidden />
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55">
+              Legal AI workspace
+            </span>
           </div>
-          <Image
-            src="/images/image.png"
-            alt="Legal documents"
-            fill
-            className="object-cover opacity-10"
-          />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-20 w-full max-w-2xl">
-          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-            <div className="inline-block px-3 py-1.5 sm:px-4 sm:py-2 bg-indigo-500/20 border border-indigo-500/30 rounded-full">
-              <span className="text-indigo-300 text-xs sm:text-sm font-medium">PRIVATE BETA • EXCLUSIVE ACCESS</span>
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight bg-gradient-to-r from-white via-indigo-100 to-purple-200 bg-clip-text text-transparent">
-              SCOPIC LEGAL
-            </h1>
-            
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 leading-relaxed">
-              Agentic frameworks for self-serve legal work with human lawyers on standby
-            </p>
-
-            <div className="space-y-3 sm:space-y-4 pt-2 sm:pt-4">
-              <p className="text-base sm:text-lg font-semibold text-white">
-                Join our beta and get free:
-              </p>
-              <div className="space-y-2 sm:space-y-3">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-400 rounded-full flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-slate-300">Early access to GPT 5.4-powered AI platform</span>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-400 rounded-full flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-slate-300">Legal strategy consultations with expert lawyers</span>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-400 rounded-full flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-slate-300">Cost-effective lawyer intros for complex work</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-8 sm:pt-10 lg:pt-12 flex flex-wrap items-center gap-3 sm:gap-6 text-[10px] sm:text-xs text-slate-400">
-              <a href="/legal/terms-of-use.html" target="_blank" className="hover:text-indigo-400 transition">
-                Terms of Use
-              </a>
-              <span className="hidden sm:inline">•</span>
-              <a href="/legal/privacy-policy.html" target="_blank" className="hover:text-indigo-400 transition">
-                Privacy Policy
-              </a>
-            </div>
+          <div className="flex items-center gap-5">
+            <a
+              href={GITHUB_URL}
+              {...externalLinkProps()}
+              className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/70 transition hover:text-ink"
+            >
+              View the source
+            </a>
+            <a
+              href={CALENDAR_URL}
+              {...externalLinkProps()}
+              className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/70 transition hover:text-ink"
+            >
+              Talk to the team
+            </a>
           </div>
-        </div>
-      </div>
+          <div className="w-full pt-2">
+            <span className="font-display text-2xl font-bold tracking-[-0.02em]">SCOPIC</span>
+          </div>
+        </header>
 
-      {/* Right Side - Sign Up Form */}
-      <div className="w-full lg:w-[480px] bg-gradient-to-br from-slate-900/50 to-slate-950/50 backdrop-blur-xl lg:border-l border-white/10 flex items-center justify-center p-6 sm:p-8 min-h-[50vh] lg:min-h-screen">
-        <div className="w-full max-w-md">
-          {success ? (
-            <div className="text-center py-12">
-              <div className="w-20 h-20 mx-auto mb-6 bg-green-500/20 rounded-full flex items-center justify-center">
-                <svg className="w-10 h-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                {isSignUp ? "Check Your Email!" : "Welcome to Scopic Legal!"}
-              </h3>
-              <p className="text-slate-300">
-                {isSignUp 
-                  ? "We've sent you a confirmation email. Please check your inbox and click the link to verify your account."
-                  : "Redirecting you to the platform..."}
-              </p>
+        {/* Hero */}
+        <section className="border-b border-ink/15 py-10 sm:py-12">
+          <h1 className="font-display text-5xl font-bold tracking-[-0.03em] sm:text-6xl">SCOPIC</h1>
+          <p className="mt-5 max-w-2xl font-serif text-lg italic text-ink/70 sm:text-xl">
+            An AI workspace for legal teams — research, review, and draft with your documents in
+            context.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-5">
+            <button
+              type="button"
+              onClick={scrollToSignup}
+              className="inline-flex items-center gap-2 border border-ink bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ivory transition hover:bg-saffron-400 hover:text-ink"
+            >
+              Get started →
+            </button>
+            <a
+              href={CALENDAR_URL}
+              {...externalLinkProps()}
+              className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60 underline decoration-ink/25 underline-offset-4 transition hover:text-ink"
+            >
+              Book a call
+            </a>
+          </div>
+        </section>
+
+        {/* Value tiles */}
+        <section className="grid gap-4 border-b border-ink/15 py-10 sm:grid-cols-3">
+          {VALUE_TILES.map((tile) => (
+            <article key={tile.eyebrow} className="relative border border-ink/15 p-5 pt-6">
+              <span
+                className="absolute left-0 top-0 inline-block size-3 bg-saffron-400"
+                aria-hidden
+              />
+              <h2 className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
+                {tile.eyebrow}
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-ink/80">{tile.body}</p>
+            </article>
+          ))}
+        </section>
+
+        {/* Signup card */}
+        <section ref={signupRef} className="py-10 sm:py-12">
+          <div className="border border-ink/15 bg-ivory p-6 sm:p-8">
+            <div className="mb-6 flex gap-6 border-b border-ink/15 pb-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signup");
+                  setError(null);
+                }}
+                className={`font-mono text-[10px] uppercase tracking-[0.14em] transition ${
+                  mode === "signup"
+                    ? "border-b-2 border-saffron-400 pb-1 text-ink"
+                    : "text-ink/45 hover:text-ink/70"
+                }`}
+              >
+                Create account
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signin");
+                  setError(null);
+                }}
+                className={`font-mono text-[10px] uppercase tracking-[0.14em] transition ${
+                  mode === "signin"
+                    ? "border-b-2 border-saffron-400 pb-1 text-ink"
+                    : "text-ink/45 hover:text-ink/70"
+                }`}
+              >
+                Sign in
+              </button>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-              <div className="text-center mb-6 sm:mb-8">
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                  {isSignUp ? "Join the Beta" : "SCOPIC LEGAL"}
-                </h3>
-                <p className="text-slate-400 text-xs sm:text-sm">
-                  {isSignUp ? "Shape the future of legal services" : "Sign in to your account"}
-                </p>
-              </div>
 
-              {isSignUp && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {mode === "signup" && (
+                <>
+                  <label className="block">
+                    <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                      Full name
+                    </span>
                     <input
-                      id="fullName"
-                      name="fullName"
                       type="text"
                       required
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                      placeholder="Full Name *"
+                      autoComplete="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className={inputClassName}
                     />
-                  </div>
-                  <div>
+                  </label>
+                  <label className="block">
+                    <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                      Law firm
+                    </span>
                     <input
-                      id="companyName"
-                      name="companyName"
                       type="text"
                       required
-                      value={formData.companyName}
-                      onChange={handleChange}
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                      placeholder="Company *"
+                      autoComplete="organization"
+                      value={lawFirmName}
+                      onChange={(e) => setLawFirmName(e.target.value)}
+                      className={inputClassName}
                     />
-                  </div>
-                </div>
+                  </label>
+                </>
               )}
 
-              <div>
+              <label className="block">
+                <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                  Email
+                </span>
                 <input
-                  id="email"
-                  name="email"
                   type="email"
                   required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                  placeholder="Email Address *"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={inputClassName}
                 />
-              </div>
+              </label>
 
-              <div>
+              <label className="block">
+                <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
+                  Password
+                </span>
                 <input
-                  id="password"
-                  name="password"
                   type="password"
                   required
-                  minLength={6}
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                  placeholder="Password (min 6 chars) *"
+                  minLength={8}
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={inputClassName}
                 />
-              </div>
-
-              {isSignUp && (
-                <div>
-                  <input
-                    id="referralSource"
-                    name="referralSource"
-                    type="text"
-                    value={formData.referralSource}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                    placeholder="How did you hear about us?"
-                  />
-                </div>
-              )}
+              </label>
 
               {error && (
-                <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-destructive">
                   {error}
-                </div>
+                </p>
               )}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-3 sm:px-6 sm:py-4 text-base sm:text-lg font-semibold text-white transition hover:shadow-lg hover:shadow-indigo-500/50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex w-full items-center justify-center border border-ink bg-ink px-4 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ivory transition hover:bg-saffron-400 hover:text-ink disabled:opacity-50"
               >
-                {loading ? (isSignUp ? "Joining..." : "Signing In...") : (isSignUp ? "Join Beta Program" : "Sign In")}
+                {loading
+                  ? mode === "signup"
+                    ? "Creating account…"
+                    : "Signing in…"
+                  : mode === "signup"
+                    ? "Create account →"
+                    : "Sign in →"}
               </button>
 
-              {/* Forgot Password Link - Only show in sign-in mode */}
-              {!isSignUp && (
-                <div className="text-center pt-2">
-                  <a
-                    href="/forgot-password"
-                    className="text-xs sm:text-sm text-slate-400 hover:text-indigo-400 transition"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+              {mode === "signup" && (
+                <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-ink/45">
+                  By signing up you agree we will store your name, email and firm name. Your chat
+                  documents are stored in your account.
+                </p>
               )}
-
-              <div className="text-center pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsSignUp(!isSignUp);
-                    setError(null);
-                  }}
-                  className="text-xs sm:text-sm text-indigo-400 hover:text-indigo-300 transition"
-                >
-                  {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Join Beta"}
-                </button>
-              </div>
             </form>
-          )}
-        </div>
+          </div>
+        </section>
+
+        {/* Talk-to-us strip */}
+        <section className="flex flex-wrap items-center justify-between gap-4 border-y border-ink/15 bg-ink px-6 py-5 text-ivory">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ivory/80">
+            Want a walkthrough first?
+          </p>
+          <a
+            href={CALENDAR_URL}
+            {...externalLinkProps()}
+            className="inline-flex items-center border border-saffron-400 bg-saffron-400 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition hover:bg-ivory"
+          >
+            Book a call
+          </a>
+        </section>
+
+        {/* Footer */}
+        <footer className="mt-auto flex flex-wrap items-center gap-4 border-t border-ink/15 pt-6 text-sm text-ink/55">
+          <span>© Scopic</span>
+          <a
+            href={GITHUB_URL}
+            {...externalLinkProps()}
+            className="font-mono text-[10px] uppercase tracking-[0.14em] hover:text-ink"
+          >
+            GitHub
+          </a>
+          <a
+            href={LICENSE_URL}
+            {...externalLinkProps()}
+            className="font-mono text-[10px] uppercase tracking-[0.14em] hover:text-ink"
+          >
+            AGPL-3.0-or-later
+          </a>
+        </footer>
       </div>
     </div>
   );

@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Archivo, IBM_Plex_Mono, Inter, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const archivo = Archivo({ subsets: ["latin"], variable: "--font-display" });
+const libreBaskerville = Libre_Baskerville({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["italic"],
+  variable: "--font-serif",
+});
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-mono-landing",
+});
 
-const siteTitle = "Scopic Legal | Agentic frameworks for self-serve legal ops";
+const siteTitle = "Scopic | Legal AI workspace";
 const siteDescription =
   "Agentic frameworks for self-serve legal operations—automated research, drafting, and workflows for modern legal teams.";
 const siteUrl = "https://scopiclegal.com";
@@ -24,7 +36,7 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: "Scopic Legal",
+        alt: "Scopic",
       },
     ],
   },
@@ -70,7 +82,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} app-bg`} suppressHydrationWarning>
+      <body
+        className={`${inter.className} ${archivo.variable} ${libreBaskerville.variable} ${ibmPlexMono.variable} app-bg`}
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

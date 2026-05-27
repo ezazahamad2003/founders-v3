@@ -49,7 +49,7 @@ export default function AuthGate() {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#05060c]">
-        <div className="animate-pulse text-slate-300">Preparing Scopic Legal…</div>
+        <div className="animate-pulse text-slate-300">Preparing Scopic…</div>
       </div>
     );
   }

@@ -167,8 +167,8 @@ async def _create_profile(
     referral_source = None
     
     if user_metadata:
-        full_name = user_metadata.get("full_name")
-        company_name = user_metadata.get("company_name")
+        full_name = user_metadata.get("full_name") or user_metadata.get("name")
+        company_name = user_metadata.get("company_name") or user_metadata.get("law_firm_name")
         website = user_metadata.get("website")
         profile_image_path = user_metadata.get("profile_image_path") or user_metadata.get("avatar_url")
         referral_source = user_metadata.get("referral_source")
