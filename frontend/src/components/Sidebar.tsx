@@ -92,7 +92,7 @@ export default function Sidebar({
           + Document Vault
         </button>
         <a
-          href="https://calendar.google.com/calendar/u/0/appointments/AcZssZ0Kntrw_2jzyJwypoDvkeY1nCAaNdy6XUsKB4A="
+          href="https://calendar.app.google/z4aYNYvn748Br3ap8"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 flex w-full items-center justify-center rounded-xl border border-indigo-500/40 bg-indigo-500/10 px-3 py-2 text-xs font-medium uppercase tracking-wide text-indigo-300 transition hover:border-indigo-400 hover:bg-indigo-500/20"

@@ -1,14 +1,33 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 
-const CALENDAR_URL = "https://calendar.app.google/F5SwWrfTKPVqeLTz7";
+const CALENDAR_URL = "https://calendar.app.google/z4aYNYvn748Br3ap8";
 
 const BETA_BULLETS = [
   "Purpose-built legal tech with 100+ agentic legal workflows / skills",
   "Local LLMs on your device with complete privacy for sensitive legal work",
   "Frontier LLMs in the cloud with enhanced security for everything else",
+] as const;
+
+const LAW_FIRM_LOGOS = [
+  { name: "Dentons", src: "/logos/law-dentons.png" },
+  { name: "Reitler", src: "/logos/law-reitler.png" },
+  { name: "Fasken", src: "/logos/law-fasken.png" },
+  { name: "Aird & Berlis", src: "/logos/law-aird-berlis.png" },
+  { name: "GSA", src: "/logos/law-gsa.png" },
+  { name: "Marshall Harp & Henman", src: "/logos/law-marshall-harp-henman.png" },
+] as const;
+
+const FOUNDER_LOGOS = [
+  { name: "Senso", src: "/logos/founder-senso.png" },
+  { name: "Ulalo", src: "/logos/founder-ulalo.png" },
+  { name: "Crewz", src: "/logos/founder-crewz.png" },
+  { name: "Nutraberry", src: "/logos/founder-nutraberry.png" },
+  { name: "ShowerThoughts", src: "/logos/founder-showerthoughts.png" },
+  { name: "Inheritchain", src: "/logos/founder-inheritchain.png" },
 ] as const;
 
 // Hidden until design-partner consents are confirmed. Flip to true to show.
@@ -21,6 +40,36 @@ function externalLinkProps() {
     target: "_blank" as const,
     rel: "noopener noreferrer" as const,
   };
+}
+
+function LogoStrip({ logos }: { logos: readonly { name: string; src: string }[] }) {
+  return (
+    <div className="mt-4 grid grid-cols-2 items-center gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-6">
+      {logos.map((logo) => (
+        <div key={logo.name} className="flex min-h-12 items-center justify-center">
+          <Image
+            src={logo.src}
+            alt={`${logo.name} logo`}
+            width={220}
+            height={80}
+            className="max-h-10 w-auto max-w-full object-contain"
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ApplyLink() {
+  return (
+    <a
+      href={CALENDAR_URL}
+      {...externalLinkProps()}
+      className="font-semibold text-ink underline decoration-ink/25 underline-offset-4 transition hover:decoration-ink"
+    >
+      Apply
+    </a>
+  );
 }
 
 export default function LandingPage() {
@@ -94,7 +143,7 @@ export default function LandingPage() {
               onClick={scrollToBeta}
               className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/70 transition hover:text-ink"
             >
-              Join Our Beta
+              Join Our Lawyer Beta
             </button>
             <a
               href={CALENDAR_URL}
@@ -120,7 +169,7 @@ export default function LandingPage() {
               onClick={scrollToBeta}
               className="inline-flex items-center gap-2 border border-ink bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ivory transition hover:bg-saffron-400 hover:text-ink"
             >
-              Join Our Beta →
+              Join Our Lawyer Beta →
             </button>
             <a
               href={CALENDAR_URL}
@@ -139,7 +188,7 @@ export default function LandingPage() {
                 Early access
               </p>
               <h2 className="mt-3 font-display text-2xl font-bold tracking-[-0.02em] sm:text-3xl">
-                Join our beta and get free early access to:
+                Join our Lawyer beta and get free early access to:
               </h2>
               <ul className="mt-5 space-y-3 text-sm leading-relaxed text-ink/80">
                 {BETA_BULLETS.map((bullet) => (
@@ -222,12 +271,30 @@ export default function LandingPage() {
                 disabled={submitting}
                 className="mt-1 inline-flex items-center justify-center gap-2 border border-ink bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ivory transition hover:bg-saffron-400 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitting ? "Submitting…" : "Join Our Beta →"}
+                {submitting ? "Submitting…" : "Join Our Lawyer Beta →"}
               </button>
               <p className="text-[11px] leading-relaxed text-ink/50">
                 After you submit, we&apos;ll take you to book an introductory demo meeting.
               </p>
             </form>
+
+            <div className="border-t border-ink/15 pt-6 lg:col-span-2">
+              <p className="text-sm leading-relaxed text-ink/75">
+                <ApplyLink /> to our exclusive Lawyer Design Partner Program to help shape
+                the future of legal tech with other innovative Lawyers from firms across
+                the globe:
+              </p>
+              <LogoStrip logos={LAW_FIRM_LOGOS} />
+            </div>
+
+            <div className="border-t border-ink/15 pt-6 lg:col-span-2">
+              <p className="text-sm leading-relaxed text-ink/75">
+                <ApplyLink /> to our exclusive Founder Program to amplify your self-serve
+                legal work under the light supervision of a trusted Lawyer from our Lawyer
+                Design Partner Program:
+              </p>
+              <LogoStrip logos={FOUNDER_LOGOS} />
+            </div>
           </div>
         </section>
 
