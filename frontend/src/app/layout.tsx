@@ -18,7 +18,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 const siteTitle = "Scopic";
 const siteDescription =
-  "A local-first AI workspace for lawyers — your documents stay on your machine.";
+  "Private legal AI for matter review, drafting, and firm-controlled model workflows.";
 const siteUrl = "https://scopiclegal.com";
 const ogImage = "/images/image.png?v=2";
 

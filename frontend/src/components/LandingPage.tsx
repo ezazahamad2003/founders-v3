@@ -2,14 +2,42 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { ArrowRight, CheckCircle2, Cpu, Database, LockKeyhole, Scale } from "lucide-react";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 
 const CALENDAR_URL = "https://calendar.app.google/z4aYNYvn748Br3ap8";
 
 const BETA_BULLETS = [
-  "Purpose-built legal tech with 100+ agentic legal workflows / skills",
-  "Local LLMs on your device with complete privacy for sensitive legal work",
-  "Frontier LLMs in the cloud with enhanced security for everything else",
+  "A local-first legal AI workspace for reviewing, drafting, and reasoning over private matters",
+  "100+ agentic legal workflows and skills built around real lawyer review loops",
+  "Choice of local models for sensitive work and frontier cloud models when you need extra reach",
+] as const;
+
+const ADVANTAGES = [
+  {
+    title: "Matter memory",
+    copy: "Every correction, precedent, and firm preference can become reusable context instead of a one-off chat.",
+  },
+  {
+    title: "Private by default",
+    copy: "Sensitive documents can stay on the device while lawyers decide when cloud reasoning is appropriate.",
+  },
+  {
+    title: "Legal workflows",
+    copy: "Scopic is shaped around lawyer tasks: document review, clause work, risk spotting, and matter-specific drafting.",
+  },
+  {
+    title: "Human control",
+    copy: "The lawyer remains the reviewer. The system improves through explicit edits, decisions, and feedback.",
+  },
+] as const;
+
+const WORKFLOW_STEPS = [
+  "Connect the matter workspace",
+  "Review documents locally",
+  "Route tasks to legal agents",
+  "Capture lawyer corrections",
+  "Reuse the learning on the next matter",
 ] as const;
 
 const LAW_FIRM_LOGOS = [
@@ -42,11 +70,29 @@ function externalLinkProps() {
   };
 }
 
+function ScopicMark({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 220" fill="none" aria-hidden className={className}>
+      <g fill="currentColor" stroke="currentColor" strokeLinecap="butt">
+        <path d="M60 2C66 42 68 77 65 103C62 101 58 101 55 103C52 77 54 42 60 2Z" />
+        <path d="M60 218C54 178 52 143 55 117C58 119 62 119 65 117C68 143 66 178 60 218Z" />
+        <circle cx="60" cy="110" r="12" />
+        <path d="M10 103C12 78 29 58 52 52" strokeWidth="10" />
+        <path d="M68 52C91 58 108 78 110 103" strokeWidth="10" />
+        <path d="M10 117C12 142 29 162 52 168" strokeWidth="10" />
+        <path d="M68 168C91 162 108 142 110 117" strokeWidth="10" />
+        <path d="M24 119C28 140 40 153 52 157" strokeWidth="6" />
+        <path d="M68 63C89 69 99 86 101 102" strokeWidth="6" />
+      </g>
+    </svg>
+  );
+}
+
 function LogoStrip({ logos }: { logos: readonly { name: string; src: string }[] }) {
   return (
-    <div className="mt-4 grid grid-cols-2 items-center gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-6">
+    <div className="mt-5 grid grid-cols-2 items-center gap-x-6 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
       {logos.map((logo) => (
-        <div key={logo.name} className="flex min-h-12 items-center justify-center">
+        <div key={logo.name} className="flex min-h-12 items-center justify-center border border-ink/10 bg-white/45 px-4 py-3">
           <Image
             src={logo.src}
             alt={`${logo.name} logo`}
@@ -69,6 +115,67 @@ function ApplyLink() {
     >
       Apply
     </a>
+  );
+}
+
+function ConsolePreview() {
+  return (
+    <div className="relative border border-[#f7f3ea]/15 bg-[#0b0d0a] p-4 shadow-2xl shadow-black/35">
+      <Image
+        src="/logos/scopic-logo-white-vertical.png"
+        alt=""
+        width={320}
+        height={594}
+        priority
+        className="pointer-events-none absolute -right-12 top-4 hidden h-[430px] w-auto opacity-[0.07] lg:block"
+      />
+      <div className="relative border border-[#f7f3ea]/10 bg-[#070806]">
+        <div className="flex items-center justify-between border-b border-[#f7f3ea]/10 px-4 py-3 font-mono text-[11px] text-[#f7f3ea]/55">
+          <span>scopic.local / matter-workspace</span>
+          <span>PRIVATE MODE</span>
+        </div>
+        <div className="grid border-b border-[#f7f3ea]/10 sm:grid-cols-3">
+          <div className="border-b border-[#f7f3ea]/10 p-4 sm:border-b-0 sm:border-r">
+            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Documents</p>
+            <p className="mt-3 font-display text-3xl font-bold">42</p>
+            <p className="mt-1 text-xs text-[#f7f3ea]/55">indexed locally</p>
+          </div>
+          <div className="border-b border-[#f7f3ea]/10 p-4 sm:border-b-0 sm:border-r">
+            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Risk flags</p>
+            <p className="mt-3 font-display text-3xl font-bold">18</p>
+            <p className="mt-1 text-xs text-[#f7f3ea]/55">awaiting review</p>
+          </div>
+          <div className="p-4">
+            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Data out</p>
+            <p className="mt-3 font-display text-3xl font-bold">0</p>
+            <p className="mt-1 text-xs text-[#f7f3ea]/55">local model run</p>
+          </div>
+        </div>
+        <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="border-b border-[#f7f3ea]/10 p-4 lg:border-b-0 lg:border-r">
+            <p className="font-mono text-[10px] uppercase text-[#e8b13a]">Share purchase agreement</p>
+            <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#f7f3ea]/72">
+              <p>Clause 9.2 indemnity cap conflicts with the escrow schedule.</p>
+              <p className="border-l-2 border-[#e8b13a] pl-3 text-[#f7f3ea]">
+                Suggested revision should track escrow release mechanics, not headline purchase price.
+              </p>
+              <p className="text-[#f7f3ea]/45">Similar correction found in Project Meridian and Project Anker.</p>
+            </div>
+          </div>
+          <div className="p-4">
+            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Agent ledger</p>
+            <ol className="mt-4 space-y-4 text-sm text-[#f7f3ea]/70">
+              {WORKFLOW_STEPS.map((step, index) => (
+                <li key={step} className="flex gap-3">
+                  <span className="font-mono text-[11px] text-[#e8b13a]">0{index + 1}</span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -128,191 +235,241 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ivory text-ink">
-      <div className="mx-auto flex min-h-screen max-w-[960px] flex-col px-6 py-8 sm:px-8">
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-ink/15 pb-6">
-          <div className="flex items-center gap-3">
-            <span className="inline-block size-3 bg-saffron-400" aria-hidden />
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55">
-              Local-first legal AI
+    <div className="min-h-screen bg-[#060705] text-[#f7f3ea]">
+      <div className="mx-auto flex min-h-screen max-w-[1180px] flex-col px-5 py-6 sm:px-8 lg:px-10">
+        <header className="flex flex-wrap items-center justify-between gap-5 border-b border-[#f7f3ea]/15 pb-5">
+          <a href="#top" className="flex items-center gap-4" aria-label="Scopic home">
+            <ScopicMark className="h-16 w-9 text-[#f7f3ea] sm:h-20 sm:w-11" />
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-3xl font-bold tracking-normal sm:text-4xl">SCOPIC</span>
+              <span className="mt-2 font-mono text-[11px] uppercase text-[#f7f3ea]/55">Private legal AI lab</span>
             </span>
-          </div>
-          <div className="flex items-center gap-5">
-            <button
-              type="button"
-              onClick={scrollToBeta}
-              className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/70 transition hover:text-ink"
-            >
-              Join Our Lawyer Beta
+          </a>
+          <nav className="flex flex-wrap items-center gap-5 font-mono text-[11px] uppercase text-[#f7f3ea]/62">
+            <a href="#thinking" className="transition hover:text-[#f7f3ea]">Thinking</a>
+            <a href="#system" className="transition hover:text-[#f7f3ea]">System</a>
+            <button type="button" onClick={scrollToBeta} className="transition hover:text-[#f7f3ea]">
+              Beta
             </button>
-            <a
-              href={CALENDAR_URL}
-              {...externalLinkProps()}
-              className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/70 transition hover:text-ink"
-            >
+            <a href={CALENDAR_URL} {...externalLinkProps()} className="border border-[#e8b13a] px-4 py-2 text-[#e8b13a] transition hover:bg-[#e8b13a] hover:text-[#12110f]">
               Book a call
             </a>
-          </div>
-          <div className="w-full pt-2">
-            <span className="font-display text-2xl font-bold tracking-[-0.02em]">SCOPIC</span>
-          </div>
+          </nav>
         </header>
 
-        <section className="border-b border-ink/15 py-10 sm:py-12">
-          <h1 className="font-display text-5xl font-bold tracking-[-0.03em] sm:text-6xl">SCOPIC</h1>
-          <p className="mt-5 max-w-2xl font-serif text-lg italic text-ink/70 sm:text-xl">
-            Helping Lawyers use Advanced AI, Privately.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-5">
-            <button
-              type="button"
-              onClick={scrollToBeta}
-              className="inline-flex items-center gap-2 border border-ink bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ivory transition hover:bg-saffron-400 hover:text-ink"
-            >
-              Join Our Lawyer Beta →
-            </button>
-            <a
-              href={CALENDAR_URL}
-              {...externalLinkProps()}
-              className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60 underline decoration-ink/25 underline-offset-4 transition hover:text-ink"
-            >
-              Book a call
-            </a>
-          </div>
-        </section>
-
-        <section ref={betaRef} className="py-10 sm:py-12">
-          <div className="grid gap-8 border border-ink/15 p-6 sm:p-8 lg:grid-cols-[1.05fr_1fr]">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">
-                Early access
+        <main id="top">
+          <section className="grid gap-10 border-b border-[#f7f3ea]/15 py-12 lg:grid-cols-[0.92fr_1.08fr] lg:py-16">
+            <div className="flex flex-col justify-center">
+              <p className="font-mono text-xs uppercase text-[#e8b13a]">Local-first AI for lawyers</p>
+              <h1 className="mt-5 max-w-3xl font-display text-5xl font-bold leading-[0.96] tracking-normal text-balance sm:text-7xl lg:text-[82px]">
+                Your matters. Your models. Your legal AI.
+              </h1>
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-[#f7f3ea]/70 sm:text-xl">
+                Scopic gives lawyers a private AI workspace for matter review, drafting, and legal reasoning. Run sensitive work locally, use frontier models deliberately, and turn lawyer corrections into firm advantage.
               </p>
-              <h2 className="mt-3 font-display text-2xl font-bold tracking-[-0.02em] sm:text-3xl">
-                Join our Lawyer beta and get free early access to:
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  onClick={scrollToBeta}
+                  className="inline-flex items-center gap-3 border border-[#e8b13a] bg-[#e8b13a] px-5 py-3 font-mono text-[11px] uppercase text-[#12110f] transition hover:bg-[#f7f3ea]"
+                >
+                  Join our lawyer beta
+                  <ArrowRight className="size-4" aria-hidden />
+                </button>
+                <a
+                  href={CALENDAR_URL}
+                  {...externalLinkProps()}
+                  className="inline-flex items-center gap-3 border border-[#f7f3ea]/20 px-5 py-3 font-mono text-[11px] uppercase text-[#f7f3ea]/72 transition hover:border-[#f7f3ea] hover:text-[#f7f3ea]"
+                >
+                  Book a call
+                  <ArrowRight className="size-4" aria-hidden />
+                </a>
+              </div>
+            </div>
+            <ConsolePreview />
+          </section>
+
+          <section id="thinking" className="grid gap-10 border-b border-[#f7f3ea]/15 py-12 lg:grid-cols-[0.8fr_1.2fr] lg:py-16">
+            <div>
+              <p className="font-mono text-xs uppercase text-[#f7f3ea]/45">How we think</p>
+              <h2 className="mt-4 font-display text-4xl font-bold leading-tight tracking-normal text-balance sm:text-5xl">
+                Generic AI is rented intelligence. Legal AI should become firm infrastructure.
               </h2>
-              <ul className="mt-5 space-y-3 text-sm leading-relaxed text-ink/80">
-                {BETA_BULLETS.map((bullet) => (
-                  <li key={bullet} className="flex gap-3">
-                    <span
-                      className="mt-1.5 inline-block size-2 shrink-0 bg-saffron-400"
-                      aria-hidden
-                    />
-                    <span>{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-              {SHOW_DESIGN_PARTNERS ? (
-                <p className="mt-6 text-xs leading-relaxed text-ink/60">
-                  {DESIGN_PARTNERS_LINE}
+            </div>
+            <div className="space-y-7">
+              <p className="text-lg leading-8 text-[#f7f3ea]/72">
+                The most valuable legal knowledge does not live on the public internet. It sits inside matters, markups, judgment calls, partner preferences, and review history. Scopic is built around that reality: private workspace first, model choice second, lawyer control always.
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex items-start gap-3 border border-[#f7f3ea]/12 p-4">
+                  <LockKeyhole className="mt-1 size-5 text-[#e8b13a]" aria-hidden />
+                  <div>
+                    <p className="font-semibold">Data control</p>
+                    <p className="mt-1 text-sm leading-6 text-[#f7f3ea]/58">Keep confidential work on the machine when it matters.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 border border-[#f7f3ea]/12 p-4">
+                  <Cpu className="mt-1 size-5 text-[#e8b13a]" aria-hidden />
+                  <div>
+                    <p className="font-semibold">Model choice</p>
+                    <p className="mt-1 text-sm leading-6 text-[#f7f3ea]/58">Move between local and cloud reasoning by task sensitivity.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 border border-[#f7f3ea]/12 p-4">
+                  <Database className="mt-1 size-5 text-[#e8b13a]" aria-hidden />
+                  <div>
+                    <p className="font-semibold">Reusable context</p>
+                    <p className="mt-1 text-sm leading-6 text-[#f7f3ea]/58">Turn feedback into a better matter memory layer.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 border border-[#f7f3ea]/12 p-4">
+                  <Scale className="mt-1 size-5 text-[#e8b13a]" aria-hidden />
+                  <div>
+                    <p className="font-semibold">Lawyer oversight</p>
+                    <p className="mt-1 text-sm leading-6 text-[#f7f3ea]/58">Keep legal judgment in human hands.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="system" className="border-b border-[#f7f3ea]/15 py-12 lg:py-16">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {ADVANTAGES.map((advantage) => (
+                <article key={advantage.title} className="border border-[#f7f3ea]/12 p-5">
+                  <CheckCircle2 className="size-5 text-[#e8b13a]" aria-hidden />
+                  <h3 className="mt-5 font-display text-2xl font-bold tracking-normal">{advantage.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-[#f7f3ea]/62">{advantage.copy}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section ref={betaRef} className="relative overflow-hidden bg-ivory px-5 py-10 text-ink sm:px-8 lg:px-10 lg:py-14">
+            <Image
+              src="/logos/scopic-logo-black.png"
+              alt=""
+              width={300}
+              height={520}
+              className="pointer-events-none absolute -right-10 top-8 hidden h-[480px] w-auto opacity-[0.035] lg:block"
+            />
+            <div className="relative grid gap-10 lg:grid-cols-[0.92fr_1.08fr]">
+              <div>
+                <p className="font-mono text-xs uppercase text-ink/45">Early access</p>
+                <h2 className="mt-4 font-display text-4xl font-bold leading-tight tracking-normal sm:text-5xl">
+                  Join the lawyer beta for a private legal AI workspace.
+                </h2>
+                <ul className="mt-7 space-y-4 text-sm leading-relaxed text-ink/78">
+                  {BETA_BULLETS.map((bullet) => (
+                    <li key={bullet} className="flex gap-3">
+                      <span className="mt-1.5 inline-block size-2 shrink-0 bg-saffron-400" aria-hidden />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+                {SHOW_DESIGN_PARTNERS ? (
+                  <p className="mt-6 text-xs leading-relaxed text-ink/60">{DESIGN_PARTNERS_LINE}</p>
+                ) : null}
+              </div>
+
+              <form onSubmit={handleSubmit} className="grid gap-4 border border-ink/15 bg-[#fbf8f0] p-5 sm:p-6" noValidate>
+                <label className="grid gap-1.5">
+                  <span className="font-mono text-[10px] uppercase text-ink/55">Full name</span>
+                  <input
+                    type="text"
+                    required
+                    autoComplete="name"
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
+                    className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
+                  />
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="font-mono text-[10px] uppercase text-ink/55">Company</span>
+                  <input
+                    type="text"
+                    required
+                    autoComplete="organization"
+                    value={company}
+                    onChange={(event) => setCompany(event.target.value)}
+                    className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
+                  />
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="font-mono text-[10px] uppercase text-ink/55">Email address</span>
+                  <input
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
+                  />
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="font-mono text-[10px] uppercase text-ink/55">How did you hear about us?</span>
+                  <input
+                    type="text"
+                    value={referralSource}
+                    onChange={(event) => setReferralSource(event.target.value)}
+                    className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
+                  />
+                </label>
+
+                {error ? (
+                  <p className="text-xs text-red-700" role="alert">
+                    {error}
+                  </p>
+                ) : null}
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="mt-1 inline-flex items-center justify-center gap-3 border border-ink bg-ink px-5 py-3 font-mono text-[11px] uppercase text-ivory transition hover:bg-saffron-400 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {submitting ? "Submitting..." : "Join our lawyer beta"}
+                  <ArrowRight className="size-4" aria-hidden />
+                </button>
+                <p className="text-[11px] leading-relaxed text-ink/50">
+                  After you submit, we&apos;ll take you to book an introductory demo meeting.
                 </p>
-              ) : null}
+              </form>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-              <label className="flex flex-col gap-1.5">
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
-                  Full name
-                </span>
-                <input
-                  type="text"
-                  required
-                  autoComplete="name"
-                  value={fullName}
-                  onChange={(event) => setFullName(event.target.value)}
-                  className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
-                />
-              </label>
-              <label className="flex flex-col gap-1.5">
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
-                  Company
-                </span>
-                <input
-                  type="text"
-                  required
-                  autoComplete="organization"
-                  value={company}
-                  onChange={(event) => setCompany(event.target.value)}
-                  className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
-                />
-              </label>
-              <label className="flex flex-col gap-1.5">
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
-                  Email address
-                </span>
-                <input
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
-                />
-              </label>
-              <label className="flex flex-col gap-1.5">
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55">
-                  How did you hear about us?
-                </span>
-                <input
-                  type="text"
-                  value={referralSource}
-                  onChange={(event) => setReferralSource(event.target.value)}
-                  className="border border-ink/20 bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition focus:border-ink"
-                />
-              </label>
-
-              {error ? (
-                <p className="text-xs text-red-700" role="alert">
-                  {error}
-                </p>
-              ) : null}
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="mt-1 inline-flex items-center justify-center gap-2 border border-ink bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ivory transition hover:bg-saffron-400 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {submitting ? "Submitting…" : "Join Our Lawyer Beta →"}
-              </button>
-              <p className="text-[11px] leading-relaxed text-ink/50">
-                After you submit, we&apos;ll take you to book an introductory demo meeting.
-              </p>
-            </form>
-
-            <div className="border-t border-ink/15 pt-6 lg:col-span-2">
+            <div className="relative mt-10 border-t border-ink/15 pt-7">
               <p className="text-sm leading-relaxed text-ink/75">
-                <ApplyLink /> to our exclusive Lawyer Design Partner Program to help shape
-                the future of legal tech with other innovative Lawyers from firms across
-                the globe:
+                <ApplyLink /> to our exclusive Lawyer Design Partner Program to help shape the future of legal tech with other innovative Lawyers from firms across the globe:
               </p>
               <LogoStrip logos={LAW_FIRM_LOGOS} />
             </div>
 
-            <div className="border-t border-ink/15 pt-6 lg:col-span-2">
+            <div className="relative mt-8 border-t border-ink/15 pt-7">
               <p className="text-sm leading-relaxed text-ink/75">
-                <ApplyLink /> to our exclusive Founder Program to amplify your self-serve
-                legal work under the light supervision of a trusted Lawyer from our Lawyer
-                Design Partner Program:
+                <ApplyLink /> to our exclusive Founder Program to amplify your self-serve legal work under the light supervision of a trusted Lawyer from our Lawyer Design Partner Program:
               </p>
               <LogoStrip logos={FOUNDER_LOGOS} />
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="flex flex-wrap items-center justify-between gap-4 border-y border-ink/15 bg-ink px-6 py-5 text-ivory">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ivory/80">
-            Want a walkthrough first?
-          </p>
-          <a
-            href={CALENDAR_URL}
-            {...externalLinkProps()}
-            className="inline-flex items-center border border-saffron-400 bg-saffron-400 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition hover:bg-ivory"
-          >
-            Book a call
-          </a>
-        </section>
+          <section className="flex flex-wrap items-center justify-between gap-5 border-b border-[#f7f3ea]/15 px-1 py-8">
+            <div>
+              <p className="font-mono text-xs uppercase text-[#f7f3ea]/45">Awaiting matter</p>
+              <h2 className="mt-2 font-display text-3xl font-bold tracking-normal sm:text-4xl">Bring Scopic into a live workflow.</h2>
+            </div>
+            <a
+              href={CALENDAR_URL}
+              {...externalLinkProps()}
+              className="inline-flex items-center gap-3 border border-[#e8b13a] bg-[#e8b13a] px-5 py-3 font-mono text-[11px] uppercase text-[#12110f] transition hover:bg-[#f7f3ea]"
+            >
+              Book a call
+              <ArrowRight className="size-4" aria-hidden />
+            </a>
+          </section>
+        </main>
 
-        <footer className="mt-auto flex flex-wrap items-center gap-4 border-t border-ink/15 pt-6 text-sm text-ink/55">
-          <span>© Scopic</span>
+        <footer className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-6 text-sm text-[#f7f3ea]/45">
+          <span>Copyright Scopic</span>
+          <span className="font-mono text-[11px] uppercase">Private legal AI lab</span>
         </footer>
       </div>
     </div>
