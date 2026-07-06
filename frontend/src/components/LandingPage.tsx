@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { ArrowRight, CheckCircle2, Cpu, Database, LockKeyhole, Scale } from "lucide-react";
+import { ArrowRight, CheckCircle2, Cpu, Database, FileText, LockKeyhole, Scale, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import { supabaseBrowserClient } from "@/lib/supabase/client";
 
 const CALENDAR_URL = "https://calendar.app.google/z4aYNYvn748Br3ap8";
@@ -120,55 +120,78 @@ function ApplyLink() {
 
 function ConsolePreview() {
   return (
-    <div className="relative border border-[#f7f3ea]/15 bg-[#0b0d0a] p-4 shadow-2xl shadow-black/35">
+    <div className="relative overflow-hidden border border-[#f7f3ea]/15 bg-[#0b0d0a] p-3 shadow-2xl shadow-black/35 sm:p-4">
       <Image
         src="/logos/scopic-logo-white-vertical.png"
         alt=""
         width={320}
         height={594}
         priority
-        className="pointer-events-none absolute -right-12 top-4 hidden h-[430px] w-auto opacity-[0.07] lg:block"
+        className="pointer-events-none absolute -right-12 top-4 hidden h-[430px] w-auto opacity-[0.06] lg:block"
       />
       <div className="relative border border-[#f7f3ea]/10 bg-[#070806]">
-        <div className="flex items-center justify-between border-b border-[#f7f3ea]/10 px-4 py-3 font-mono text-[11px] text-[#f7f3ea]/55">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#f7f3ea]/10 px-4 py-3 font-mono text-[11px] text-[#f7f3ea]/55">
           <span>scopic.local / matter-workspace</span>
-          <span>PRIVATE MODE</span>
+          <span className="inline-flex items-center gap-2 text-[#8fd8aa]">
+            <ShieldCheck className="size-3.5" aria-hidden />
+            Private mode
+          </span>
         </div>
+
         <div className="grid border-b border-[#f7f3ea]/10 sm:grid-cols-3">
-          <div className="border-b border-[#f7f3ea]/10 p-4 sm:border-b-0 sm:border-r">
-            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Documents</p>
-            <p className="mt-3 font-display text-3xl font-bold">42</p>
-            <p className="mt-1 text-xs text-[#f7f3ea]/55">indexed locally</p>
-          </div>
-          <div className="border-b border-[#f7f3ea]/10 p-4 sm:border-b-0 sm:border-r">
-            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Risk flags</p>
-            <p className="mt-3 font-display text-3xl font-bold">18</p>
-            <p className="mt-1 text-xs text-[#f7f3ea]/55">awaiting review</p>
-          </div>
-          <div className="p-4">
-            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Data out</p>
-            <p className="mt-3 font-display text-3xl font-bold">0</p>
-            <p className="mt-1 text-xs text-[#f7f3ea]/55">local model run</p>
-          </div>
+          {[
+            { label: "Documents", value: "42", detail: "indexed locally", icon: FileText, tone: "text-[#f7f3ea]/58" },
+            { label: "Risk flags", value: "18", detail: "awaiting review", icon: TriangleAlert, tone: "text-[#e8b13a]" },
+            { label: "Data out", value: "0", detail: "local model run", icon: LockKeyhole, tone: "text-[#8fd8aa]" },
+          ].map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <div key={stat.label} className={`p-4 ${index < 2 ? "border-b border-[#f7f3ea]/10 sm:border-b-0 sm:border-r" : ""}`}>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">{stat.label}</p>
+                  <Icon className={`size-4 ${stat.tone}`} aria-hidden />
+                </div>
+                <p className="mt-3 font-display text-3xl font-bold">{stat.value}</p>
+                <p className="mt-1 text-xs text-[#f7f3ea]/55">{stat.detail}</p>
+              </div>
+            );
+          })}
         </div>
-        <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="border-b border-[#f7f3ea]/10 p-4 lg:border-b-0 lg:border-r">
-            <p className="font-mono text-[10px] uppercase text-[#e8b13a]">Share purchase agreement</p>
-            <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#f7f3ea]/72">
-              <p>Clause 9.2 indemnity cap conflicts with the escrow schedule.</p>
-              <p className="border-l-2 border-[#e8b13a] pl-3 text-[#f7f3ea]">
-                Suggested revision should track escrow release mechanics, not headline purchase price.
-              </p>
-              <p className="text-[#f7f3ea]/45">Similar correction found in Project Meridian and Project Anker.</p>
+
+        <div className="grid gap-0 xl:grid-cols-[1.08fr_0.92fr]">
+          <div className="border-b border-[#f7f3ea]/10 p-4 xl:border-b-0 xl:border-r">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-mono text-[10px] uppercase text-[#e8b13a]">Master Services Agreement</p>
+              <span className="border border-[#f35f5f]/35 bg-[#f35f5f]/10 px-2 py-1 font-mono text-[9px] uppercase text-[#ff9b9b]">High risk</span>
+              <span className="border border-[#8fd8aa]/30 bg-[#8fd8aa]/10 px-2 py-1 font-mono text-[9px] uppercase text-[#8fd8aa]">Fallback #302</span>
+            </div>
+
+            <div className="mt-4 space-y-3 text-sm leading-relaxed">
+              <div className="border border-[#f35f5f]/20 bg-[#f35f5f]/[0.06] p-3 text-[#f7f3ea]/78">
+                <p className="font-mono text-[10px] uppercase text-[#ff9b9b]">Risk read</p>
+                <p className="mt-2">Section 7 (Indemnity) redline flagged as high risk and inconsistent with any relevant Fallback Provisions.</p>
+              </div>
+              <div className="border-l-2 border-[#e8b13a] bg-[#e8b13a]/[0.06] p-3 text-[#f7f3ea]">
+                <p className="font-mono text-[10px] uppercase text-[#e8b13a]">Suggested revision</p>
+                <p className="mt-2">Suggested revision should track escrow release mechanics, not headline purchase price.</p>
+              </div>
+              <div className="border border-[#8fd8aa]/20 bg-[#8fd8aa]/[0.06] p-3 text-[#f7f3ea]/70">
+                <p className="font-mono text-[10px] uppercase text-[#8fd8aa]">Human lawyer feedback</p>
+                <p className="mt-2">Push back with Fallback Provision #302, because counterparty&apos;s affiliate accepted this language in a prior negotiation.</p>
+              </div>
             </div>
           </div>
+
           <div className="p-4">
-            <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Agent ledger</p>
-            <ol className="mt-4 space-y-4 text-sm text-[#f7f3ea]/70">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-mono text-[10px] uppercase text-[#f7f3ea]/45">Agent ledger</p>
+              <Sparkles className="size-4 text-[#e8b13a]" aria-hidden />
+            </div>
+            <ol className="mt-4 space-y-3 text-sm text-[#f7f3ea]/70">
               {WORKFLOW_STEPS.map((step, index) => (
-                <li key={step} className="flex gap-3">
-                  <span className="font-mono text-[11px] text-[#e8b13a]">0{index + 1}</span>
-                  <span>{step}</span>
+                <li key={step} className="grid grid-cols-[auto_1fr] gap-3">
+                  <span className="flex size-6 items-center justify-center border border-[#f7f3ea]/15 font-mono text-[10px] text-[#e8b13a]">0{index + 1}</span>
+                  <span className="border-b border-[#f7f3ea]/10 pb-3 last:border-b-0 last:pb-0">{step}</span>
                 </li>
               ))}
             </ol>
@@ -178,7 +201,6 @@ function ConsolePreview() {
     </div>
   );
 }
-
 export default function LandingPage() {
   const betaRef = useRef<HTMLElement>(null);
   const [fullName, setFullName] = useState("");
@@ -264,8 +286,8 @@ export default function LandingPage() {
               <h1 className="mt-5 max-w-3xl font-display text-5xl font-bold leading-[0.96] tracking-normal text-balance sm:text-7xl lg:text-[82px]">
                 Your matters. Your models. Your legal AI.
               </h1>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-[#f7f3ea]/70 sm:text-xl">
-                Scopic gives lawyers a private AI workspace for matter review, drafting, and legal reasoning. Run sensitive work locally, use frontier models deliberately, and turn lawyer corrections into firm advantage.
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-[#f7f3ea]/72 sm:text-xl">
+                Scopic gives lawyers an AI workspace to privately codify legal judgment. Run sensitive work locally and use frontier models deliberately. Turn lawyer feedback into firm advantage to automate workflows, train teams, or power a digital twin.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 <button
