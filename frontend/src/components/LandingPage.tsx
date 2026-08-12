@@ -43,10 +43,9 @@ const WORKFLOW_STEPS = [
 const LAW_FIRM_LOGOS = [
   { name: "Dentons", src: "/logos/law-dentons.png" },
   { name: "Reitler", src: "/logos/law-reitler.png" },
-  { name: "Fasken", src: "/logos/law-fasken.png" },
+  { name: "Marshall, Harp & Henman, LLP", src: "/logos/law-marshall-harp-henman.png" },
   { name: "Aird & Berlis", src: "/logos/law-aird-berlis.png" },
   { name: "GSA", src: "/logos/law-gsa.png" },
-  { name: "Marshall Harp & Henman", src: "/logos/law-marshall-harp-henman.png" },
 ] as const;
 
 const FOUNDER_LOGOS = [
@@ -61,7 +60,7 @@ const FOUNDER_LOGOS = [
 // Hidden until design-partner consents are confirmed. Flip to true to show.
 const SHOW_DESIGN_PARTNERS = false;
 const DESIGN_PARTNERS_LINE =
-  "Built by Lawyers and AI Researchers, with the support of our Design Partners: Dentons, Reitler, Faskens, Aird & Berlis, Loyal VC, Senso, and many more.";
+  "Built by Lawyers and AI Researchers, with the support of our Design Partners: Dentons, Reitler, Marshall, Harp & Henman, LLP, Aird & Berlis, Loyal VC, Senso, and many more.";
 
 function externalLinkProps() {
   return {
